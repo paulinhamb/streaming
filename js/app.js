@@ -228,6 +228,13 @@ async function selectResult(result) {
   // Update URL hash
   window.location.hash = `${result.type}/${result.id}`;
 
+  // Update theater poster
+  const theaterPoster = $('#theater-poster');
+  if (theaterPoster && result.posterPath) {
+    theaterPoster.src = getImageUrl(result.posterPath, 'w342');
+    theaterPoster.style.display = 'block';
+  }
+
   await loadAvailability(result.id, result.type, result.title, result.posterPath);
 }
 
@@ -240,6 +247,13 @@ async function loadAvailability(id, mediaType, title, posterPath) {
     </div>
   `;
   $('#view-toggle').classList.add('hidden');
+
+  // Update theater poster when loading from hash route
+  const theaterPoster = $('#theater-poster');
+  if (theaterPoster && posterPath && theaterPoster.style.display === 'none') {
+    theaterPoster.src = getImageUrl(posterPath, 'w342');
+    theaterPoster.style.display = 'block';
+  }
 
   try {
     const results = await getWatchProviders(id, mediaType);
@@ -287,19 +301,14 @@ function renderPlatformView(platformData, title, posterPath) {
   const main = $('#results');
   const subscribedProviders = getSubscribedProviders();
 
-  // Build header
   let html = `
     <div class="result-header">
-      ${posterPath ? `<img class="result-poster" src="${getImageUrl(posterPath, 'w185')}" alt="">` : ''}
-      <div>
-        <h2 class="result-title">${escapeHtml(title)}</h2>
-        <p class="result-subtitle">Streaming availability on your platforms</p>
-      </div>
+      <h2 class="result-title">${escapeHtml(title)}</h2>
+      <p class="result-subtitle">Streaming availability on your platforms</p>
     </div>
     <div class="platform-cards">
   `;
 
-  // Render a card for each subscribed platform
   for (const provider of subscribedProviders) {
     const data = platformData[provider.name];
     const hasCountries = data && data.countries.length > 0;
@@ -308,7 +317,7 @@ function renderPlatformView(platformData, title, posterPath) {
       <div class="platform-card ${hasCountries ? '' : 'platform-card--empty'}">
         <div class="platform-card__header">
           ${data?.logo ? `<img class="platform-logo" src="${getImageUrl(data.logo)}" alt="">` : ''}
-          <h3 class="platform-name">${escapeHtml(provider.name)}</h3>
+          <span class="platform-name">${escapeHtml(provider.name)}</span>
           ${hasCountries ? `<span class="country-count">${data.countries.length} ${data.countries.length === 1 ? 'country' : 'countries'}</span>` : ''}
         </div>
         <div class="platform-card__body">
@@ -347,11 +356,8 @@ function renderCountryView(countryData, platformData, title, posterPath) {
 
   let html = `
     <div class="result-header">
-      ${posterPath ? `<img class="result-poster" src="${getImageUrl(posterPath, 'w185')}" alt="">` : ''}
-      <div>
-        <h2 class="result-title">${escapeHtml(title)}</h2>
-        <p class="result-subtitle">Available in ${sortedCountries.length} ${sortedCountries.length === 1 ? 'country' : 'countries'}</p>
-      </div>
+      <h2 class="result-title">${escapeHtml(title)}</h2>
+      <p class="result-subtitle">Available in ${sortedCountries.length} ${sortedCountries.length === 1 ? 'country' : 'countries'}</p>
     </div>
     <div class="country-table-wrapper">
       <table class="country-table">
@@ -396,8 +402,6 @@ function renderNoResults(title) {
   const main = $('#results');
   main.innerHTML = `
     <div class="empty-state">
-      <div class="empty-icon">&#128566;</div>
-      <h3>Not available</h3>
       <p>"${escapeHtml(title)}" is not included with any of your streaming subscriptions in any country.</p>
       <p class="empty-hint">It may be available for rent or purchase, or on other platforms.</p>
     </div>
