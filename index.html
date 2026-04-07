@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamFinder — Find Where to Stream</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="logo">StreamFinder</h1>
+        <p class="tagline">Search once. Stream anywhere.</p>
+      </div>
+      <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Settings">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Search -->
+    <div class="search-section">
+      <div class="search-box">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="M21 21l-4.35-4.35"></path>
+        </svg>
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search for a movie or series..."
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <div id="search-dropdown" class="search-dropdown hidden"></div>
+      </div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="controls">
+      <button id="view-toggle" class="view-toggle-btn hidden">Switch to Country View</button>
+    </div>
+
+    <!-- Results -->
+    <main id="results">
+      <div class="empty-state initial-state">
+        <div class="empty-icon">&#127916;</div>
+        <h3>Find your next watch</h3>
+        <p>Search for any movie or series to see which countries have it on your streaming platforms.</p>
+        <p class="empty-hint">Connect your VPN to the right country and start watching.</p>
+      </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <dialog id="settings-modal" class="settings-dialog">
+      <div class="settings-content">
+        <div class="settings-header">
+          <h2>Settings</h2>
+          <button id="settings-close" class="icon-btn" aria-label="Close">&times;</button>
+        </div>
+
+        <!-- API Key -->
+        <div class="settings-section">
+          <h3>TMDB API Key</h3>
+          <p class="settings-help">
+            Get a free API key at
+            <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">themoviedb.org</a>
+            (Register &rarr; Settings &rarr; API &rarr; Copy "API Key (v3 auth)")
+          </p>
+          <input type="text" id="api-key-input" class="settings-input" placeholder="Enter your TMDB API key">
+          <p id="settings-status" class="settings-status"></p>
+        </div>
+
+        <!-- Subscribed Platforms -->
+        <div class="settings-section">
+          <h3>Your Subscriptions</h3>
+          <div id="subscribed-list" class="subscribed-list"></div>
+          <button id="settings-reset" class="reset-btn">Reset to Defaults</button>
+        </div>
+
+        <!-- Add Platform -->
+        <div class="settings-section">
+          <h3>Add Platform</h3>
+          <input type="text" id="platform-search" class="settings-input" placeholder="Search for a streaming service...">
+          <div id="platform-search-results" class="platform-search-results"></div>
+        </div>
+
+        <div class="settings-footer">
+          <button id="settings-save" class="primary-btn">Save & Close</button>
+        </div>
+      </div>
+    </dialog>
+
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
