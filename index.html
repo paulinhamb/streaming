@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreamFinder — Find Where to Stream</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3">
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 </head>
@@ -14,8 +14,7 @@
     <!-- Left Panel: Theater + Movie Poster -->
     <div class="left-panel">
       <div class="theater-stage">
-        <img class="movie-poster-behind" id="theater-poster" src="" alt="" style="display:none">
-        <img class="theater-frame" src="assets/streaming_poster_transparent.png" alt="Theater">
+        <canvas id="theater-canvas" class="theater-canvas"></canvas>
       </div>
     </div>
 

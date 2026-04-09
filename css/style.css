@@ -93,26 +93,11 @@ button {
   justify-content: center;
 }
 
-.theater-frame {
-  position: relative;
-  z-index: 2;
+.theater-canvas {
+  display: block;
   width: 85%;
   max-width: 520px;
-  display: block;
-  object-fit: contain;
-}
-
-.movie-poster-behind {
-  position: absolute;
-  z-index: 1;
-  top: 28%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 56%;
-  height: auto;
-  border-radius: 2px;
-  object-fit: cover;
-  transition: opacity 0.4s ease;
+  aspect-ratio: 1350 / 1912; /* theater PNG dimensions — scales canvas correctly */
 }
 
 /* ---- Right Panel: Search + Results ---- */
@@ -801,13 +786,9 @@ button {
     max-height: 360px;
   }
 
-  .theater-frame {
+  .theater-canvas {
     width: 60%;
     max-width: 280px;
-  }
-
-  .movie-poster-behind {
-    width: 31%;
   }
 
   .right-panel {

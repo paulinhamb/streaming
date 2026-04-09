@@ -32,6 +32,104 @@ let currentAbortController = null;
 let debounceTimer = null;
 let allProvidersList = null; // full TMDB provider list (for settings search)
 let currentTitle = null; // currently displayed title info
+let cachedTheaterImage = null; // theater PNG loaded once and reused
+
+// ---- Theater Canvas ----
+
+// Screen cutout coordinates within the 1350×1912 theater PNG
+// Tweak these live in the browser console: SCREEN.x = 440; redraw()
+const SCREEN = { x: 455, y: 350, w: 500, h: 1010 };
+window.SCREEN = SCREEN;
+
+function loadImageEl(src, crossOrigin = false) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    if (crossOrigin) img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function getTheaterImage() {
+  if (cachedTheaterImage) return cachedTheaterImage;
+  cachedTheaterImage = await loadImageEl('assets/streaming_poster_transparent.png');
+  return cachedTheaterImage;
+}
+
+// Returns source rect for object-fit:cover, top-biased (shows faces)
+function coverSourceRect(img, destW, destH) {
+  const imgAR = img.naturalWidth / img.naturalHeight;
+  const destAR = destW / destH;
+  let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+  if (imgAR > destAR) {
+    // Image wider — crop sides, keep center horizontally
+    sw = img.naturalHeight * destAR;
+    sx = (img.naturalWidth - sw) / 2;
+  } else {
+    // Image taller — crop bottom, keep top (faces/title)
+    sh = img.naturalWidth / destAR;
+    sy = 0;
+  }
+  return { sx, sy, sw, sh };
+}
+
+async function drawTheaterCanvas(posterSrc) {
+  const canvas = document.getElementById('theater-canvas');
+  if (!canvas) return;
+  canvas.dataset.posterSrc = posterSrc; // store for redraw()
+  const ctx = canvas.getContext('2d');
+
+  try {
+    const [theaterImg, posterImg] = await Promise.all([
+      getTheaterImage(),
+      loadImageEl(posterSrc, true), // crossOrigin for TMDB images
+    ]);
+
+    canvas.width  = theaterImg.naturalWidth;  // 1350
+    canvas.height = theaterImg.naturalHeight; // 1912
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Draw poster cropped to fill the screen rectangle exactly
+    const { sx, sy, sw, sh } = coverSourceRect(posterImg, SCREEN.w, SCREEN.h);
+    ctx.drawImage(posterImg, sx, sy, sw, sh, SCREEN.x, SCREEN.y, SCREEN.w, SCREEN.h);
+
+    // 2. Draw theater frame on top — opaque frame pixels cover everything outside
+    //    the transparent screen cutout, which lets the poster below show through
+    ctx.drawImage(theaterImg, 0, 0, canvas.width, canvas.height);
+
+  } catch (err) {
+    console.warn('Canvas draw error, falling back to frame only:', err);
+    drawTheaterFrameOnly();
+  }
+}
+
+async function drawTheaterFrameOnly() {
+  const canvas = document.getElementById('theater-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  try {
+    const theaterImg = await getTheaterImage();
+    canvas.width  = theaterImg.naturalWidth;
+    canvas.height = theaterImg.naturalHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(theaterImg, 0, 0);
+  } catch (err) {
+    console.warn('Theater frame draw error:', err);
+  }
+}
+
+// ---- Dev helper: call redraw() in console after tweaking window.SCREEN ----
+// Usage:
+//   redraw()                    — redraws last poster (or placeholder)
+//   redraw('https://...')       — draws any image URL you pass in
+window.redraw = function(url) {
+  const src = url
+    || document.getElementById('theater-canvas')?.dataset.posterSrc
+    || 'https://picsum.photos/seed/poster/342/513'; // fallback placeholder
+  drawTheaterCanvas(src);
+  console.log('SCREEN:', JSON.stringify(window.SCREEN));
+};
 
 // ---- DOM References ----
 const $ = (sel) => document.querySelector(sel);
@@ -42,6 +140,9 @@ const $$ = (sel) => document.querySelectorAll(sel);
 async function init() {
   // Attach event listeners
   attachListeners();
+
+  // Draw the theater frame immediately (no poster yet)
+  drawTheaterFrameOnly();
 
   // Check API key
   if (!hasApiKey()) {
@@ -228,11 +329,9 @@ async function selectResult(result) {
   // Update URL hash
   window.location.hash = `${result.type}/${result.id}`;
 
-  // Update theater poster
-  const theaterPoster = $('#theater-poster');
-  if (theaterPoster && result.posterPath) {
-    theaterPoster.src = getImageUrl(result.posterPath, 'w342');
-    theaterPoster.style.display = 'block';
+  // Draw poster into theater canvas
+  if (result.posterPath) {
+    drawTheaterCanvas(getImageUrl(result.posterPath, 'w500'));
   }
 
   await loadAvailability(result.id, result.type, result.title, result.posterPath);
@@ -248,11 +347,9 @@ async function loadAvailability(id, mediaType, title, posterPath) {
   `;
   $('#view-toggle').classList.add('hidden');
 
-  // Update theater poster when loading from hash route
-  const theaterPoster = $('#theater-poster');
-  if (theaterPoster && posterPath && theaterPoster.style.display === 'none') {
-    theaterPoster.src = getImageUrl(posterPath, 'w342');
-    theaterPoster.style.display = 'block';
+  // Draw poster into theater canvas when loading from hash route
+  if (posterPath) {
+    drawTheaterCanvas(getImageUrl(posterPath, 'w500'));
   }
 
   try {
