@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreamFinder — Find Where to Stream</title>
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 </head>
@@ -49,6 +49,15 @@
           <div id="search-dropdown" class="search-dropdown hidden"></div>
         </div>
 
+        <!-- Mobile-only: inline theater shown after search -->
+        <div class="mobile-theater-wrap" id="mobile-theater-wrap">
+          <canvas id="mobile-theater-canvas" class="theater-canvas mobile-theater-canvas"></canvas>
+          <div class="mobile-movie-info" id="mobile-movie-info">
+            <p class="mobile-movie-title" id="mobile-movie-title"></p>
+            <p class="mobile-movie-meta" id="mobile-movie-meta"></p>
+          </div>
+        </div>
+
         <!-- View Toggle -->
         <div class="controls">
           <button id="view-toggle" class="view-toggle-btn hidden">Switch to Country View</button>
@@ -57,7 +66,8 @@
         <!-- Results -->
         <main id="results">
           <div class="empty-state">
-            <p>Search for any movie or series to see which countries have it on your platforms.</p>
+            <h2 class="empty-heading">Find your next watch</h2>
+            <p>Search for any movie or series to see which countries have it on your streaming platforms.</p>
             <p class="empty-hint">Connect your VPN to the right country and start watching.</p>
           </div>
         </main>

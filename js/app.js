@@ -63,71 +63,80 @@ function coverSourceRect(img, destW, destH) {
   const destAR = destW / destH;
   let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
   if (imgAR > destAR) {
-    // Image wider — crop sides, keep center horizontally
     sw = img.naturalHeight * destAR;
     sx = (img.naturalWidth - sw) / 2;
   } else {
-    // Image taller — crop bottom, keep top (faces/title)
     sh = img.naturalWidth / destAR;
     sy = 0;
   }
   return { sx, sy, sw, sh };
 }
 
-async function drawTheaterCanvas(posterSrc) {
-  const canvas = document.getElementById('theater-canvas');
+// Core drawing function — works on any canvas by ID
+async function drawToCanvas(canvasId, imageSrc, crossOrigin = true) {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  canvas.dataset.posterSrc = posterSrc; // store for redraw()
+  canvas.dataset.posterSrc = imageSrc;
   const ctx = canvas.getContext('2d');
-
   try {
     const [theaterImg, posterImg] = await Promise.all([
       getTheaterImage(),
-      loadImageEl(posterSrc, true), // crossOrigin for TMDB images
+      loadImageEl(imageSrc, crossOrigin),
     ]);
-
-    canvas.width  = theaterImg.naturalWidth;  // 1350
-    canvas.height = theaterImg.naturalHeight; // 1912
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // 1. Draw poster cropped to fill the screen rectangle exactly
-    const { sx, sy, sw, sh } = coverSourceRect(posterImg, SCREEN.w, SCREEN.h);
-    ctx.drawImage(posterImg, sx, sy, sw, sh, SCREEN.x, SCREEN.y, SCREEN.w, SCREEN.h);
-
-    // 2. Draw theater frame on top — opaque frame pixels cover everything outside
-    //    the transparent screen cutout, which lets the poster below show through
-    ctx.drawImage(theaterImg, 0, 0, canvas.width, canvas.height);
-
-  } catch (err) {
-    console.warn('Canvas draw error, falling back to frame only:', err);
-    drawTheaterFrameOnly();
-  }
-}
-
-async function drawTheaterFrameOnly() {
-  const canvas = document.getElementById('theater-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  try {
-    const theaterImg = await getTheaterImage();
     canvas.width  = theaterImg.naturalWidth;
     canvas.height = theaterImg.naturalHeight;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(theaterImg, 0, 0);
+    const { sx, sy, sw, sh } = coverSourceRect(posterImg, SCREEN.w, SCREEN.h);
+    ctx.drawImage(posterImg, sx, sy, sw, sh, SCREEN.x, SCREEN.y, SCREEN.w, SCREEN.h);
+    ctx.drawImage(theaterImg, 0, 0, canvas.width, canvas.height);
   } catch (err) {
-    console.warn('Theater frame draw error:', err);
+    console.warn(`Canvas draw error on #${canvasId}:`, err);
   }
 }
 
+// Draw movie poster into theater canvases
+async function drawTheaterCanvas(posterSrc) {
+  return drawToCanvas('theater-canvas', posterSrc, true);
+}
+
+// Draw default "coming soon" image — displayed as-is, no theater overlay
+async function drawDefaultCanvas(canvasId = 'theater-canvas') {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  canvas.dataset.posterSrc = '';
+  const ctx = canvas.getContext('2d');
+  try {
+    const img = await loadImageEl('assets/streaming_poster_initial.png');
+    canvas.width  = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+  } catch (err) {
+    console.warn('Default canvas error:', err);
+  }
+}
+
+// ---- Mobile state ----
+
+function setHasResults(title, type, year) {
+  document.querySelector('.app').classList.add('has-results');
+  const titleEl = $('#mobile-movie-title');
+  const metaEl  = $('#mobile-movie-meta');
+  if (titleEl) titleEl.textContent = title;
+  if (metaEl)  metaEl.textContent  = `${type === 'movie' ? 'Movie' : 'Series'}${year ? ' · ' + year : ''}`;
+}
+
+function clearHasResults() {
+  document.querySelector('.app').classList.remove('has-results');
+}
+
 // ---- Dev helper: call redraw() in console after tweaking window.SCREEN ----
-// Usage:
-//   redraw()                    — redraws last poster (or placeholder)
-//   redraw('https://...')       — draws any image URL you pass in
 window.redraw = function(url) {
   const src = url
     || document.getElementById('theater-canvas')?.dataset.posterSrc
-    || 'https://picsum.photos/seed/poster/342/513'; // fallback placeholder
-  drawTheaterCanvas(src);
+    || 'https://picsum.photos/seed/poster/342/513';
+  drawToCanvas('theater-canvas', src, true);
+  drawToCanvas('mobile-theater-canvas', src, true);
   console.log('SCREEN:', JSON.stringify(window.SCREEN));
 };
 
@@ -141,8 +150,9 @@ async function init() {
   // Attach event listeners
   attachListeners();
 
-  // Draw the theater frame immediately (no poster yet)
-  drawTheaterFrameOnly();
+  // Draw the default "coming soon" image immediately
+  drawDefaultCanvas();
+  clearHasResults();
 
   // Check API key
   if (!hasApiKey()) {
@@ -329,15 +339,17 @@ async function selectResult(result) {
   // Update URL hash
   window.location.hash = `${result.type}/${result.id}`;
 
-  // Draw poster into theater canvas
+  // Draw poster into both canvases
   if (result.posterPath) {
-    drawTheaterCanvas(getImageUrl(result.posterPath, 'w500'));
+    const src = getImageUrl(result.posterPath, 'w500');
+    drawTheaterCanvas(src);
+    drawToCanvas('mobile-theater-canvas', src, true);
   }
 
-  await loadAvailability(result.id, result.type, result.title, result.posterPath);
+  await loadAvailability(result.id, result.type, result.title, result.posterPath, result.year);
 }
 
-async function loadAvailability(id, mediaType, title, posterPath) {
+async function loadAvailability(id, mediaType, title, posterPath, year = '') {
   const main = $('#results');
   main.innerHTML = `
     <div class="loading-state">
@@ -347,10 +359,15 @@ async function loadAvailability(id, mediaType, title, posterPath) {
   `;
   $('#view-toggle').classList.add('hidden');
 
-  // Draw poster into theater canvas when loading from hash route
+  // Draw poster into canvases (hash route or direct call)
   if (posterPath) {
-    drawTheaterCanvas(getImageUrl(posterPath, 'w500'));
+    const src = getImageUrl(posterPath, 'w500');
+    drawTheaterCanvas(src);
+    drawToCanvas('mobile-theater-canvas', src, true);
   }
+
+  // Set mobile results state
+  setHasResults(title, mediaType, year);
 
   try {
     const results = await getWatchProviders(id, mediaType);
@@ -394,6 +411,10 @@ async function loadAvailability(id, mediaType, title, posterPath) {
   }
 }
 
+const CHEVRON_SVG = `<svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M3.5 5.5L8 10L12.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
 function renderPlatformView(platformData, title, posterPath) {
   const main = $('#results');
   const subscribedProviders = getSubscribedProviders();
@@ -409,22 +430,23 @@ function renderPlatformView(platformData, title, posterPath) {
   for (const provider of subscribedProviders) {
     const data = platformData[provider.name];
     const hasCountries = data && data.countries.length > 0;
+    const countLabel = hasCountries
+      ? `${data.countries.length} ${data.countries.length === 1 ? 'country' : 'countries'}`
+      : '—';
 
     html += `
       <div class="platform-card ${hasCountries ? '' : 'platform-card--empty'}">
-        <div class="platform-card__header">
-          ${data?.logo ? `<img class="platform-logo" src="${getImageUrl(data.logo)}" alt="">` : ''}
+        <button class="platform-card__header">
+          ${data?.logo ? `<img class="platform-logo" src="${getImageUrl(data.logo)}" alt="">` : '<div class="platform-logo" style="background:var(--pill-bg)"></div>'}
           <span class="platform-name">${escapeHtml(provider.name)}</span>
-          ${hasCountries ? `<span class="country-count">${data.countries.length} ${data.countries.length === 1 ? 'country' : 'countries'}</span>` : ''}
-        </div>
+          <span class="country-count">${countLabel}</span>
+          ${CHEVRON_SVG}
+        </button>
         <div class="platform-card__body">
           ${
             hasCountries
               ? `<div class="country-pills">${data.countries
-                  .map(
-                    (code) =>
-                      `<span class="country-pill" title="${getCountryName(code)}">${countryFlag(code)} ${code}</span>`
-                  )
+                  .map(code => `<span class="country-pill" title="${getCountryName(code)}">${countryFlag(code)} ${code}</span>`)
                   .join('')}</div>`
               : `<p class="platform-empty-text">Not available with subscription</p>`
           }
@@ -435,6 +457,16 @@ function renderPlatformView(platformData, title, posterPath) {
 
   html += '</div>';
   main.innerHTML = html;
+
+  // Accordion toggle — only one card open at a time
+  main.querySelectorAll('.platform-card__header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.platform-card');
+      const isOpen = card.classList.contains('open');
+      main.querySelectorAll('.platform-card.open').forEach(c => c.classList.remove('open'));
+      if (!isOpen) card.classList.add('open');
+    });
+  });
 }
 
 function renderCountryView(countryData, platformData, title, posterPath) {
@@ -553,9 +585,10 @@ async function handleHashRoute() {
 
     const title = mediaType === 'movie' ? data.title : data.name;
     const posterPath = data.poster_path;
+    const year = (mediaType === 'movie' ? data.release_date : data.first_air_date)?.split('-')[0] || '';
 
     $('#search-input').value = title || '';
-    await loadAvailability(parseInt(id), mediaType, title || 'Unknown', posterPath);
+    await loadAvailability(parseInt(id), mediaType, title || 'Unknown', posterPath, year);
   } catch (e) {
     console.error('Hash route error:', e);
   }
