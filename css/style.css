@@ -79,7 +79,7 @@ button {
   height: 100vh;
   overflow: hidden;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   background: var(--bg);
   padding: 48px 48px 80px;
@@ -90,7 +90,7 @@ button {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 }
 
@@ -107,6 +107,9 @@ button {
   min-height: 100vh;
   overflow-y: auto;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .right-inner {
