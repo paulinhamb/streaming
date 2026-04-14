@@ -79,7 +79,7 @@ button {
   height: 100vh;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: var(--bg);
   padding: 48px 48px 80px;
