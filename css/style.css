@@ -117,9 +117,9 @@ button {
 
 .top-bar {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .logo {
@@ -542,7 +542,7 @@ button {
 /* ---- Empty / Loading States ---- */
 
 .empty-state {
-  padding: 40px 0 20px;
+  padding: 0 0 20px;
   color: var(--text-muted);
 }
 
