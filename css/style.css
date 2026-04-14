@@ -66,8 +66,7 @@ button {
 
 .app {
   display: grid;
-  grid-template-columns: minmax(0, 640px) minmax(0, 640px);
-  justify-content: space-around;
+  grid-template-columns: 1fr 1fr;
   min-height: 100vh;
   background: var(--bg);
 }
@@ -81,7 +80,7 @@ button {
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   background: var(--bg);
   padding: 48px 48px 80px;
 }
