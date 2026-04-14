@@ -34,9 +34,18 @@ let cachedTheaterImage = null; // theater PNG loaded once and reused
 // ---- Theater Canvas ----
 
 // Screen cutout coordinates within the 1350×1912 theater PNG
-// Tweak these live in the browser console: SCREEN.x = 440; redraw()
-const SCREEN = { x: 455, y: 350, w: 500, h: 1010 };
-window.SCREEN = SCREEN;
+// Screen corners of the poster area inside the theater frame.
+// Tweak live in the browser console, then call redraw():
+//   CORNERS[0] = top-left   CORNERS[1] = top-right
+//   CORNERS[2] = bottom-right  CORNERS[3] = bottom-left
+// Example: CORNERS[1].y = 80; redraw()
+const CORNERS = [
+  { x: 170, y: 100  },  // top-left
+  { x: 1120, y: 100 },  // top-right
+  { x: 1120, y: 1700 }, // bottom-right
+  { x: 170,  y: 1700 }, // bottom-left
+];
+window.CORNERS = CORNERS;
 
 function loadImageEl(src, crossOrigin = false) {
   return new Promise((resolve, reject) => {
@@ -69,7 +78,7 @@ function coverSourceRect(img, destW, destH) {
   return { sx, sy, sw, sh };
 }
 
-// Core drawing function — works on any canvas by ID
+// Core drawing function — clips poster to CORNERS polygon, then overlays theater frame
 async function drawToCanvas(canvasId, imageSrc, crossOrigin = true) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
@@ -83,8 +92,29 @@ async function drawToCanvas(canvasId, imageSrc, crossOrigin = true) {
     canvas.width  = theaterImg.naturalWidth;
     canvas.height = theaterImg.naturalHeight;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const { sx, sy, sw, sh } = coverSourceRect(posterImg, SCREEN.w, SCREEN.h);
-    ctx.drawImage(posterImg, sx, sy, sw, sh, SCREEN.x, SCREEN.y, SCREEN.w, SCREEN.h);
+
+    // Clip to the quadrilateral screen area
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(CORNERS[0].x, CORNERS[0].y);
+    ctx.lineTo(CORNERS[1].x, CORNERS[1].y);
+    ctx.lineTo(CORNERS[2].x, CORNERS[2].y);
+    ctx.lineTo(CORNERS[3].x, CORNERS[3].y);
+    ctx.closePath();
+    ctx.clip();
+
+    // Draw poster scaled to cover the bounding box of the clip region
+    const xs = CORNERS.map(c => c.x);
+    const ys = CORNERS.map(c => c.y);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const minY = Math.min(...ys), maxY = Math.max(...ys);
+    const bw = maxX - minX, bh = maxY - minY;
+    const { sx, sy, sw, sh } = coverSourceRect(posterImg, bw, bh);
+    ctx.drawImage(posterImg, sx, sy, sw, sh, minX, minY, bw, bh);
+
+    ctx.restore();
+
+    // Overlay the theater frame (transparent PNG) on top
     ctx.drawImage(theaterImg, 0, 0, canvas.width, canvas.height);
   } catch (err) {
     console.warn(`Canvas draw error on #${canvasId}:`, err);
@@ -127,14 +157,14 @@ function clearHasResults() {
   document.querySelector('.app').classList.remove('has-results');
 }
 
-// ---- Dev helper: call redraw() in console after tweaking window.SCREEN ----
+// ---- Dev helper: call redraw() in console after tweaking window.CORNERS ----
 window.redraw = function(url) {
   const src = url
     || document.getElementById('theater-canvas')?.dataset.posterSrc
     || 'https://picsum.photos/seed/poster/342/513';
   drawToCanvas('theater-canvas', src, true);
   drawToCanvas('mobile-theater-canvas', src, true);
-  console.log('SCREEN:', JSON.stringify(window.SCREEN));
+  console.log('CORNERS:', JSON.stringify(window.CORNERS));
 };
 
 // ---- DOM References ----
