@@ -755,6 +755,8 @@ button {
   .right-panel { order: 1; min-height: unset; }
   .left-panel  { order: 2; position: relative; height: auto; padding: 8px 0 40px; }
 
+  .theater-stage { justify-content: center; }
+
   .theater-canvas {
     width: 82%;
     max-width: 300px;
