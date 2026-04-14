@@ -98,15 +98,6 @@ function setCachedProviderList(data) {
   );
 }
 
-// --- View preference ---
-function getViewMode() {
-  return localStorage.getItem('streamfinder_view') || 'platform';
-}
-
-function setViewMode(mode) {
-  localStorage.setItem('streamfinder_view', mode);
-}
-
 // --- Country name helper ---
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
@@ -141,8 +132,6 @@ export {
   getProviderIdToNameMap,
   getCachedProviderList,
   setCachedProviderList,
-  getViewMode,
-  setViewMode,
   getCountryName,
   countryFlag,
 };

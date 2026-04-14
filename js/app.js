@@ -9,8 +9,6 @@ import {
   setSubscribedProviders,
   getSubscribedProviderIds,
   getProviderIdToNameMap,
-  getViewMode,
-  setViewMode,
   getCountryName,
   countryFlag,
   DEFAULT_PROVIDERS,
@@ -24,7 +22,6 @@ import {
   validateApiKey,
   getImageUrl,
   transformToPlatformView,
-  transformToCountryView,
 } from './tmdb.js';
 
 // ---- State ----
@@ -192,9 +189,6 @@ function attachListeners() {
   $('#settings-save').addEventListener('click', saveSettings);
   $('#settings-reset').addEventListener('click', resetToDefaults);
 
-  // View toggle
-  $('#view-toggle').addEventListener('click', toggleView);
-
   // Hash change
   window.addEventListener('hashchange', handleHashRoute);
 
@@ -357,7 +351,6 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '') {
       <p>Checking availability across all countries...</p>
     </div>
   `;
-  $('#view-toggle').classList.add('hidden');
 
   // Draw poster into canvases (hash route or direct call)
   if (posterPath) {
@@ -375,32 +368,13 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '') {
     const idToNameMap = getProviderIdToNameMap();
 
     const platformData = transformToPlatformView(results, subscribedIds, idToNameMap);
-    const countryData = transformToCountryView(results, subscribedIds, idToNameMap);
 
-    const hasPlatformResults = Object.keys(platformData).length > 0;
-
-    if (!hasPlatformResults) {
+    if (Object.keys(platformData).length === 0) {
       renderNoResults(title);
       return;
     }
 
-    // Show view toggle
-    $('#view-toggle').classList.remove('hidden');
-
-    // Store data for view switching
-    main.dataset.platformJson = JSON.stringify(platformData);
-    main.dataset.countryJson = JSON.stringify(countryData);
-    main.dataset.title = title;
-    main.dataset.posterPath = posterPath || '';
-
-    // Render current view
-    const viewMode = getViewMode();
-    updateViewToggleButton(viewMode);
-    if (viewMode === 'country') {
-      renderCountryView(countryData, platformData, title, posterPath);
-    } else {
-      renderPlatformView(platformData, title, posterPath);
-    }
+    renderPlatformView(platformData, title, posterPath);
   } catch (err) {
     console.error('Availability error:', err);
     main.innerHTML = `
@@ -469,64 +443,6 @@ function renderPlatformView(platformData, title, posterPath) {
   });
 }
 
-function renderCountryView(countryData, platformData, title, posterPath) {
-  const main = $('#results');
-  const subscribedProviders = getSubscribedProviders();
-
-  // Sort countries by number of platforms (most first), then alphabetically
-  const sortedCountries = Object.entries(countryData)
-    .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
-
-  // Collect all platform logos from platformData
-  const platformLogos = {};
-  for (const [name, data] of Object.entries(platformData)) {
-    platformLogos[name] = data.logo;
-  }
-
-  let html = `
-    <div class="result-header">
-      <h2 class="result-title">${escapeHtml(title)}</h2>
-      <p class="result-subtitle">Available in ${sortedCountries.length} ${sortedCountries.length === 1 ? 'country' : 'countries'}</p>
-    </div>
-    <div class="country-table-wrapper">
-      <table class="country-table">
-        <thead>
-          <tr>
-            <th class="country-table__country-col">Country</th>
-            ${subscribedProviders
-              .map(
-                (p) =>
-                  `<th class="country-table__platform-col">
-                    ${platformLogos[p.name] ? `<img class="table-platform-logo" src="${getImageUrl(platformLogos[p.name])}" alt="${escapeHtml(p.name)}" title="${escapeHtml(p.name)}">` : `<span title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</span>`}
-                  </th>`
-              )
-              .join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${sortedCountries
-            .map(
-              ([code, platforms]) => `
-            <tr>
-              <td class="country-cell">${countryFlag(code)} ${getCountryName(code)}</td>
-              ${subscribedProviders
-                .map(
-                  (p) =>
-                    `<td class="availability-cell">${platforms.includes(p.name) ? '<span class="check">&#10003;</span>' : '<span class="dash">&mdash;</span>'}</td>`
-                )
-                .join('')}
-            </tr>
-          `
-            )
-            .join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  main.innerHTML = html;
-}
-
 function renderNoResults(title) {
   const main = $('#results');
   main.innerHTML = `
@@ -535,33 +451,6 @@ function renderNoResults(title) {
       <p class="empty-hint">It may be available for rent or purchase, or on other platforms.</p>
     </div>
   `;
-}
-
-// ---- View Toggle ----
-
-function toggleView() {
-  const main = $('#results');
-  const current = getViewMode();
-  const next = current === 'platform' ? 'country' : 'platform';
-  setViewMode(next);
-  updateViewToggleButton(next);
-
-  // Re-render with stored data
-  const platformData = JSON.parse(main.dataset.platformJson || '{}');
-  const countryData = JSON.parse(main.dataset.countryJson || '{}');
-  const title = main.dataset.title || '';
-  const posterPath = main.dataset.posterPath || '';
-
-  if (next === 'country') {
-    renderCountryView(countryData, platformData, title, posterPath);
-  } else {
-    renderPlatformView(platformData, title, posterPath);
-  }
-}
-
-function updateViewToggleButton(mode) {
-  const btn = $('#view-toggle');
-  btn.textContent = mode === 'platform' ? 'Switch to Country View' : 'Switch to Platform View';
 }
 
 // ---- Hash Routing ----

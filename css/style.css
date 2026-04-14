@@ -288,29 +288,6 @@ button {
 
 /* ---- Controls ---- */
 
-.controls {
-  margin-bottom: 20px;
-}
-
-.view-toggle-btn {
-  padding: 6px 16px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-muted);
-  mix-blend-mode: multiply;
-  transition: all var(--transition);
-}
-.view-toggle-btn:hover {
-  background: var(--pill-bg);
-  color: var(--text);
-}
-.view-toggle-btn.hidden {
-  display: none;
-}
-
 /* ---- Result Title Header ---- */
 
 .result-header {
@@ -462,82 +439,6 @@ button {
 }
 
 /* ---- Country Table View ---- */
-
-.country-table-wrapper {
-  overflow-x: auto;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-}
-
-.country-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-}
-
-.country-table thead {
-  background: var(--card-bg);
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.country-table th {
-  padding: 12px 14px;
-  text-align: center;
-  font-weight: 600;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-  color: var(--text);
-}
-
-.country-table__country-col {
-  text-align: left !important;
-  min-width: 180px;
-}
-
-.country-table__platform-col {
-  min-width: 70px;
-}
-
-.table-platform-logo {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.country-table tbody tr {
-  transition: background var(--transition);
-}
-.country-table tbody tr:hover {
-  background: var(--pill-bg);
-}
-
-.country-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border-light);
-  color: var(--text);
-}
-
-.country-cell {
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-.availability-cell {
-  text-align: center;
-}
-
-.check {
-  color: var(--success);
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.dash {
-  color: var(--text-faint);
-}
 
 /* ---- Empty / Loading States ---- */
 
