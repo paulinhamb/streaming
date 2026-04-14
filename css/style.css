@@ -69,7 +69,6 @@ button {
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
   background: var(--bg);
-   justify-content: center !important;
 }
 
 /* ---- Left Panel: Theater ---- */
@@ -83,7 +82,7 @@ button {
   align-items: center;
   justify-content: flex-end;
   background: var(--bg);
-  padding: 48px 48px 80px;
+  padding: 48px 48px 48px;
 }
 
 .theater-stage {
