@@ -99,9 +99,8 @@ button {
 .theater-canvas {
   display: block;
   width: 85%;
-  max-width: 520px;
-  max-height: 560px;
-  aspect-ratio: 1217 / 1876; /* theater PNG dimensions — scales canvas correctly */
+  max-width: 363px; /* 560px height × (1217/1876) aspect ratio */
+  aspect-ratio: 1217 / 1876;
 }
 
 /* ---- Right Panel: Search + Results ---- */
