@@ -40,10 +40,10 @@ let cachedTheaterImage = null; // theater PNG loaded once and reused
 //   CORNERS[2] = bottom-right  CORNERS[3] = bottom-left
 // Example: CORNERS[1].y = 80; redraw()
 const CORNERS = [
-  { x: 170, y: 100  },  // top-left
-  { x: 1120, y: 100 },  // top-right
-  { x: 1120, y: 1700 }, // bottom-right
-  { x: 170,  y: 1700 }, // bottom-left
+  { x: 170,  y: 100  }, // top-left
+  { x: 1120, y: 150  }, // top-right
+  { x: 1120, y: 1650 }, // bottom-right
+  { x: 170,  y: 1850 }, // bottom-left
 ];
 window.CORNERS = CORNERS;
 
