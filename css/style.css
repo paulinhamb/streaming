@@ -97,7 +97,7 @@ button {
   display: block;
   width: 85%;
   max-width: 520px;
-  aspect-ratio: 1350 / 1912; /* theater PNG dimensions — scales canvas correctly */
+  aspect-ratio: 1217 / 1876; /* theater PNG dimensions — scales canvas correctly */
 }
 
 /* ---- Right Panel: Search + Results ---- */
@@ -569,7 +569,7 @@ button {
 }
 
 .mobile-theater-canvas {
-  aspect-ratio: 1350 / 1912;
+  aspect-ratio: 1217 / 1876;
 }
 
 .mobile-movie-info {

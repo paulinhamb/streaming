@@ -53,7 +53,7 @@ function loadImageEl(src, crossOrigin = false) {
 
 async function getTheaterImage() {
   if (cachedTheaterImage) return cachedTheaterImage;
-  cachedTheaterImage = await loadImageEl('assets/streaming_poster_transparent.png');
+  cachedTheaterImage = await loadImageEl('assets/new_poster_transparent.webp');
   return cachedTheaterImage;
 }
 
@@ -106,7 +106,7 @@ async function drawDefaultCanvas(canvasId = 'theater-canvas') {
   canvas.dataset.posterSrc = '';
   const ctx = canvas.getContext('2d');
   try {
-    const img = await loadImageEl('assets/streaming_poster_initial.png');
+    const img = await loadImageEl('assets/new_poster_initial.webp');
     canvas.width  = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
