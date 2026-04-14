@@ -82,7 +82,9 @@ button {
   align-items: center;
   justify-content: flex-end;
   background: var(--bg);
-  padding: 48px 48px 48px;
+  padding-top: 48px;
+   padding-bottom: 48px;
+   padding-right: calc(20px + 4vw);
 }
 
 .theater-stage {
@@ -91,7 +93,7 @@ button {
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
 }
 
 .theater-canvas {
