@@ -69,7 +69,7 @@ button {
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
   background: var(--bg);
-   justify-content: center;
+   justify-content: center !important;
 }
 
 /* ---- Left Panel: Theater ---- */
