@@ -341,6 +341,9 @@ button {
 .platform-card--empty .platform-card__header {
   cursor: default;
 }
+.platform-card--empty .platform-name {
+  opacity: 0.5;
+}
 
 /* Header is a full-width button */
 .platform-card__header {
