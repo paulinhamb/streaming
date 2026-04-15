@@ -325,7 +325,6 @@ button {
 .platform-card {
   border-radius: var(--radius);
   background: var(--card-bg);
-  mix-blend-mode: multiply;
   overflow: hidden;
   transition: background var(--transition);
 }
@@ -377,8 +376,7 @@ button {
   font-size: 0.9rem;
   font-weight: 500;
   flex: 1;
-  color: var(--text);
-  mix-blend-mode: multiply;
+  color: #625A50;
   letter-spacing: -0.08px;
   line-height: 1.2;
   white-space: nowrap;
@@ -389,11 +387,10 @@ button {
 .country-count {
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #625A50;
   background: var(--pill-bg);
   padding: 1px 7px;
   border-radius: var(--radius-pill);
-  mix-blend-mode: multiply;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -401,7 +398,7 @@ button {
 /* Chevron icon */
 .chevron {
   flex-shrink: 0;
-  color: var(--text-faint);
+  color: #625A50;
   transition: transform 0.25s ease;
 }
 .platform-card.open .chevron {
