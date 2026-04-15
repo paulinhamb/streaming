@@ -335,10 +335,12 @@ button {
 
 .platform-card--empty {
   background: var(--card-bg-empty);
-  opacity: 0.55;
 }
 .platform-card--empty:hover {
   background: var(--card-bg-empty);
+}
+.platform-card--empty .platform-card__header {
+  cursor: default;
 }
 
 /* Header is a full-width button */
@@ -366,6 +368,9 @@ button {
   border-radius: 7px;
   object-fit: cover;
   flex-shrink: 0;
+}
+.platform-logo--dim {
+  opacity: 0.4;
 }
 
 .platform-name {

@@ -436,15 +436,31 @@ function renderPlatformView(platformData, title, posterPath) {
     const hasCountries = data && data.countries.length > 0;
     const countLabel = hasCountries
       ? `${data.countries.length} ${data.countries.length === 1 ? 'country' : 'countries'}`
-      : '—';
+      : '';
+
+    // Logo: from results first, then fall back to allProvidersList
+    let logoSrc = null;
+    if (data?.logo) {
+      logoSrc = getImageUrl(data.logo);
+    } else if (allProvidersList) {
+      for (const id of provider.ids) {
+        if (allProvidersList[id]?.logoPath) {
+          logoSrc = getImageUrl(allProvidersList[id].logoPath);
+          break;
+        }
+      }
+    }
+
+    const logoHtml = logoSrc
+      ? `<img class="platform-logo${hasCountries ? '' : ' platform-logo--dim'}" src="${logoSrc}" alt="">`
+      : `<div class="platform-logo${hasCountries ? '' : ' platform-logo--dim'}" style="background:var(--pill-bg)"></div>`;
 
     html += `
       <div class="platform-card ${hasCountries ? '' : 'platform-card--empty'}">
-        <button class="platform-card__header">
-          ${data?.logo ? `<img class="platform-logo" src="${getImageUrl(data.logo)}" alt="">` : '<div class="platform-logo" style="background:var(--pill-bg)"></div>'}
+        <button class="platform-card__header" ${!hasCountries ? 'disabled' : ''}>
+          ${logoHtml}
           <span class="platform-name">${escapeHtml(provider.name)}</span>
-          <span class="country-count">${countLabel}</span>
-          ${CHEVRON_SVG}
+          ${hasCountries ? `<span class="country-count">${countLabel}</span>${CHEVRON_SVG}` : ''}
         </button>
         <div class="platform-card__body">
           ${
@@ -462,8 +478,8 @@ function renderPlatformView(platformData, title, posterPath) {
   html += '</div>';
   main.innerHTML = html;
 
-  // Accordion toggle — only one card open at a time
-  main.querySelectorAll('.platform-card__header').forEach(btn => {
+  // Accordion toggle — only cards with results
+  main.querySelectorAll('.platform-card:not(.platform-card--empty) .platform-card__header').forEach(btn => {
     btn.addEventListener('click', () => {
       const card = btn.closest('.platform-card');
       const isOpen = card.classList.contains('open');
