@@ -596,6 +596,7 @@ button {
 }
 .platform-row--unavailable .pr-cell--logo img {
   opacity: 0.5;
+   filter: saturate(0);
 }
 
 /* Cell 3 — Name (fills remaining space) */
