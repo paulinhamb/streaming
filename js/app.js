@@ -212,7 +212,7 @@ async function selectResult(result) {
   await loadAvailability(result.id, result.type, result.title, result.posterPath, result.year);
 }
 
-async function loadAvailability(id, mediaType, title, posterPath, year = '') {
+async function loadAvailability(id, mediaType, title, posterPath, year = '', runtime = null) {
   const area = $('#content-area');
   area.innerHTML = `
     <div class="loading-state">
@@ -222,12 +222,30 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '') {
   `;
 
   try {
-    const results = await getWatchProviders(id, mediaType);
+    // Fetch providers + movie details in parallel (details gives us runtime)
+    const [results, details] = await Promise.all([
+      getWatchProviders(id, mediaType),
+      runtime === null
+        ? fetch(`https://api.themoviedb.org/3/${mediaType}/${id}?api_key=${getApiKey()}`)
+            .then(r => r.json()).catch(() => null)
+        : Promise.resolve(null),
+    ]);
+
+    // Extract runtime if we fetched details
+    if (details && runtime === null) {
+      runtime = mediaType === 'movie'
+        ? (details.runtime || null)
+        : (details.episode_run_time?.[0] || null);
+      // Also improve year/posterPath if missing
+      if (!year) year = (mediaType === 'movie' ? details.release_date : details.first_air_date)?.split('-')[0] || '';
+      if (!posterPath) posterPath = details.poster_path || null;
+    }
+
     const subscribedIds = getSubscribedProviderIds();
     const idToNameMap = getProviderIdToNameMap();
     const platformData = transformToPlatformView(results, subscribedIds, idToNameMap);
 
-    renderResultsLayout(platformData, title, posterPath, year, mediaType);
+    renderResultsLayout(platformData, title, posterPath, year, mediaType, runtime);
   } catch (err) {
     console.error('Availability error:', err);
     area.innerHTML = `
@@ -244,10 +262,20 @@ const CHEVRON_SVG = `<svg class="row-chevron" width="16" height="16" viewBox="0 
   <path d="M3.5 5.5L8 10L12.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
-function renderResultsLayout(platformData, title, posterPath, year, mediaType) {
+function formatRuntime(minutes) {
+  if (!minutes) return null;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m}m`;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+}
+
+function renderResultsLayout(platformData, title, posterPath, year, mediaType, runtime = null) {
   const area = $('#content-area');
   const subscribedProviders = getSubscribedProviders();
 
+  // ---- Platform rows ----
   let rowsHtml = '';
   let hasAny = false;
 
@@ -301,31 +329,39 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType) {
     `;
   }
 
+  // ---- Left column: poster + info ----
   const posterHtml = posterPath
-    ? `<img class="movie-poster" src="${getImageUrl(posterPath, 'w342')}" alt="${escapeHtml(title)}">`
+    ? `<img class="movie-poster" src="${getImageUrl(posterPath, 'w500')}" alt="${escapeHtml(title)}">`
     : `<div class="movie-poster-placeholder"></div>`;
 
-  const typeLabel = mediaType === 'movie' ? 'Movie' : 'Series';
+  const runtimeStr = formatRuntime(runtime);
+
+  // Build info cells (only show cells that have data)
+  let infoCellsHtml = '';
+  if (year) infoCellsHtml += `
+    <div class="movie-info-cell">
+      <span class="movie-info-label">Release</span>
+      <span class="movie-info-value">${year}</span>
+    </div>`;
+  if (runtimeStr) infoCellsHtml += `
+    <div class="movie-info-cell">
+      <span class="movie-info-label">Runtime</span>
+      <span class="movie-info-value">${runtimeStr}</span>
+    </div>`;
 
   area.innerHTML = `
     <div class="results-layout">
+
       <div class="results-left">
-        <div class="movie-poster-wrap">
+        <div class="movie-title-section">
+          <h2 class="movie-title">${escapeHtml(title)}</h2>
+        </div>
+        ${infoCellsHtml ? `<div class="movie-info-row">${infoCellsHtml}</div>` : ''}
+        <div class="movie-poster-section">
           ${posterHtml}
         </div>
-        <div class="movie-info-wrap">
-          <span class="movie-type-badge">${typeLabel}</span>
-          <h2 class="movie-title">${escapeHtml(title)}</h2>
-          ${year ? `
-            <div class="movie-attrs">
-              <div class="movie-attr">
-                <span class="movie-attr-label">Release</span>
-                <span class="movie-attr-value">${year}</span>
-              </div>
-            </div>
-          ` : ''}
-        </div>
       </div>
+
       <div class="results-right">
         <p class="streaming-label">#Streaming Results</p>
         <div class="platform-rows">
@@ -336,6 +372,7 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType) {
           <p class="empty-results-hint">It may be available to rent or purchase, or on other platforms.</p>
         ` : ''}
       </div>
+
     </div>
   `;
 
@@ -370,9 +407,12 @@ async function handleHashRoute() {
     const title = mediaType === 'movie' ? data.title : data.name;
     const posterPath = data.poster_path;
     const year = (mediaType === 'movie' ? data.release_date : data.first_air_date)?.split('-')[0] || '';
+    const runtime = mediaType === 'movie'
+      ? (data.runtime || null)
+      : (data.episode_run_time?.[0] || null);
 
     $('#search-input').value = title || '';
-    await loadAvailability(parseInt(id), mediaType, title || 'Unknown', posterPath, year);
+    await loadAvailability(parseInt(id), mediaType, title || 'Unknown', posterPath, year, runtime);
   } catch (e) {
     console.error('Hash route error:', e);
   }

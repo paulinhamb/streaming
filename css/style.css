@@ -369,94 +369,103 @@ button {
 
 .results-layout {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 634px 1fr;
   min-height: calc(100vh - var(--header-height));
 }
 
+/* ---- Left Column ---- */
+
 .results-left {
-  border-right: 1px solid var(--border-light);
-  padding: 48px 36px;
+  border-right: 1px solid #121212;
   display: flex;
   flex-direction: column;
-  gap: 20px;
   position: sticky;
   top: var(--header-height);
   height: calc(100vh - var(--header-height));
   overflow-y: auto;
 }
 
-.movie-poster-wrap {
-  width: 100%;
+/* 1. Title section */
+.movie-title-section {
+  display: flex;
+  align-items: center;
+  padding: 10px 40px;
+  border-bottom: 1px solid #121212;
+  min-height: 140px;
+  flex-shrink: 0;
+}
+
+.movie-title {
+  font-size: clamp(32px, 4.2vw, 60px);
+  font-weight: 900; /* Satoshi Black */
+  line-height: 1;
+  letter-spacing: 0;
+  color: #121212;
+  text-align: left;
+  word-break: break-word;
+}
+
+/* 2. Info row */
+.movie-info-row {
+  display: flex;
+  height: 80px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #121212;
+}
+
+.movie-info-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 40px;
+  border-right: 1px solid #121212;
+}
+.movie-info-cell:last-child {
+  border-right: none;
+}
+
+.movie-info-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #939393;
+  letter-spacing: 0.04em; /* 4% */
+  line-height: 22px;
+}
+
+.movie-info-value {
+  font-size: 20px;
+  font-weight: 500;
+  color: #121212;
+  letter-spacing: -0.08px;
+  line-height: 22px;
+}
+
+/* 3. Poster section */
+.movie-poster-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 40px;
+  overflow: hidden;
 }
 
 .movie-poster {
   width: 100%;
+  max-width: 333px;
   height: auto;
+  aspect-ratio: 333 / 494;
+  object-fit: cover;
   display: block;
-  border-radius: 10px;
   background: var(--pill-bg);
 }
 .movie-poster-placeholder {
   width: 100%;
-  aspect-ratio: 2/3;
-  border-radius: 10px;
+  max-width: 333px;
+  aspect-ratio: 333 / 494;
   background: var(--pill-bg);
-}
-
-.movie-info-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.movie-type-badge {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-light);
-  color: var(--text-muted);
-}
-
-.movie-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-
-.movie-attrs {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 2px;
-}
-
-.movie-attr {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.movie-attr-label {
-  font-size: 0.67rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  min-width: 56px;
-}
-
-.movie-attr-value {
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text);
 }
 
 /* ---- Results Right ---- */
@@ -837,16 +846,13 @@ button {
 
 /* ---- Responsive ---- */
 
-@media (max-width: 1024px) {
+@media (max-width: 1280px) {
   .results-layout {
-    grid-template-columns: 260px 1fr;
-  }
-  .results-right {
-    padding: 48px 40px 80px;
+    grid-template-columns: min(634px, 44%) 1fr;
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .results-layout {
     grid-template-columns: 1fr;
   }
@@ -855,16 +861,24 @@ button {
     position: static;
     height: auto;
     border-right: none;
-    border-bottom: 1px solid var(--border-light);
-    padding: 28px 24px;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 20px;
+    border-bottom: 1px solid #121212;
   }
 
-  .movie-poster-wrap {
-    width: 110px;
-    flex-shrink: 0;
+  .movie-title-section {
+    min-height: auto;
+    padding: 20px 24px;
+  }
+
+  .movie-title {
+    font-size: clamp(28px, 6vw, 48px);
+  }
+
+  .movie-info-cell {
+    padding: 12px 24px;
+  }
+
+  .movie-poster-section {
+    padding: 20px 24px;
   }
 
   .results-right {
