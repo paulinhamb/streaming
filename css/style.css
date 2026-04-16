@@ -454,7 +454,7 @@ button {
 
 .movie-poster {
   width: 100%;
-  max-width: 333px;
+  /*max-width: 333px;*/
   height: auto;
   aspect-ratio: 333 / 494;
   object-fit: cover;
