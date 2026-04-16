@@ -570,6 +570,7 @@ button {
 }
 .availability-dot--on {
   background: #13f13b;
+   filter: drop-shadow(0 0 10px rgba(19, 241, 59, 0.70));
 }
 .availability-dot--off {
   background: transparent;
@@ -678,7 +679,7 @@ button {
   font-size: 13px;
   font-weight: 500;
   color: #ffffff;
-  border-right: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
   border-bottom: 1px solid #ffffff;
   padding: 0 6px;
   white-space: nowrap;
