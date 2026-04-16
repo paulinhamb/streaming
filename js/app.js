@@ -258,9 +258,29 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '', run
 
 // ---- Render Results ----
 
-const CHEVRON_SVG = `<svg class="row-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
-  <path d="M3.5 5.5L8 10L12.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+const CHEVRON_SVG = `<svg class="row-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
+
+// Scales .movie-title down until it fits inside .movie-title-section (max 340px)
+function fitTitleText() {
+  const section = document.querySelector('.movie-title-section');
+  const title   = document.querySelector('.movie-title');
+  if (!section || !title) return;
+
+  const MAX_HEIGHT = 340;
+  const MAX_SIZE   = 60;
+  const MIN_SIZE   = 18;
+
+  // Always start from the maximum so short titles stay large
+  title.style.fontSize = MAX_SIZE + 'px';
+
+  let size = MAX_SIZE;
+  while (section.scrollHeight > MAX_HEIGHT && size > MIN_SIZE) {
+    size -= 1;
+    title.style.fontSize = size + 'px';
+  }
+}
 
 function formatRuntime(minutes) {
   if (!minutes) return null;
@@ -302,27 +322,37 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType, r
     }
 
     const logoHtml = logoSrc
-      ? `<img class="platform-row-logo" src="${logoSrc}" alt="">`
-      : `<div class="platform-row-logo platform-row-logo--placeholder"></div>`;
+      ? `<img src="${logoSrc}" alt="">`
+      : `<div class="logo-placeholder"></div>`;
 
     const dotClass = hasCountries ? 'availability-dot--on' : 'availability-dot--off';
     const rowClass = hasCountries ? 'platform-row--available' : 'platform-row--unavailable';
 
+    // Country grid cells
+    const countryGridHtml = hasCountries
+      ? data.countries.map(code =>
+          `<span class="country-cell" title="${getCountryName(code)}">${countryFlag(code)} ${code}</span>`
+        ).join('')
+      : '';
+
     rowsHtml += `
       <div class="platform-row ${rowClass}">
         <button class="platform-row__header" ${!hasCountries ? 'disabled' : ''}>
-          <span class="availability-dot ${dotClass}"></span>
-          ${logoHtml}
-          <span class="platform-row-name">${escapeHtml(provider.name)}</span>
-          ${hasCountries ? `<span class="platform-row-count">${countLabel}</span>${CHEVRON_SVG}` : ''}
+          <span class="pr-cell pr-cell--dot">
+            <span class="availability-dot ${dotClass}"></span>
+          </span>
+          <span class="pr-cell pr-cell--logo">
+            ${logoHtml}
+          </span>
+          <span class="pr-cell pr-cell--name">${escapeHtml(provider.name)}</span>
+          <span class="pr-cell pr-cell--count">${hasCountries ? countLabel : '—'}</span>
+          <span class="pr-cell pr-cell--chevron">
+            ${hasCountries ? CHEVRON_SVG : ''}
+          </span>
         </button>
         ${hasCountries ? `
           <div class="platform-row__body">
-            <div class="country-pills">
-              ${data.countries.map(code =>
-                `<span class="country-pill" title="${getCountryName(code)}">${countryFlag(code)} ${code}</span>`
-              ).join('')}
-            </div>
+            <div class="country-grid">${countryGridHtml}</div>
           </div>
         ` : ''}
       </div>
@@ -363,18 +393,21 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType, r
       </div>
 
       <div class="results-right">
-        <p class="streaming-label">#Streaming Results</p>
+        <p class="streaming-label">#STREAMING RESULTS</p>
         <div class="platform-rows">
           ${rowsHtml}
         </div>
         ${!hasAny ? `
           <p class="empty-results">Not available on any of your streaming subscriptions in any country.</p>
-          <p class="empty-results-hint">It may be available to rent or purchase, or on other platforms.</p>
+          <p class="empty-results-hint">It may be available to rent or purchase, or on other platforms not tracked here.</p>
         ` : ''}
       </div>
 
     </div>
   `;
+
+  // Scale title to fit within max-height 340px
+  fitTitleText();
 
   // Accordion toggle for available rows
   area.querySelectorAll('.platform-row--available .platform-row__header').forEach(btn => {
