@@ -20,7 +20,7 @@ const DEFAULT_PROVIDERS = [
 
 // --- API Key ---
 function getApiKey() {
-  return localStorage.getItem('streamfinder_api_key') || '';
+  return localStorage.getItem('c7cc2312d7954629d0bce9f21f57edc6') || '';
 }
 
 function setApiKey(key) {
