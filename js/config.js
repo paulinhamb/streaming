@@ -19,8 +19,10 @@ const DEFAULT_PROVIDERS = [
 ];
 
 // --- API Key ---
+const HARDCODED_API_KEY = 'c7cc2312d7954629d0bce9f21f57edc6';
+
 function getApiKey() {
-  return localStorage.getItem('c7cc2312d7954629d0bce9f21f57edc6') || '';
+  return localStorage.getItem('streamfinder_api_key') || HARDCODED_API_KEY;
 }
 
 function setApiKey(key) {
