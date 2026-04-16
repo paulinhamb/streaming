@@ -30,7 +30,7 @@
   --radius-pill: 100px;
   --shadow: 0 8px 40px rgba(0, 0, 0, 0.14);
   --transition: 150ms ease;
-  --header-height: 72px;
+  --header-height: 62px;
 }
 
 /* ---- Reset & Base ---- */
@@ -85,89 +85,101 @@ button {
   position: sticky;
   top: 0;
   z-index: 200;
-  background: var(--header-bg);
+  background: var(--bg); /* white — no fill in Figma */
   height: var(--header-height);
   flex-shrink: 0;
+  display: flex;
+  border-bottom: 1px solid var(--border);
 }
 
-.header-inner {
+/* Left: dark logo section */
+.header-logo-section {
+  width: 209px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 20px;
-  height: 100%;
-  padding: 0 32px;
+  justify-content: center;
+  padding: 10px 40px;
+  background: #121212;
+  border-right: 1px solid #121212;
 }
 
 .header-logo {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.04em; /* 4% from Figma */
   text-transform: uppercase;
-  color: var(--header-text);
-  padding: 7px 16px;
-  border: 1.5px solid rgba(255, 255, 255, 0.28);
-  border-radius: var(--radius-pill);
+  color: #FFFFFF;
   white-space: nowrap;
-  flex-shrink: 0;
   user-select: none;
+  line-height: 1;
 }
 
-.search-wrap {
+/* Center: search section fills remaining width */
+.header-search-section {
   flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  padding: 10px 11px;
+  border-right: 1px solid var(--border);
+  position: relative;
 }
 
 /* ---- Search Box ---- */
 
 .search-box {
   position: relative;
+  width: 100%;
 }
 
 .search-icon {
   position: absolute;
-  left: 14px;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.45);
+  color: #727272;
   pointer-events: none;
+  flex-shrink: 0;
 }
 
 #search-input {
   width: 100%;
-  padding: 10px 16px 10px 40px;
-  font-size: 0.93rem;
+  padding: 0 16px 0 28px;
+  font-size: 17px;
   font-family: inherit;
   font-weight: 400;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  border-radius: var(--radius-pill);
-  color: var(--header-text);
+  background: transparent;
+  border: none;
+  color: #121212;
   outline: none;
-  transition: background var(--transition), border-color var(--transition);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.08px;
+  line-height: 22px;
+  height: 42px;
 }
 #search-input::placeholder {
-  color: rgba(255, 255, 255, 0.38);
-}
-#search-input:focus {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.38);
+  color: #727272;
 }
 
-.header-icon-btn {
-  width: 40px;
-  height: 40px;
+/* Right: gear icon section */
+.header-gear-section {
+  width: 80px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  color: rgba(255, 255, 255, 0.55);
-  transition: color var(--transition), background var(--transition);
-  flex-shrink: 0;
+  padding: 10px 11px;
+}
+
+.header-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #121212;
+  transition: opacity var(--transition);
 }
 .header-icon-btn:hover {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.5;
 }
 
 /* Settings modal close btn */
@@ -870,19 +882,13 @@ button {
 }
 
 @media (max-width: 600px) {
-  :root {
-    --header-height: 60px;
-  }
-
-  .header-inner {
-    padding: 0 16px;
-    gap: 10px;
+  .header-logo-section {
+    width: auto;
+    padding: 10px 20px;
   }
 
   .header-logo {
-    font-size: 10px;
-    padding: 6px 12px;
-    letter-spacing: 0.12em;
+    font-size: 13px;
   }
 
   .welcome-state {

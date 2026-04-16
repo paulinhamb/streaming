@@ -78,8 +78,8 @@ function attachListeners() {
   // Close dropdown on outside click
   document.addEventListener('click', (e) => {
     const dropdown = $('#search-dropdown');
-    const searchBox = $('.search-box');
-    if (dropdown && searchBox && !searchBox.contains(e.target)) {
+    const searchSection = $('.header-search-section');
+    if (dropdown && searchSection && !searchSection.contains(e.target)) {
       dropdown.classList.add('hidden');
     }
   });
