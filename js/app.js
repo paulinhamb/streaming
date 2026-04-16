@@ -14,7 +14,7 @@ import {
   countryFlag,
   DEFAULT_PROVIDERS,
   resetProviders,
-} from './config.js';
+} from './config.js?v=2';
 
 import {
   searchMulti,

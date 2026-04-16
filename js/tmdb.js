@@ -8,7 +8,7 @@ import {
   getApiKey,
   getCachedProviderList,
   setCachedProviderList,
-} from './config.js';
+} from './config.js?v=2';
 
 // --- Helpers ---
 
