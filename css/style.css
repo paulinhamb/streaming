@@ -113,7 +113,9 @@ button {
   white-space: nowrap;
   user-select: none;
   line-height: 1;
+  text-decoration: none;
 }
+.header-logo:hover { opacity: 0.7; }
 
 /* Center: search section fills remaining width */
 .header-search-section {

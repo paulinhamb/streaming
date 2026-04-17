@@ -227,6 +227,14 @@ function attachListeners() {
     }
   });
 
+  document.querySelector('.header-logo').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.replaceState(null, '', '/');
+    $('#search-input').value = '';
+    hideDropdown();
+    renderWelcomeState();
+  });
+
   $('#settings-btn').addEventListener('click', showSettings);
   $('#settings-close').addEventListener('click', closeSettings);
   $('#settings-save').addEventListener('click', saveSettings);
