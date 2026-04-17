@@ -527,6 +527,9 @@ button {
   text-align: left;
   cursor: pointer;
   padding: 0;
+  transition:
+    background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    color      0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .platform-row--unavailable .platform-row__header {
   cursor: default;
@@ -546,6 +549,9 @@ button {
   height: 60px;
   flex-shrink: 0;
   border-right: 1px solid #121212;
+  transition:
+    border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    color        0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .platform-row.open .pr-cell {
   border-right-color: #ffffff;
@@ -593,13 +599,13 @@ button {
   background: rgba(0, 0, 0, 0.06);
 }
 .platform-row--unavailable .pr-cell--logo img {
-  opacity: 0.5;
   filter: saturate(0);
 }
 
 /* Cell 3 — Name (fills remaining space) */
 .pr-cell--name {
-  flex: 1;
+  flex: 1 1 0;    /* 0 base forces it to actually shrink below content width */
+  min-width: 0;   /* flex items default to min-width:auto (content size) — this overrides */
   justify-content: flex-start;
   padding: 0 16px;
   font-size: 16px;
@@ -647,7 +653,7 @@ button {
 
 .row-chevron {
   flex-shrink: 0;
-  transition: transform 0.25s ease;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .platform-row.open .row-chevron {
   transform: rotate(180deg);
@@ -656,19 +662,25 @@ button {
 /* ---- Row Body (country grid) ---- */
 
 .platform-row__body {
-  display: none;
+  display: grid;
+  grid-template-rows: 0fr;        /* collapsed — animates to 1fr when open */
   background: #121212;
-  border-top: 1px solid #ffffff;
-  /* border-bottom handled by .country-grid::after to avoid box-model step */
+  border-top: 1px solid transparent;
+  transition:
+    grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+    border-top-color   0.2s  cubic-bezier(0.4, 0, 0.2, 1);
 }
 .platform-row.open .platform-row__body {
-  display: block;
+  grid-template-rows: 1fr;
+  border-top-color: #ffffff;
 }
 
 .country-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(101px, 1fr));
   position: relative;
+  overflow: hidden; /* required: clips content during 0fr collapse */
+  min-height: 0;   /* required: allows grid track to shrink to 0 */
 }
 
 /* Full-width bottom line — overlaps last row's border-bottom exactly,
@@ -971,17 +983,38 @@ button {
     max-width: 160px;
   }
 
-  .results-left {
-    flex-direction: column;
-    padding: 20px 20px;
+  /* Platform row cells — shrink fixed widths so rows fit on 390px screens.
+     Fixed total goes from 300px → 208px, leaving ~182px for the name.
+     Using .platform-row parent for specificity (0,2,0) > base (0,1,0). */
+  .platform-row .pr-cell--dot,
+  .platform-row .pr-cell--logo {
+    width: 44px;
+    height: 44px;
   }
 
-  .movie-poster-wrap {
-    width: 100%;
-    max-width: 180px;
+  .platform-row .pr-cell--count {
+    width: 80px;
+    font-size: 12px;
   }
 
-  .results-right {
-    padding: 24px 20px 48px;
+  .platform-row .pr-cell--chevron {
+    width: 40px;
+  }
+
+  .platform-row .pr-cell--name {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+
+  .platform-row .platform-row__header {
+    height: 44px;
+  }
+
+  .platform-row .pr-cell {
+    height: 44px;
+  }
+
+  .country-cell {
+    font-size: 11px;
   }
 }
