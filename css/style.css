@@ -342,6 +342,9 @@ button {
   cursor: grab;
   flex-shrink: 0;
   user-select: none;
+  /* Single shared vanishing point for all 3 layers */
+  perspective: 900px;
+  perspective-origin: 50% 50%;
 }
 .poster-stack:active { cursor: grabbing; }
 

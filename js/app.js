@@ -142,43 +142,96 @@ function updateWelcomePosterImages(animate) {
   }
 }
 
-// Wire parallax (rAF smooth-follow) and drag-to-switch interactions
+// Wire spring-physics 3D tilt and drag-to-switch interactions
 function setupWelcomeInteractions() {
   const state = document.getElementById('welcome-state');
   const stack = document.getElementById('poster-stack');
   if (!state || !stack) return;
 
-  // Layer config: depth controls parallax intensity; base is static offset from Figma
+  // ── Spring physics config per layer ──────────────────────────────────────
+  // Each card has a different spring constant + damping so they settle at
+  // different speeds — the front card snaps (light/close), the back lags (heavy/far).
+  //
+  //   springK  : stiffness   — higher = snappier response
+  //   damping  : energy loss — lower  = more overshoot/wobble before settling
+  //
+  // base = stacking offset from Figma (keeps the layered composition)
+  // ─────────────────────────────────────────────────────────────────────────
   const LAYERS = [
-    { sel: '.poster-layer--back',  depth: 0.25, base: { x: -13, y: -18 } },
-    { sel: '.poster-layer--mid',   depth: 0.55, base: { x:   0, y:   0 } },
-    { sel: '.poster-layer--front', depth: 1.0,  base: { x:  25, y: -35 } },
-  ].map(cfg => ({ ...cfg, el: document.querySelector(cfg.sel) }));
+    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.030, damping: 0.82 },
+    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.055, damping: 0.75 },
+    { sel: '.poster-layer--front', base: { x:  25, y: -35 }, springK: 0.085, damping: 0.66 },
+  ].map(cfg => ({
+    ...cfg,
+    el: document.querySelector(cfg.sel),
+    // Independent spring state per axis per layer
+    rx: { pos: 0, vel: 0 },
+    ry: { pos: 0, vel: 0 },
+  }));
 
-  // --- Smooth parallax via rAF lerp ---
-  let targetX = 0, targetY = 0;
-  let curX = 0, curY = 0;
+  // Max tilt angles (degrees) driven by cursor position
+  const MAX_RX = 12; // up / down
+  const MAX_RY = 18; // left / right
+
+  // Shared rotation target — all layers aim for the same angle,
+  // their different spring constants make them arrive at different speeds
+  let targetRX = 0;
+  let targetRY = 0;
+
+  // Entry animation: start tilted so the springs visibly settle on load
+  LAYERS.forEach(l => { l.rx.pos = 38; l.ry.pos = -22; });
+
+  // ── Spring step helper ────────────────────────────────────────────────────
+  function springStep(axis, target, k, damp) {
+    axis.vel += (target - axis.pos) * k;
+    axis.vel *= damp;
+    axis.pos += axis.vel;
+  }
+
+  // ── rAF loop ──────────────────────────────────────────────────────────────
   let rafId = null;
 
   function tick() {
-    curX += (targetX - curX) * 0.08;
-    curY += (targetY - curY) * 0.08;
-    for (const { el, depth, base } of LAYERS) {
-      if (!el) continue;
-      el.style.transform = `translate(${base.x + curX * depth * 38}px, ${base.y + curY * depth * 38}px)`;
+    for (const layer of LAYERS) {
+      if (!layer.el) continue;
+
+      springStep(layer.rx, targetRX, layer.springK, layer.damping);
+      springStep(layer.ry, targetRY, layer.springK, layer.damping);
+
+      // translate() first positions the card in the stack,
+      // then rotateX/Y tilts it in 3D around its own centre.
+      // perspective() is on the parent (.poster-stack) for a shared vanishing point.
+      layer.el.style.transform = `
+        translate(${layer.base.x}px, ${layer.base.y}px)
+        rotateX(${layer.rx.pos}deg)
+        rotateY(${layer.ry.pos}deg)
+      `;
     }
     rafId = requestAnimationFrame(tick);
   }
   rafId = requestAnimationFrame(tick);
 
+  // ── Mouse handlers ────────────────────────────────────────────────────────
   function onMouseMove(e) {
     const rect = state.getBoundingClientRect();
-    targetX = (e.clientX - rect.left  - rect.width  / 2) / rect.width;
-    targetY = (e.clientY - rect.top   - rect.height / 2) / rect.height;
+    // Normalise to -1 … +1 relative to screen centre
+    const nx = (e.clientX - rect.left  - rect.width  / 2) / (rect.width  / 2);
+    const ny = (e.clientY - rect.top   - rect.height / 2) / (rect.height / 2);
+    // Mouse above centre → top of card tilts toward viewer (positive RX)
+    targetRX = -ny * MAX_RX;
+    targetRY =  nx * MAX_RY;
   }
-  state.addEventListener('mousemove', onMouseMove);
 
-  // --- Drag / swipe to switch posters ---
+  function onMouseLeave() {
+    // Spring back to flat
+    targetRX = 0;
+    targetRY = 0;
+  }
+
+  state.addEventListener('mousemove', onMouseMove);
+  state.addEventListener('mouseleave', onMouseLeave);
+
+  // ── Drag / swipe to switch posters ───────────────────────────────────────
   let dragStartX = null;
 
   function onPointerDown(e) {
@@ -194,6 +247,8 @@ function setupWelcomeInteractions() {
     welcomePosterIndex = delta < 0
       ? (welcomePosterIndex + 1) % n
       : (welcomePosterIndex - 1 + n) % n;
+    // Give the springs a flick in the drag direction for physical feedback
+    LAYERS.forEach(l => { l.ry.vel += delta < 0 ? -4 : 4; });
     updateWelcomePosterImages(true);
   }
 
@@ -202,10 +257,11 @@ function setupWelcomeInteractions() {
   window.addEventListener('mouseup', onPointerUp);
   window.addEventListener('touchend', onPointerUp);
 
-  // Store cleanup so we can tear down when navigating away
+  // ── Cleanup ───────────────────────────────────────────────────────────────
   welcomeCleanup = () => {
     cancelAnimationFrame(rafId);
     state.removeEventListener('mousemove', onMouseMove);
+    state.removeEventListener('mouseleave', onMouseLeave);
     stack.removeEventListener('mousedown', onPointerDown);
     stack.removeEventListener('touchstart', onPointerDown);
     window.removeEventListener('mouseup', onPointerUp);
