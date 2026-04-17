@@ -162,9 +162,9 @@ function setupWelcomeInteractions() {
   //  Front → slides in from the BOTTOM (entryDelay 8 — ~133ms later)
   // ─────────────────────────────────────────────────────────────────────────
   const LAYERS = [
-    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.095, damping: 0.95, entryDelay: 2, entry: { axis: 'x', start: -90 } },
-    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.075, damping: 0.5, entryDelay: 8, entry: { axis: 'x', start:  90 } },
-    { sel: '.poster-layer--front', base: { x:  25, y: 35 }, springK: 0.55, damping: 0.0, entryDelay: 12, entry: { axis: 'y', start:  90 } },
+    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.095, damping: 0.5, entryDelay: 2, entry: { axis: 'x', start: -90 } },
+    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.075, damping: 0.5, entryDelay: 6, entry: { axis: 'x', start:  90 } },
+    { sel: '.poster-layer--front', base: { x:  25, y: 35 }, springK: 0.55, damping: 0.5, entryDelay: 10, entry: { axis: 'y', start:  90 } },
   ].map(cfg => ({
     ...cfg,
     el: document.querySelector(cfg.sel),
@@ -178,8 +178,8 @@ function setupWelcomeInteractions() {
   LAYERS.forEach(l => { if (l.el) l.el.style.opacity = '0'; });
 
   // Max tilt angles (degrees)
-  const MAX_RX = 12;
-  const MAX_RY = 18;
+  const MAX_RX = 25;
+  const MAX_RY = 25;
 
   let targetRX = 0;
   let targetRY = 0;
