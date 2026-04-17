@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "streamfinder",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/Users/paulabethonico/Streaming/serve.py", "8080"],
+      "port": 8080
+    }
+  ]
+}

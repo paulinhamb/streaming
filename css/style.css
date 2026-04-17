@@ -569,7 +569,6 @@ button {
 }
 .availability-dot--on {
   background: #13f13b;
-   filter: drop-shadow(0 0 10px rgba(19, 241, 59, 0.70));
 }
 .availability-dot--off {
   background: transparent;
@@ -595,7 +594,6 @@ button {
 }
 .platform-row--unavailable .pr-cell--logo img {
   opacity: 0.5;
-   filter: saturate(0);
 }
 
 /* Cell 3 — Name (fills remaining space) */
@@ -660,7 +658,7 @@ button {
   display: none;
   background: #121212;
   border-top: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff; /* spans full width even when last row is incomplete */
+  /* border-bottom handled by .country-grid::after to avoid box-model step */
 }
 .platform-row.open .platform-row__body {
   display: block;
@@ -669,6 +667,20 @@ button {
 .country-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(101px, 1fr));
+  position: relative;
+}
+
+/* Full-width bottom line — overlaps last row's border-bottom exactly,
+   and extends across empty grid areas in incomplete rows */
+.country-grid::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ffffff;
+  pointer-events: none;
 }
 
 .country-cell {
@@ -680,7 +692,7 @@ button {
   font-size: 13px;
   font-weight: 500;
   color: #ffffff;
-  border-left: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
   border-bottom: 1px solid #ffffff;
   padding: 0 6px;
   white-space: nowrap;
