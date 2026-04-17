@@ -153,24 +153,28 @@ function setupWelcomeInteractions() {
   //  base        : stacking offset from Figma
   //  springK     : tilt stiffness  — higher = snappier hover response
   //  damping     : energy loss     — lower  = more overshoot / wobble
-  //  entryDelay  : frames to wait before this card starts its entrance
-  //                (≈16ms/frame at 60fps → 0 / 5 / 10 ≈ 0 / 83 / 166ms)
-  //                Back enters first, then mid, then front on top.
+  //  entryDelay  : frames before this card's entrance begins (≈16ms/frame at 60fps)
+  //  entry.axis  : which axis the card enters from ('x' or 'y')
+  //  entry.start : initial offset in px (negative = from left, positive = from right/bottom)
+  //
+  //  Back  → slides in from the LEFT   (entryDelay 0 — first)
+  //  Mid   → slides in from the RIGHT  (entryDelay 4 — ~67ms later)
+  //  Front → slides in from the BOTTOM (entryDelay 8 — ~133ms later)
   // ─────────────────────────────────────────────────────────────────────────
   const LAYERS = [
-    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.030, damping: 0.82, entryDelay:  0 },
-    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.055, damping: 0.75, entryDelay:  6 },
-    { sel: '.poster-layer--front', base: { x:  25, y: -35 }, springK: 0.085, damping: 0.66, entryDelay: 12 },
+    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.030, damping: 0.82, entryDelay: 0, entry: { axis: 'x', start: -90 } },
+    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.055, damping: 0.75, entryDelay: 4, entry: { axis: 'x', start:  90 } },
+    { sel: '.poster-layer--front', base: { x:  25, y: -35 }, springK: 0.085, damping: 0.66, entryDelay: 8, entry: { axis: 'y', start:  80 } },
   ].map(cfg => ({
     ...cfg,
     el: document.querySelector(cfg.sel),
-    rx: { pos: 0, vel: 0 },          // tilt around X (up / down)
-    ry: { pos: 0, vel: 0 },          // tilt around Y (left / right)
-    ty: { pos: 72, vel: 0 },         // entry: starts 72px below, springs to 0
-    entered: false,                   // flips true once ty has settled
+    rx: { pos: 0, vel: 0 },    // tilt around X (up / down)
+    ry: { pos: 0, vel: 0 },    // tilt around Y (left / right)
+    eOff: { pos: cfg.entry.start, vel: 0 }, // entry spring offset, springs to 0
+    entered: false,
   }));
 
-  // Hide all layers immediately; the entry spring will fade them in
+  // Hide all layers immediately; entry spring fades them in
   LAYERS.forEach(l => { if (l.el) l.el.style.opacity = '0'; });
 
   // Max tilt angles (degrees)
@@ -197,38 +201,43 @@ function setupWelcomeInteractions() {
     for (const layer of LAYERS) {
       if (!layer.el) continue;
 
-      // ── Entrance: slide up from below + fade in ──────────────────────────
+      // ── Entrance: slide in from direction + fast fade ────────────────────
       if (!layer.entered) {
         if (frame < layer.entryDelay) {
-          // Card hasn't started yet — keep hidden below
-          layer.el.style.transform =
-            `translate(${layer.base.x}px, ${layer.base.y + layer.ty.pos}px)`;
-          continue; // skip tilt until entry begins
+          // Not yet — park the card at its off-screen start position, invisible
+          const ex = layer.entry.axis === 'x' ? layer.base.x + layer.eOff.pos : layer.base.x;
+          const ey = layer.entry.axis === 'y' ? layer.base.y + layer.eOff.pos : layer.base.y;
+          layer.el.style.transform = `translate(${ex}px, ${ey}px)`;
+          continue;
         }
 
-        // Spring ty → 0  (entry Y offset, Apple-style ease-out — high damp = no overshoot)
-        springStep(layer.ty, 0, 0.09, 0.88);
+        // Spring eOff → 0  (k=0.12 damp=0.88: fast, clean, no visible overshoot)
+        springStep(layer.eOff, 0, 0.12, 0.88);
 
-        // Opacity: fully visible once ty is 30px from rest (faster than motion)
-        const progress = Math.max(0, 1 - layer.ty.pos / 45);
-        layer.el.style.opacity = Math.min(1, progress).toFixed(3);
+        // Opacity fades in quickly — reaches 1 when 55% of travel is covered
+        const absStart = Math.abs(layer.entry.start);
+        const progress  = (absStart - Math.abs(layer.eOff.pos)) / (absStart * 0.55);
+        layer.el.style.opacity = Math.min(1, Math.max(0, progress)).toFixed(3);
 
-        if (Math.abs(layer.ty.pos) < 0.4 && Math.abs(layer.ty.vel) < 0.2) {
-          layer.ty.pos = 0;
-          layer.ty.vel = 0;
-          layer.entered = true;
+        if (Math.abs(layer.eOff.pos) < 0.5 && Math.abs(layer.eOff.vel) < 0.15) {
+          layer.eOff.pos = 0;
+          layer.eOff.vel = 0;
+          layer.entered  = true;
           layer.el.style.opacity = '1';
         }
       }
 
-      // ── Hover tilt (runs once entry has started) ─────────────────────────
+      // ── Hover tilt (runs as soon as entry has begun) ──────────────────────
       if (frame >= layer.entryDelay) {
         springStep(layer.rx, targetRX, layer.springK, layer.damping);
         springStep(layer.ry, targetRY, layer.springK, layer.damping);
       }
 
+      // Combine entry offset with base position and tilt
+      const entryX = layer.entry.axis === 'x' ? layer.eOff.pos : 0;
+      const entryY = layer.entry.axis === 'y' ? layer.eOff.pos : 0;
       layer.el.style.transform = `
-        translate(${layer.base.x}px, ${layer.base.y + layer.ty.pos}px)
+        translate(${layer.base.x + entryX}px, ${layer.base.y + entryY}px)
         rotateX(${layer.rx.pos}deg)
         rotateY(${layer.ry.pos}deg)
       `;

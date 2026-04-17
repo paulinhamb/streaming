@@ -315,11 +315,10 @@ button {
   justify-content: center;
 }
 
-/* Subtitle — sits just above the poster stack regardless of viewport height.
-   calc(50% - 331px) = poster top edge; subtract 36px to put subtitle above it. */
+/* Subtitle — fixed 40px from the top of the content area, always above the poster stack */
 .hero-subtitle {
   position: absolute;
-  top: max(14px, calc(50% - 367px));
+  top: 40px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 14px;
@@ -1032,7 +1031,7 @@ button {
   .hero-subtitle {
     white-space: normal;
     padding: 0 32px;
-    top: 7%;
+    /* top: 40px inherited from base — no override needed */
   }
 
   /* Platform row cells — shrink fixed widths so rows fit on 390px screens.
