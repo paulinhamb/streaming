@@ -464,7 +464,6 @@ button {
 }
 .movie-poster-placeholder {
   width: 100%;
-  max-width: 333px;
   aspect-ratio: 333 / 494;
   background: var(--pill-bg);
 }
