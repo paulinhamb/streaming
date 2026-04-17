@@ -665,14 +665,20 @@ button {
   display: grid;
   grid-template-rows: 0fr;        /* collapsed — animates to 1fr when open */
   background: #121212;
-  border-top: 1px solid transparent;
-  transition:
-    grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1),
-    border-top-color   0.2s  cubic-bezier(0.4, 0, 0.2, 1);
+  /* no border-top here — it added 1px height even when collapsed,
+     causing a double/bolder border on available rows */
+  transition: grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .platform-row.open .platform-row__body {
   grid-template-rows: 1fr;
-  border-top-color: #ffffff;
+}
+
+/* Separator line between header and country grid when open.
+   Uses box-shadow (zero layout impact) to avoid any double-border effect. */
+.platform-row.open .platform-row__header {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 0 0 #ffffff;
 }
 
 .country-grid {
