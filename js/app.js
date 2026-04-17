@@ -206,8 +206,8 @@ function setupWelcomeInteractions() {
           continue; // skip tilt until entry begins
         }
 
-        // Spring ty → 0  (entry Y offset, Apple-style ease-out feel)
-        springStep(layer.ty, 0, 0.10, 0.80);
+        // Spring ty → 0  (entry Y offset, Apple-style ease-out — high damp = no overshoot)
+        springStep(layer.ty, 0, 0.09, 0.88);
 
         // Opacity: fully visible once ty is 30px from rest (faster than motion)
         const progress = Math.max(0, 1 - layer.ty.pos / 45);
