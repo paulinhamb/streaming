@@ -148,38 +148,37 @@ function setupWelcomeInteractions() {
   const stack = document.getElementById('poster-stack');
   if (!state || !stack) return;
 
-  // ── Spring physics config per layer ──────────────────────────────────────
-  // Each card has a different spring constant + damping so they settle at
-  // different speeds — the front card snaps (light/close), the back lags (heavy/far).
+  // ── Layer config ──────────────────────────────────────────────────────────
   //
-  //   springK  : stiffness   — higher = snappier response
-  //   damping  : energy loss — lower  = more overshoot/wobble before settling
-  //
-  // base = stacking offset from Figma (keeps the layered composition)
+  //  base        : stacking offset from Figma
+  //  springK     : tilt stiffness  — higher = snappier hover response
+  //  damping     : energy loss     — lower  = more overshoot / wobble
+  //  entryDelay  : frames to wait before this card starts its entrance
+  //                (≈16ms/frame at 60fps → 0 / 5 / 10 ≈ 0 / 83 / 166ms)
+  //                Back enters first, then mid, then front on top.
   // ─────────────────────────────────────────────────────────────────────────
   const LAYERS = [
-    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.030, damping: 0.82 },
-    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.055, damping: 0.75 },
-    { sel: '.poster-layer--front', base: { x:  25, y: -35 }, springK: 0.085, damping: 0.66 },
+    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.030, damping: 0.82, entryDelay:  0 },
+    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.055, damping: 0.75, entryDelay:  6 },
+    { sel: '.poster-layer--front', base: { x:  25, y: -35 }, springK: 0.085, damping: 0.66, entryDelay: 12 },
   ].map(cfg => ({
     ...cfg,
     el: document.querySelector(cfg.sel),
-    // Independent spring state per axis per layer
-    rx: { pos: 0, vel: 0 },
-    ry: { pos: 0, vel: 0 },
+    rx: { pos: 0, vel: 0 },          // tilt around X (up / down)
+    ry: { pos: 0, vel: 0 },          // tilt around Y (left / right)
+    ty: { pos: 72, vel: 0 },         // entry: starts 72px below, springs to 0
+    entered: false,                   // flips true once ty has settled
   }));
 
-  // Max tilt angles (degrees) driven by cursor position
-  const MAX_RX = 12; // up / down
-  const MAX_RY = 18; // left / right
+  // Hide all layers immediately; the entry spring will fade them in
+  LAYERS.forEach(l => { if (l.el) l.el.style.opacity = '0'; });
 
-  // Shared rotation target — all layers aim for the same angle,
-  // their different spring constants make them arrive at different speeds
+  // Max tilt angles (degrees)
+  const MAX_RX = 12;
+  const MAX_RY = 18;
+
   let targetRX = 0;
   let targetRY = 0;
-
-  // Entry animation: start tilted so the springs visibly settle on load
-  LAYERS.forEach(l => { l.rx.pos = 38; l.ry.pos = -22; });
 
   // ── Spring step helper ────────────────────────────────────────────────────
   function springStep(axis, target, k, damp) {
@@ -189,24 +188,52 @@ function setupWelcomeInteractions() {
   }
 
   // ── rAF loop ──────────────────────────────────────────────────────────────
-  let rafId = null;
+  let rafId   = null;
+  let frame   = 0;
 
   function tick() {
+    frame++;
+
     for (const layer of LAYERS) {
       if (!layer.el) continue;
 
-      springStep(layer.rx, targetRX, layer.springK, layer.damping);
-      springStep(layer.ry, targetRY, layer.springK, layer.damping);
+      // ── Entrance: slide up from below + fade in ──────────────────────────
+      if (!layer.entered) {
+        if (frame < layer.entryDelay) {
+          // Card hasn't started yet — keep hidden below
+          layer.el.style.transform =
+            `translate(${layer.base.x}px, ${layer.base.y + layer.ty.pos}px)`;
+          continue; // skip tilt until entry begins
+        }
 
-      // translate() first positions the card in the stack,
-      // then rotateX/Y tilts it in 3D around its own centre.
-      // perspective() is on the parent (.poster-stack) for a shared vanishing point.
+        // Spring ty → 0  (entry Y offset, Apple-style ease-out feel)
+        springStep(layer.ty, 0, 0.10, 0.80);
+
+        // Opacity: fully visible once ty is 30px from rest (faster than motion)
+        const progress = Math.max(0, 1 - layer.ty.pos / 45);
+        layer.el.style.opacity = Math.min(1, progress).toFixed(3);
+
+        if (Math.abs(layer.ty.pos) < 0.4 && Math.abs(layer.ty.vel) < 0.2) {
+          layer.ty.pos = 0;
+          layer.ty.vel = 0;
+          layer.entered = true;
+          layer.el.style.opacity = '1';
+        }
+      }
+
+      // ── Hover tilt (runs once entry has started) ─────────────────────────
+      if (frame >= layer.entryDelay) {
+        springStep(layer.rx, targetRX, layer.springK, layer.damping);
+        springStep(layer.ry, targetRY, layer.springK, layer.damping);
+      }
+
       layer.el.style.transform = `
-        translate(${layer.base.x}px, ${layer.base.y}px)
+        translate(${layer.base.x}px, ${layer.base.y + layer.ty.pos}px)
         rotateX(${layer.rx.pos}deg)
         rotateY(${layer.ry.pos}deg)
       `;
     }
+
     rafId = requestAnimationFrame(tick);
   }
   rafId = requestAnimationFrame(tick);
@@ -214,19 +241,12 @@ function setupWelcomeInteractions() {
   // ── Mouse handlers ────────────────────────────────────────────────────────
   function onMouseMove(e) {
     const rect = state.getBoundingClientRect();
-    // Normalise to -1 … +1 relative to screen centre
     const nx = (e.clientX - rect.left  - rect.width  / 2) / (rect.width  / 2);
     const ny = (e.clientY - rect.top   - rect.height / 2) / (rect.height / 2);
-    // Mouse above centre → top of card tilts toward viewer (positive RX)
     targetRX = -ny * MAX_RX;
     targetRY =  nx * MAX_RY;
   }
-
-  function onMouseLeave() {
-    // Spring back to flat
-    targetRX = 0;
-    targetRY = 0;
-  }
+  function onMouseLeave() { targetRX = 0; targetRY = 0; }
 
   state.addEventListener('mousemove', onMouseMove);
   state.addEventListener('mouseleave', onMouseLeave);
@@ -247,7 +267,7 @@ function setupWelcomeInteractions() {
     welcomePosterIndex = delta < 0
       ? (welcomePosterIndex + 1) % n
       : (welcomePosterIndex - 1 + n) % n;
-    // Give the springs a flick in the drag direction for physical feedback
+    // Flick the Y-tilt spring in the drag direction for physical throw feedback
     LAYERS.forEach(l => { l.ry.vel += delta < 0 ? -4 : 4; });
     updateWelcomePosterImages(true);
   }
