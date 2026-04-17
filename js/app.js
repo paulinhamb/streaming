@@ -178,8 +178,8 @@ function setupWelcomeInteractions() {
   LAYERS.forEach(l => { if (l.el) l.el.style.opacity = '0'; });
 
   // Max tilt angles (degrees)
-  const MAX_RX = 25;
-  const MAX_RY = 25;
+  const MAX_RX = 20;
+  const MAX_RY = 20;
 
   let targetRX = 0;
   let targetRY = 0;
@@ -216,7 +216,7 @@ function setupWelcomeInteractions() {
 
         // Opacity fades in quickly — reaches 1 when 55% of travel is covered
         const absStart = Math.abs(layer.entry.start);
-        const progress  = (absStart - Math.abs(layer.eOff.pos)) / (absStart * 0.55);
+        const progress  = (absStart - Math.abs(layer.eOff.pos)) / (absStart * 0.25);
         layer.el.style.opacity = Math.min(1, Math.max(0, progress)).toFixed(3);
 
         if (Math.abs(layer.eOff.pos) < 0.5 && Math.abs(layer.eOff.vel) < 0.15) {
