@@ -304,51 +304,88 @@ button {
 /* ---- Welcome / Hero State ---- */
 
 .welcome-state {
-  flex: 1;
+  position: relative;
+  overflow: hidden;
+  height: calc(100vh - var(--header-height));
+  background: #ffffff;
   display: flex;
   align-items: center;
-  min-height: calc(100vh - var(--header-height));
-  padding: 80px 10%;
-  gap: 80px;
-  overflow: hidden;
+  justify-content: center;
 }
 
-.hero-text-col {
-  flex: 1;
-  min-width: 0;
-}
-
-.hero-heading {
-  font-size: clamp(54px, 7.8vw, 116px);
-  font-weight: 800;
-  color: #FFFFFF;
-  mix-blend-mode: exclusion;
-  line-height: 0.92;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  margin-bottom: 28px;
-}
-
-.hero-sub {
-  font-size: 1rem;
-  color: var(--text-muted);
-  line-height: 1.65;
-  max-width: 360px;
-}
-
-.hero-visual-col {
-  width: 26%;
-  max-width: 300px;
-  flex-shrink: 0;
-}
-
-.hero-poster {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
-  opacity: 0.15;
+/* Subtitle — sits just above the poster stack regardless of viewport height.
+   calc(50% - 331px) = poster top edge; subtract 36px to put subtitle above it. */
+.hero-subtitle {
+  position: absolute;
+  top: max(14px, calc(50% - 367px));
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(98, 90, 80, 0.85);
   mix-blend-mode: multiply;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+}
+
+/* Poster stack — 3 layers, centered by flexbox */
+.poster-stack {
+  position: relative;
+  width: 460px;
+  height: 662px;
+  cursor: grab;
+  flex-shrink: 0;
+  user-select: none;
+}
+.poster-stack:active { cursor: grabbing; }
+
+.poster-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 460px;
+  height: 662px;
+  border-radius: 10px;
+  overflow: hidden;
+  will-change: transform;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.30), 0 6px 16px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.35s ease;
+  background: #e4e4e4;
+}
+.poster-layer--back  { z-index: 1; }
+.poster-layer--mid   { z-index: 2; }
+.poster-layer--front { z-index: 3; }
+
+.poster-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+/* Big title — sits over the poster stack, uses exclusion blend */
+.hero-title {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(56px, 8.4vw, 121px);
+  font-weight: 900;
+  color: #ffffff;
+  mix-blend-mode: exclusion;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* ---- Loading State ---- */
@@ -961,10 +998,6 @@ button {
     width: 100%;
   }
 
-  .welcome-state {
-    padding: 56px 8%;
-    gap: 48px;
-  }
 }
 
 @media (max-width: 600px) {
@@ -977,16 +1010,24 @@ button {
     font-size: 13px;
   }
 
-  .welcome-state {
-    padding: 40px 24px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 32px;
+  /* Welcome state — scale down poster stack on narrow screens */
+  .poster-stack,
+  .poster-layer {
+    width: 280px;
+    height: 403px; /* 280 × 662/460 ≈ 403 */
   }
 
-  .hero-visual-col {
-    width: 140px;
-    max-width: 160px;
+  .hero-title {
+    font-size: 48px;
+    white-space: normal;
+    padding: 0 20px;
+    top: 44%;
+  }
+
+  .hero-subtitle {
+    white-space: normal;
+    padding: 0 32px;
+    top: 7%;
   }
 
   /* Platform row cells — shrink fixed widths so rows fit on 390px screens.
