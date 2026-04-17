@@ -568,6 +568,7 @@ button {
 }
 .availability-dot--on {
   background: #13f13b;
+  box-shadow: 0px 0px 10px rgba(19, 241, 59, 0.7);
 }
 .availability-dot--off {
   background: transparent;
