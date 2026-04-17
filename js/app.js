@@ -31,6 +31,11 @@ let debounceTimer = null;
 let allProvidersList = null;
 let currentTitle = null;
 
+// Welcome page state
+let welcomePosters = [];
+let welcomePosterIndex = 0;
+let welcomeCleanup = null;
+
 // ---- DOM helpers ----
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -64,17 +69,148 @@ async function init() {
 }
 
 function renderWelcomeState() {
+  // Tear down any running parallax / drag listeners from a previous welcome render
+  if (welcomeCleanup) { welcomeCleanup(); welcomeCleanup = null; }
+  welcomePosters = [];
+  welcomePosterIndex = 0;
+
   $('#content-area').innerHTML = `
-    <div class="welcome-state">
-      <div class="hero-text-col">
-        <h1 class="hero-heading">FIND YOUR<br>NEXT WATCH</h1>
-        <p class="hero-sub">Search for any movie or series to see<br>which countries have it on your streaming platforms.</p>
+    <div class="welcome-state" id="welcome-state">
+      <p class="hero-subtitle">Search any movie or series to find where it streams worldwide.</p>
+      <div class="poster-stack" id="poster-stack">
+        <div class="poster-layer poster-layer--back">
+          <img src="" alt="" draggable="false">
+        </div>
+        <div class="poster-layer poster-layer--mid">
+          <img src="" alt="" draggable="false">
+        </div>
+        <div class="poster-layer poster-layer--front">
+          <img src="" alt="" draggable="false">
+        </div>
       </div>
-      <div class="hero-visual-col">
-        <img class="hero-poster" src="assets/new_poster_initial.webp" alt="" draggable="false">
-      </div>
+      <h1 class="hero-title">FIND YOUR<br>NEXT WATCH</h1>
     </div>
   `;
+
+  setupWelcomeInteractions();
+  loadWelcomePosters();
+}
+
+// Fetch trending movies and populate the poster stack
+async function loadWelcomePosters() {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/trending/movie/week?api_key=${getApiKey()}`
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    const posters = (data.results || [])
+      .filter(m => m.poster_path)
+      .slice(0, 9)
+      .map(m => getImageUrl(m.poster_path, 'w500'));
+
+    if (posters.length < 3) return;
+    welcomePosters = posters;
+    welcomePosterIndex = 0;
+    updateWelcomePosterImages(false);
+  } catch (e) {
+    console.warn('Could not load trending posters:', e);
+  }
+}
+
+// Assign poster srcs for the current index window, with optional fade transition
+function updateWelcomePosterImages(animate) {
+  const imgs = document.querySelectorAll('.poster-layer img');
+  if (!imgs.length || welcomePosters.length < 3) return;
+
+  const n = welcomePosters.length;
+  const i = welcomePosterIndex;
+
+  if (animate) {
+    const layers = document.querySelectorAll('.poster-layer');
+    layers.forEach(l => (l.style.opacity = '0'));
+    setTimeout(() => {
+      imgs[0].src = welcomePosters[i % n];
+      imgs[1].src = welcomePosters[(i + 1) % n];
+      imgs[2].src = welcomePosters[(i + 2) % n];
+      layers.forEach(l => (l.style.opacity = ''));
+    }, 260);
+  } else {
+    imgs[0].src = welcomePosters[i % n];
+    imgs[1].src = welcomePosters[(i + 1) % n];
+    imgs[2].src = welcomePosters[(i + 2) % n];
+  }
+}
+
+// Wire parallax (rAF smooth-follow) and drag-to-switch interactions
+function setupWelcomeInteractions() {
+  const state = document.getElementById('welcome-state');
+  const stack = document.getElementById('poster-stack');
+  if (!state || !stack) return;
+
+  // Layer config: depth controls parallax intensity; base is static offset from Figma
+  const LAYERS = [
+    { sel: '.poster-layer--back',  depth: 0.25, base: { x: -13, y: -18 } },
+    { sel: '.poster-layer--mid',   depth: 0.55, base: { x:   0, y:   0 } },
+    { sel: '.poster-layer--front', depth: 1.0,  base: { x:  25, y: -35 } },
+  ].map(cfg => ({ ...cfg, el: document.querySelector(cfg.sel) }));
+
+  // --- Smooth parallax via rAF lerp ---
+  let targetX = 0, targetY = 0;
+  let curX = 0, curY = 0;
+  let rafId = null;
+
+  function tick() {
+    curX += (targetX - curX) * 0.08;
+    curY += (targetY - curY) * 0.08;
+    for (const { el, depth, base } of LAYERS) {
+      if (!el) continue;
+      el.style.transform = `translate(${base.x + curX * depth * 38}px, ${base.y + curY * depth * 38}px)`;
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  rafId = requestAnimationFrame(tick);
+
+  function onMouseMove(e) {
+    const rect = state.getBoundingClientRect();
+    targetX = (e.clientX - rect.left  - rect.width  / 2) / rect.width;
+    targetY = (e.clientY - rect.top   - rect.height / 2) / rect.height;
+  }
+  state.addEventListener('mousemove', onMouseMove);
+
+  // --- Drag / swipe to switch posters ---
+  let dragStartX = null;
+
+  function onPointerDown(e) {
+    dragStartX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+  }
+  function onPointerUp(e) {
+    if (dragStartX === null) return;
+    const endX = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
+    const delta = endX - dragStartX;
+    dragStartX = null;
+    if (Math.abs(delta) < 50 || welcomePosters.length < 3) return;
+    const n = welcomePosters.length;
+    welcomePosterIndex = delta < 0
+      ? (welcomePosterIndex + 1) % n
+      : (welcomePosterIndex - 1 + n) % n;
+    updateWelcomePosterImages(true);
+  }
+
+  stack.addEventListener('mousedown', onPointerDown);
+  stack.addEventListener('touchstart', onPointerDown, { passive: true });
+  window.addEventListener('mouseup', onPointerUp);
+  window.addEventListener('touchend', onPointerUp);
+
+  // Store cleanup so we can tear down when navigating away
+  welcomeCleanup = () => {
+    cancelAnimationFrame(rafId);
+    state.removeEventListener('mousemove', onMouseMove);
+    stack.removeEventListener('mousedown', onPointerDown);
+    stack.removeEventListener('touchstart', onPointerDown);
+    window.removeEventListener('mouseup', onPointerUp);
+    window.removeEventListener('touchend', onPointerUp);
+  };
 }
 
 function attachListeners() {
@@ -212,6 +348,7 @@ function onSearchKeydown(e) {
 // ---- Title Selection & Availability ----
 
 async function selectResult(result) {
+  if (welcomeCleanup) { welcomeCleanup(); welcomeCleanup = null; }
   hideDropdown();
   currentTitle = result;
   $('#search-input').value = result.title;
