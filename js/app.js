@@ -162,9 +162,9 @@ function setupWelcomeInteractions() {
   //  Front → slides in from the BOTTOM (entryDelay 8 — ~133ms later)
   // ─────────────────────────────────────────────────────────────────────────
   const LAYERS = [
-    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.000, damping: 0.95, entryDelay: 2, entry: { axis: 'x', start: -90 } },
-    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.055, damping: 0.95, entryDelay: 8, entry: { axis: 'x', start:  90 } },
-    { sel: '.poster-layer--front', base: { x:  25, y: 35 }, springK: 0.385, damping: 0.95, entryDelay: 12, entry: { axis: 'y', start:  90 } },
+    { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.095, damping: 0.95, entryDelay: 2, entry: { axis: 'x', start: -90 } },
+    { sel: '.poster-layer--mid',   base: { x:   0, y:   0 }, springK: 0.075, damping: 0.5, entryDelay: 8, entry: { axis: 'x', start:  90 } },
+    { sel: '.poster-layer--front', base: { x:  25, y: 35 }, springK: 0.55, damping: 0.0, entryDelay: 12, entry: { axis: 'y', start:  90 } },
   ].map(cfg => ({
     ...cfg,
     el: document.querySelector(cfg.sel),
