@@ -41,6 +41,13 @@ async function init() {
   attachListeners();
   renderWelcomeState();
 
+  // If a hardcoded key exists but localStorage is empty, persist it once
+  // so it survives future loads regardless of module caching
+  const key = getApiKey();
+  if (key && !localStorage.getItem('streamfinder_api_key')) {
+    setApiKey(key);
+  }
+
   if (!hasApiKey()) {
     showSettings();
     return;
