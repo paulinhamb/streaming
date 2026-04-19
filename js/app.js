@@ -142,24 +142,21 @@ function updateWelcomePosterImages(animate) {
   }
 }
 
-// Wire spring-physics 3D tilt and drag-to-switch interactions
+// Wire spring-physics 3D tilt and drag-to-throw interactions
 function setupWelcomeInteractions() {
   const state = document.getElementById('welcome-state');
   const stack = document.getElementById('poster-stack');
   if (!state || !stack) return;
 
+  let destroyed = false; // set by cleanup to cancel any pending async work
+
   // ── Layer config ──────────────────────────────────────────────────────────
-  //
-  //  base        : stacking offset from Figma
-  //  springK     : tilt stiffness  — higher = snappier hover response
-  //  damping     : energy loss     — lower  = more overshoot / wobble
-  //  entryDelay  : frames before this card's entrance begins (≈16ms/frame at 60fps)
-  //  entry.axis  : which axis the card enters from ('x' or 'y')
-  //  entry.start : initial offset in px (negative = from left, positive = from right/bottom)
-  //
-  //  Back  → slides in from the LEFT   (entryDelay 0 — first)
-  //  Mid   → slides in from the RIGHT  (entryDelay 4 — ~67ms later)
-  //  Front → slides in from the BOTTOM (entryDelay 8 — ~133ms later)
+  //  base       : stacking offset
+  //  springK    : tilt stiffness   (higher = snappier)
+  //  damping    : energy loss      (lower  = more wobble)
+  //  entryDelay : frames before entrance begins
+  //  entry.axis : card slides in along 'x' or 'y'
+  //  entry.start: initial off-screen offset (px)
   // ─────────────────────────────────────────────────────────────────────────
   const LAYERS = [
     { sel: '.poster-layer--back',  base: { x: -13, y: -18 }, springK: 0.095, damping: 0.5, entryDelay:  2, entry: { axis: 'x', start: -90 } },
@@ -168,76 +165,213 @@ function setupWelcomeInteractions() {
   ].map(cfg => ({
     ...cfg,
     el: document.querySelector(cfg.sel),
-    rx: { pos: 0, vel: 0 },    // tilt around X (up / down)
-    ry: { pos: 0, vel: 0 },    // tilt around Y (left / right)
-    eOff: { pos: cfg.entry.start, vel: 0 }, // entry spring offset, springs to 0
+    rx: { pos: 0, vel: 0 },
+    ry: { pos: 0, vel: 0 },
+    eOff: { pos: cfg.entry.start, vel: 0 },
     entered: false,
   }));
 
-  // Hide all layers immediately; entry spring fades them in
   LAYERS.forEach(l => { if (l.el) l.el.style.opacity = '0'; });
 
-  // Max tilt angles (degrees)
-  const MAX_RX = 20;
-  const MAX_RY = 20;
+  const FRONT = LAYERS[2];
+  const MID   = LAYERS[1];
+  const BACK  = LAYERS[0];
 
-  let targetRX = 0;
-  let targetRY = 0;
+  const MAX_RX = 25, MAX_RY = 25;
+  let targetRX = 0, targetRY = 0;
+  let rafId = null, frame = 0;
 
-  // ── Spring step helper ────────────────────────────────────────────────────
+  // ── Spring helper ─────────────────────────────────────────────────────────
   function springStep(axis, target, k, damp) {
     axis.vel += (target - axis.pos) * k;
     axis.vel *= damp;
     axis.pos += axis.vel;
   }
 
-  // ── rAF loop ──────────────────────────────────────────────────────────────
-  let rafId   = null;
-  let frame   = 0;
+  // ── Drag / throw state machine ────────────────────────────────────────────
+  //  mode: 'idle' | 'drag' | 'snap' | 'throw' | 'cycle'
+  let mode = 'idle';
+  let throwDir = 0;
 
+  // Live drag position (offset from card base)
+  const drag = { x: 0, y: 0, vx: 0, vy: 0 };
+  // Snap-back springs
+  const snap = { x: { pos: 0, vel: 0 }, y: { pos: 0, vel: 0 } };
+  // Free-flight (throw) physics
+  const fly  = { vx: 0, vy: 0, rotZ: 0, rotZVel: 0 };
+
+  let dragStartX = 0;
+
+  // Thresholds for triggering a throw vs snapping back
+  const THROW_X_PX = 70;    // drag distance (px)
+  const THROW_V_PX = 4;     // drag velocity (px/frame)
+
+  // ── Interaction handlers ──────────────────────────────────────────────────
+  function onDragStart(e) {
+    if (mode !== 'idle') return;
+    mode = 'drag';
+    dragStartX = e.touches ? e.touches[0].clientX : e.clientX;
+    drag.x = 0; drag.y = 0; drag.vx = 0; drag.vy = 0;
+    stack.style.cursor = 'grabbing';
+  }
+
+  function onDragMove(e) {
+    if (mode !== 'drag') return;
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const newX = cx - dragStartX;
+    drag.vx = newX - drag.x;
+    drag.x  = newX;
+    drag.y  = Math.abs(drag.x) * 0.03; // subtle downward sag (paper weight)
+  }
+
+  function onDragEnd() {
+    if (mode !== 'drag') return;
+    stack.style.cursor = 'grab';
+
+    if (Math.abs(drag.x) > THROW_X_PX || Math.abs(drag.vx) > THROW_V_PX) {
+      // ── THROW ──────────────────────────────────────────────────────────
+      throwDir = drag.x > 0 ? 1 : -1;
+      mode = 'throw';
+      // Carry release velocity; ensure minimum throw speed
+      fly.vx     = Math.max(Math.abs(drag.vx), 10) * throwDir;
+      fly.vy     = -1.5;                    // initial upward kick before gravity
+      fly.rotZ   = drag.x * 0.05;          // start at current card lean
+      fly.rotZVel = throwDir * 0.6;        // initial spin velocity
+    } else {
+      // ── SNAP BACK ──────────────────────────────────────────────────────
+      mode = 'snap';
+      snap.x.pos = drag.x; snap.x.vel = drag.vx;
+      snap.y.pos = drag.y; snap.y.vel = 0;
+    }
+  }
+
+  // ── rAF tick ──────────────────────────────────────────────────────────────
   function tick() {
     frame++;
 
     for (const layer of LAYERS) {
       if (!layer.el) continue;
 
-      // ── Entrance: slide in from direction + fast fade ────────────────────
+      // ── Entry animation ──────────────────────────────────────────────────
       if (!layer.entered) {
         if (frame < layer.entryDelay) {
-          // Not yet — park the card at its off-screen start position, invisible
           const ex = layer.entry.axis === 'x' ? layer.base.x + layer.eOff.pos : layer.base.x;
           const ey = layer.entry.axis === 'y' ? layer.base.y + layer.eOff.pos : layer.base.y;
           layer.el.style.transform = `translate(${ex}px, ${ey}px)`;
           continue;
         }
-
-        // Spring eOff → 0  (k=0.12 damp=0.88: fast, clean, no visible overshoot)
         springStep(layer.eOff, 0, 0.12, 0.88);
-
-        // Opacity fades in quickly — reaches 1 when 55% of travel is covered
         const absStart = Math.abs(layer.entry.start);
-        const progress  = (absStart - Math.abs(layer.eOff.pos)) / (absStart * 0.25);
+        const progress = (absStart - Math.abs(layer.eOff.pos)) / (absStart * 0.55);
         layer.el.style.opacity = Math.min(1, Math.max(0, progress)).toFixed(3);
-
         if (Math.abs(layer.eOff.pos) < 0.5 && Math.abs(layer.eOff.vel) < 0.15) {
-          layer.eOff.pos = 0;
-          layer.eOff.vel = 0;
-          layer.entered  = true;
-          layer.el.style.opacity = '1';
+          layer.eOff.pos = 0; layer.eOff.vel = 0;
+          layer.entered = true; layer.el.style.opacity = '1';
         }
       }
 
-      // ── Hover tilt (runs as soon as entry has begun) ──────────────────────
-      if (frame >= layer.entryDelay) {
+      // ── Hover tilt — paused while front card is in motion ────────────────
+      const tiltActive = (layer !== FRONT || mode === 'idle') && frame >= layer.entryDelay;
+      if (tiltActive) {
         springStep(layer.rx, targetRX, layer.springK, layer.damping);
         springStep(layer.ry, targetRY, layer.springK, layer.damping);
       }
 
-      // Combine entry offset with base position and tilt
+      // ── Front card: drag / throw / snap / cycle overrides ────────────────
+      if (layer === FRONT) {
+
+        if (mode === 'throw') {
+          // Free-flight physics — paper thrown in the wind
+          fly.vx     *= 0.97;              // air resistance
+          fly.vy     += 0.12;              // gravity pulls card down
+          drag.x     += fly.vx;
+          drag.y     += fly.vy;
+          fly.rotZVel += throwDir * 0.04;  // spin accelerates (frisbee effect)
+          fly.rotZVel *= 0.99;             // rotational air resistance
+          fly.rotZ   += fly.rotZVel;
+
+          // Flutter: rotateX oscillates with spin angle (like paper waving)
+          const rotX = Math.sin(fly.rotZ * 0.08) * 5;
+          const rotY = drag.x * 0.015;
+
+          // Fade starts after 120 px off-center, completes over 500 px
+          const opac = Math.max(0, 1 - Math.max(0, Math.abs(drag.x) - 120) / 500);
+
+          layer.el.style.opacity = opac.toFixed(3);
+          layer.el.style.transform = `
+            translate(${FRONT.base.x + drag.x}px, ${FRONT.base.y + drag.y}px)
+            rotateZ(${fly.rotZ}deg)
+            rotateX(${rotX}deg)
+            rotateY(${rotY}deg)
+          `;
+
+          // Once off-screen, cycle to next poster
+          if (Math.abs(drag.x) > 900 && mode === 'throw') {
+            mode = 'cycle';
+            completeFrontThrow();
+          }
+          continue;
+        }
+
+        if (mode === 'drag') {
+          // Cloth-like deformation:
+          //   rotateZ  — card leans in drag direction (like tipping a domino)
+          //   rotateY  — 3D perspective fold (paper bending at its axis)
+          //   skewX    — velocity-based stretch (the key fabric feel)
+          //   lift     — card floats up as it's peeled away
+          const rotZ  = drag.x  * 0.05;
+          const rotY  = drag.x  * 0.025;
+          const skewX = -drag.vx * 0.30;
+          const lift  = -Math.abs(drag.x) * 0.04;
+
+          layer.el.style.transform = `
+            translate(${FRONT.base.x + drag.x}px, ${FRONT.base.y + drag.y + lift}px)
+            rotateZ(${rotZ}deg)
+            rotateY(${rotY}deg)
+            skewX(${skewX}deg)
+          `;
+          continue;
+        }
+
+        if (mode === 'snap') {
+          // Spring back to base position with same cloth deformation
+          springStep(snap.x, 0, 0.15, 0.65);
+          springStep(snap.y, 0, 0.15, 0.65);
+
+          const rotZ  = snap.x.pos * 0.05;
+          const rotY  = snap.x.pos * 0.025;
+          const skewX = -snap.x.vel * 0.30;
+
+          layer.el.style.transform = `
+            translate(${FRONT.base.x + snap.x.pos}px, ${FRONT.base.y + snap.y.pos}px)
+            rotateZ(${rotZ}deg)
+            rotateY(${rotY}deg)
+            skewX(${skewX}deg)
+          `;
+
+          if (Math.abs(snap.x.pos) < 0.3 && Math.abs(snap.x.vel) < 0.05) {
+            snap.x.pos = 0; snap.x.vel = 0;
+            snap.y.pos = 0; snap.y.vel = 0;
+            mode = 'idle';
+          }
+          continue;
+        }
+
+        if (mode === 'cycle') continue; // card hidden — skip all updates
+      }
+
+      // ── Mid card: subtle counter-shift during drag / snap ─────────────────
+      let extraX = 0;
+      if (layer === MID) {
+        const dx = mode === 'drag' ? drag.x : (mode === 'snap' ? snap.x.pos : 0);
+        extraX = -dx * 0.04; // lean away from drag direction
+      }
+
+      // ── Default: entry offset + hover tilt transform ──────────────────────
       const entryX = layer.entry.axis === 'x' ? layer.eOff.pos : 0;
       const entryY = layer.entry.axis === 'y' ? layer.eOff.pos : 0;
       layer.el.style.transform = `
-        translate(${layer.base.x + entryX}px, ${layer.base.y + entryY}px)
+        translate(${layer.base.x + entryX + extraX}px, ${layer.base.y + entryY}px)
         rotateX(${layer.rx.pos}deg)
         rotateY(${layer.ry.pos}deg)
       `;
@@ -247,54 +381,88 @@ function setupWelcomeInteractions() {
   }
   rafId = requestAnimationFrame(tick);
 
-  // ── Mouse handlers ────────────────────────────────────────────────────────
+  // ── Complete throw: cycle poster images, re-enter front card ─────────────
+  function completeFrontThrow() {
+    const n = welcomePosters.length;
+    if (!n) { mode = 'idle'; return; }
+
+    // Cycle index in throw direction
+    welcomePosterIndex = throwDir > 0
+      ? (welcomePosterIndex + 1) % n
+      : (welcomePosterIndex - 1 + n) % n;
+
+    // Briefly dim mid+back while their images swap
+    [MID.el, BACK.el].forEach(el => {
+      el.style.transition = 'opacity 0.18s ease';
+      el.style.opacity    = '0.5';
+    });
+
+    setTimeout(() => {
+      if (destroyed) return;
+      updateWelcomePosterImages(false);
+
+      // Restore mid + back
+      [MID.el, BACK.el].forEach(el => {
+        el.style.opacity = '1';
+        setTimeout(() => { if (!destroyed) el.style.transition = ''; }, 200);
+      });
+
+      // Reset front card: hide, snap to base, kick off its entry spring
+      FRONT.el.style.transition = 'none';
+      FRONT.el.style.opacity    = '0';
+      FRONT.el.style.transform  = `translate(${FRONT.base.x}px, ${FRONT.base.y}px)`;
+
+      // Reset all physics
+      drag.x = 0; drag.y = 0; drag.vx = 0; drag.vy = 0;
+      fly.vx = 0; fly.vy = 0; fly.rotZ = 0; fly.rotZVel = 0;
+      FRONT.rx.pos = 0; FRONT.rx.vel = 0;
+      FRONT.ry.pos = 0; FRONT.ry.vel = 0;
+
+      // Restart entry spring from bottom (same as initial page load)
+      FRONT.entered  = false;
+      FRONT.eOff.pos = FRONT.entry.start; // 90 (from below)
+      FRONT.eOff.vel = 0;
+
+      mode = 'idle';
+    }, 80);
+  }
+
+  // ── Mouse / touch event handlers ──────────────────────────────────────────
   function onMouseMove(e) {
+    if (mode !== 'idle') return;
     const rect = state.getBoundingClientRect();
     const nx = (e.clientX - rect.left  - rect.width  / 2) / (rect.width  / 2);
     const ny = (e.clientY - rect.top   - rect.height / 2) / (rect.height / 2);
     targetRX = -ny * MAX_RX;
     targetRY =  nx * MAX_RY;
   }
-  function onMouseLeave() { targetRX = 0; targetRY = 0; }
+  function onMouseLeave() { if (mode === 'idle') { targetRX = 0; targetRY = 0; } }
 
-  state.addEventListener('mousemove', onMouseMove);
-  state.addEventListener('mouseleave', onMouseLeave);
-
-  // ── Drag / swipe to switch posters ───────────────────────────────────────
-  let dragStartX = null;
-
-  function onPointerDown(e) {
-    dragStartX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-  }
-  function onPointerUp(e) {
-    if (dragStartX === null) return;
-    const endX = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
-    const delta = endX - dragStartX;
-    dragStartX = null;
-    if (Math.abs(delta) < 50 || welcomePosters.length < 3) return;
-    const n = welcomePosters.length;
-    welcomePosterIndex = delta < 0
-      ? (welcomePosterIndex + 1) % n
-      : (welcomePosterIndex - 1 + n) % n;
-    // Flick the Y-tilt spring in the drag direction for physical throw feedback
-    LAYERS.forEach(l => { l.ry.vel += delta < 0 ? -4 : 4; });
-    updateWelcomePosterImages(true);
+  // Window-level: handles both drag-move AND hover tilt (one listener)
+  function onWindowMouseMove(e) {
+    if (mode === 'drag') onDragMove(e);
+    else onMouseMove(e);
   }
 
-  stack.addEventListener('mousedown', onPointerDown);
-  stack.addEventListener('touchstart', onPointerDown, { passive: true });
-  window.addEventListener('mouseup', onPointerUp);
-  window.addEventListener('touchend', onPointerUp);
+  FRONT.el.addEventListener('mousedown',  onDragStart);
+  FRONT.el.addEventListener('touchstart', onDragStart, { passive: true });
+  window.addEventListener('mousemove',    onWindowMouseMove);
+  window.addEventListener('touchmove',    onDragMove,  { passive: true });
+  window.addEventListener('mouseup',      onDragEnd);
+  window.addEventListener('touchend',     onDragEnd);
+  state.addEventListener('mouseleave',    onMouseLeave);
 
   // ── Cleanup ───────────────────────────────────────────────────────────────
   welcomeCleanup = () => {
+    destroyed = true;
     cancelAnimationFrame(rafId);
-    state.removeEventListener('mousemove', onMouseMove);
-    state.removeEventListener('mouseleave', onMouseLeave);
-    stack.removeEventListener('mousedown', onPointerDown);
-    stack.removeEventListener('touchstart', onPointerDown);
-    window.removeEventListener('mouseup', onPointerUp);
-    window.removeEventListener('touchend', onPointerUp);
+    FRONT.el.removeEventListener('mousedown',  onDragStart);
+    FRONT.el.removeEventListener('touchstart', onDragStart);
+    window.removeEventListener('mousemove',    onWindowMouseMove);
+    window.removeEventListener('touchmove',    onDragMove);
+    window.removeEventListener('mouseup',      onDragEnd);
+    window.removeEventListener('touchend',     onDragEnd);
+    state.removeEventListener('mouseleave',    onMouseLeave);
   };
 }
 
