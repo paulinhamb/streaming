@@ -503,8 +503,8 @@ button {
 }
 
 .movie-poster {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
   aspect-ratio: 333 / 494;
   object-fit: cover;
   display: block;
