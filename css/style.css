@@ -335,14 +335,16 @@ button {
 /* Poster stack — 3 layers, sized to fill remaining viewport height while keeping AR */
 .poster-stack {
   position: relative;
-  /* Width derived from available height; capped so it never bleeds off screen edges */
+  /* Width derived from available height; capped so it never bleeds off screen edges.
+     74px = subtitle margin-top (20) + subtitle height (~22) + stack margin top (16) + bottom (16) */
   width: min(
-    calc((100vh - var(--header-height) - 62px) * 460 / 662),
+    calc((100vh - var(--header-height) - 74px) * 460 / 662),
     calc(100vw - 48px)
   );
   height: auto;
   aspect-ratio: 460 / 662;
-  margin-top: 20px;
+  margin-top: 16px;
+  margin-bottom: 16px;
   cursor: grab;
   flex-shrink: 0;
   user-select: none;
@@ -1018,8 +1020,16 @@ button {
     font-size: 13px;
   }
 
-  /* Welcome state — poster stack already fluid via min() width formula;
-     just allow subtitle to wrap across full width so it fits in fewer lines */
+  /* Welcome state — on mobile, pin subtitle to top and let auto-margins
+     center the stack independently in the remaining space below it */
+  .welcome-state {
+    justify-content: flex-start;
+  }
+
+  .poster-stack {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
 
   .hero-title {
     font-size: 48px;
