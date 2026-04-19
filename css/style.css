@@ -311,16 +311,15 @@ button {
   height: calc(100vh - var(--header-height));
   background: #ffffff;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-/* Subtitle — fixed 40px from the top of the content area, always above the poster stack */
+/* Subtitle — in-flow, 20px from the top of the flex column */
 .hero-subtitle {
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin-top: 20px;
   font-size: 14px;
   font-weight: 400;
   color: rgba(98, 90, 80, 0.85);
@@ -333,11 +332,17 @@ button {
   z-index: 10;
 }
 
-/* Poster stack — 3 layers, centered by flexbox */
+/* Poster stack — 3 layers, sized to fill remaining viewport height while keeping AR */
 .poster-stack {
   position: relative;
-  width: 460px;
-  height: 662px;
+  /* Width derived from available height; capped so it never bleeds off screen edges */
+  width: min(
+    calc((100vh - var(--header-height) - 62px) * 460 / 662),
+    calc(100vw - 48px)
+  );
+  height: auto;
+  aspect-ratio: 460 / 662;
+  margin-top: 20px;
   cursor: grab;
   flex-shrink: 0;
   user-select: none;
@@ -349,10 +354,9 @@ button {
 
 .poster-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 460px;
-  height: 662px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 10px;
   overflow: hidden;
   will-change: transform;
@@ -1014,12 +1018,8 @@ button {
     font-size: 13px;
   }
 
-  /* Welcome state — scale down poster stack on narrow screens */
-  .poster-stack,
-  .poster-layer {
-    width: 280px;
-    height: 403px; /* 280 × 662/460 ≈ 403 */
-  }
+  /* Welcome state — poster stack already fluid via min() width formula;
+     just allow subtitle to wrap across full width so it fits in fewer lines */
 
   .hero-title {
     font-size: 48px;
@@ -1030,8 +1030,7 @@ button {
 
   .hero-subtitle {
     white-space: normal;
-    padding: 0 32px;
-    /* top: 40px inherited from base — no override needed */
+    width: 100%;
   }
 
   /* Platform row cells — shrink fixed widths so rows fit on 390px screens.
