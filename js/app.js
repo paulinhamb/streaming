@@ -166,9 +166,9 @@ function setupWelcomeInteractions() {
 
   // Visual target position per role
   const ROLE_BASE = [
-    { x: -13, y: -18 }, // back
+    { x: 13, y: 8 }, // back
     { x:   0, y:   0 }, // mid
-    { x:  25, y:  35 }, // front
+    { x:  15, y:  -5 }, // front
   ];
 
   // Spring stiffness / damping per role.
