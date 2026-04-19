@@ -313,7 +313,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 /* Subtitle — in-flow, 20px from the top of the flex column */
@@ -332,19 +332,20 @@ button {
   z-index: 10;
 }
 
-/* Poster stack — 3 layers, sized to fill remaining viewport height while keeping AR */
+/* Poster stack — 3 layers, centered in remaining space with auto margins.
+   Width is capped at original 460px; the formula fallback shrinks it on short viewports
+   (120px overhead: ~40px subtitle area + 35px front-card base.y offset + 45px breathing room). */
 .poster-stack {
   position: relative;
-  /* Width derived from available height; capped so it never bleeds off screen edges.
-     74px = subtitle margin-top (20) + subtitle height (~22) + stack margin top (16) + bottom (16) */
   width: min(
-    calc((100vh - var(--header-height) - 74px) * 460 / 662),
+    460px,
+    calc((100vh - var(--header-height) - 120px) * 460 / 662),
     calc(100vw - 48px)
   );
   height: auto;
   aspect-ratio: 460 / 662;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: auto;
+  margin-bottom: auto;
   cursor: grab;
   flex-shrink: 0;
   user-select: none;
@@ -1020,16 +1021,7 @@ button {
     font-size: 13px;
   }
 
-  /* Welcome state — on mobile, pin subtitle to top and let auto-margins
-     center the stack independently in the remaining space below it */
-  .welcome-state {
-    justify-content: flex-start;
-  }
-
-  .poster-stack {
-    margin-top: auto;
-    margin-bottom: auto;
-  }
+  /* Welcome state — flex-start + auto stack margins are set in base, nothing to override here */
 
   .hero-title {
     font-size: 48px;
