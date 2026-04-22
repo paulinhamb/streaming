@@ -818,10 +818,12 @@ button {
 .rentbuy-strip__cards {
   display: flex;
   border-top: 1px solid var(--border-light);
+  overflow: hidden; /* clip any edge case */
 }
 
 .rentbuy-strip__card {
-  flex: 1;
+  flex: 1 1 0;          /* grow AND shrink equally from 0 basis */
+  min-width: 0;         /* allow shrinking below content size */
   height: 52px;
   display: flex;
   align-items: center;
@@ -830,15 +832,21 @@ button {
   font-weight: 500;
   border-right: 1px solid var(--border-light);
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   padding: 0 8px;
   cursor: default;
+  overflow: hidden;
 }
 
 .rentbuy-strip__card:last-child {
   border-right: none;
+}
+
+/* Put ellipsis on the inner text span, not the flex container */
+.rentbuy-strip__card span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .rentbuy-strip__card--more {

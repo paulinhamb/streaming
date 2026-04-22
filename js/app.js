@@ -826,11 +826,11 @@ function buildRentBuyStrip(rentBuyData) {
   const overflow = storeNames.length - visible.length;
 
   const cardHtml = visible.map(name =>
-    `<div class="rentbuy-strip__card" title="${escapeHtml(name)}">${escapeHtml(name)}</div>`
+    `<div class="rentbuy-strip__card" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></div>`
   ).join('');
 
   const moreHtml = overflow > 0
-    ? `<div class="rentbuy-strip__card rentbuy-strip__card--more">+${overflow} more</div>`
+    ? `<div class="rentbuy-strip__card rentbuy-strip__card--more"><span>+${overflow} more</span></div>`
     : '';
 
   return `
