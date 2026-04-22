@@ -227,6 +227,57 @@ function extractRentBuy(results, subscribedIds, idToNameMap) {
   return rentBuyMap;
 }
 
+/**
+ * Transform TMDB watch providers into a store-first rent/buy view.
+ * Shows ALL stores (not filtered by subscriptions).
+ *
+ * Returns: {
+ *   "Apple TV": { logo, rentCountries: ["US","GB",...], buyCountries: ["US",...] },
+ *   "Amazon":   { ... },
+ *   ...
+ * }
+ * Sorted by total country reach descending.
+ */
+function transformRentBuyToStoreView(results) {
+  const storeMap = {};
+
+  for (const [countryCode, countryData] of Object.entries(results)) {
+    for (const provider of (countryData.rent || [])) {
+      const name = provider.provider_name;
+      if (!storeMap[name]) {
+        storeMap[name] = { logo: provider.logo_path, rentCountries: [], buyCountries: [] };
+      }
+      if (!storeMap[name].rentCountries.includes(countryCode)) {
+        storeMap[name].rentCountries.push(countryCode);
+      }
+    }
+    for (const provider of (countryData.buy || [])) {
+      const name = provider.provider_name;
+      if (!storeMap[name]) {
+        storeMap[name] = { logo: provider.logo_path, rentCountries: [], buyCountries: [] };
+      }
+      if (!storeMap[name].buyCountries.includes(countryCode)) {
+        storeMap[name].buyCountries.push(countryCode);
+      }
+    }
+  }
+
+  // Sort countries alphabetically within each store
+  for (const store of Object.values(storeMap)) {
+    store.rentCountries.sort();
+    store.buyCountries.sort();
+  }
+
+  // Sort stores by total unique country reach (descending)
+  return Object.fromEntries(
+    Object.entries(storeMap).sort(([, a], [, b]) => {
+      const aCount = new Set([...a.rentCountries, ...a.buyCountries]).size;
+      const bCount = new Set([...b.rentCountries, ...b.buyCountries]).size;
+      return bCount - aCount;
+    })
+  );
+}
+
 export {
   searchMulti,
   getWatchProviders,
@@ -236,4 +287,5 @@ export {
   transformToPlatformView,
   transformToCountryView,
   extractRentBuy,
+  transformRentBuyToStoreView,
 };

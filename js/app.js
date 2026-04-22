@@ -23,6 +23,7 @@ import {
   validateApiKey,
   getImageUrl,
   transformToPlatformView,
+  transformRentBuyToStoreView,
 } from './tmdb.js';
 
 // ---- State ----
@@ -632,8 +633,9 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '', run
     const subscribedIds = getSubscribedProviderIds();
     const idToNameMap = getProviderIdToNameMap();
     const platformData = transformToPlatformView(results, subscribedIds, idToNameMap);
+    const rentBuyData  = transformRentBuyToStoreView(results);
 
-    renderResultsLayout(platformData, title, posterPath, year, mediaType, runtime);
+    renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime);
   } catch (err) {
     console.error('Availability error:', err);
     area.innerHTML = `
@@ -679,7 +681,7 @@ function formatRuntime(minutes) {
   return `${h}h ${m}m`;
 }
 
-function renderResultsLayout(platformData, title, posterPath, year, mediaType, runtime = null) {
+function renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime = null) {
   const area = $('#content-area');
   const subscribedProviders = getSubscribedProviders();
 
@@ -787,8 +789,8 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType, r
         </div>
         ${!hasAny ? `
           <p class="empty-results">Not available on any of your streaming subscriptions in any country.</p>
-          <p class="empty-results-hint">It may be available to rent or purchase, or on other platforms not tracked here.</p>
         ` : ''}
+        ${buildRentBuyStrip(rentBuyData)}
       </div>
 
     </div>
@@ -797,7 +799,7 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType, r
   // Scale title to fit within max-height 340px
   fitTitleText();
 
-  // Accordion toggle for available rows
+  // Accordion toggle — available streaming rows only
   area.querySelectorAll('.platform-row--available .platform-row__header').forEach(btn => {
     btn.addEventListener('click', () => {
       const row = btn.closest('.platform-row');
@@ -806,6 +808,39 @@ function renderResultsLayout(platformData, title, posterPath, year, mediaType, r
       if (!isOpen) row.classList.add('open');
     });
   });
+}
+
+// ---- Rent / Buy strip builder ----
+// Returns HTML for the fixed-bottom store chips strip.
+// Shows top 5 stores by country reach; "+N more" card if there are more.
+
+const MAX_STRIP_STORES = 5;
+
+function buildRentBuyStrip(rentBuyData) {
+  if (!rentBuyData || Object.keys(rentBuyData).length === 0) return '';
+
+  const storeNames = Object.keys(rentBuyData); // already sorted by country count
+  if (storeNames.length === 0) return '';
+
+  const visible = storeNames.slice(0, MAX_STRIP_STORES);
+  const overflow = storeNames.length - visible.length;
+
+  const cardHtml = visible.map(name =>
+    `<div class="rentbuy-strip__card" title="${escapeHtml(name)}">${escapeHtml(name)}</div>`
+  ).join('');
+
+  const moreHtml = overflow > 0
+    ? `<div class="rentbuy-strip__card rentbuy-strip__card--more">+${overflow} more</div>`
+    : '';
+
+  return `
+    <div class="rentbuy-strip">
+      <p class="rentbuy-strip__label">Also available to rent or buy</p>
+      <div class="rentbuy-strip__cards">
+        ${cardHtml}${moreHtml}
+      </div>
+    </div>
+  `;
 }
 
 // ---- Hash Routing ----

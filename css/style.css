@@ -779,6 +779,74 @@ button {
   color: var(--text-faint);
 }
 
+/* ---- Rent / Buy Strip ---- */
+
+/* Desktop: right column is fixed-height like the left, platform rows scroll inside */
+.results-right {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  overflow: hidden;
+}
+
+.platform-rows {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* The strip sits at the bottom of results-right, never pushed by expanding rows */
+.rentbuy-strip {
+  flex-shrink: 0;
+  border-top: 1px solid #121212;
+  background: #ffffff;
+  /* Expanded platform-row__body can visually overlap the strip */
+  position: relative;
+  z-index: 0;
+}
+
+.rentbuy-strip__label {
+  padding: 8px 16px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.rentbuy-strip__cards {
+  display: flex;
+  border-top: 1px solid var(--border-light);
+}
+
+.rentbuy-strip__card {
+  flex: 1;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  border-right: 1px solid var(--border-light);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+  cursor: default;
+}
+
+.rentbuy-strip__card:last-child {
+  border-right: none;
+}
+
+.rentbuy-strip__card--more {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
 /* ---- Spinners ---- */
 
 .spinner,
@@ -1003,11 +1071,31 @@ button {
   }
 
   .results-right {
-    /* no padding — rows span full width */
+    /* revert desktop fixed-height behaviour — mobile scrolls naturally */
+    position: static;
+    height: auto;
+    overflow: visible;
   }
 
   .platform-rows {
     width: 100%;
+    flex: none;
+    overflow: visible;
+  }
+
+  /* On mobile the strip is the last item in the list — no sticky, flows with content */
+  .rentbuy-strip {
+    position: static;
+    border-top: 1px solid #121212;
+  }
+
+  .rentbuy-strip__label {
+    padding: 8px 16px 6px;
+  }
+
+  .rentbuy-strip__card {
+    font-size: 14px;
+    height: 48px;
   }
 
 }
