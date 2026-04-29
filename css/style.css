@@ -550,7 +550,7 @@ button {
   border-bottom: 1px solid #121212;
 }
 .platform-row:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid #121212;
 }
 
 /* Available row: white bg */
