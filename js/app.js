@@ -808,6 +808,17 @@ function renderResultsLayout(platformData, rentBuyData, title, posterPath, year,
       if (!isOpen) row.classList.add('open');
     });
   });
+
+  // "+N more" toggle — expands overflow strip rows
+  const moreBtn = area.querySelector('.rentbuy-strip__card--more');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', () => {
+      const strip = moreBtn.closest('.rentbuy-strip');
+      const isOpen = strip.classList.contains('expanded');
+      strip.classList.toggle('expanded', !isOpen);
+      moreBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  }
 }
 
 // ---- Rent / Buy strip builder ----
@@ -816,6 +827,28 @@ function renderResultsLayout(platformData, rentBuyData, title, posterPath, year,
 
 const MAX_STRIP_STORES = 5;
 
+/**
+ * Detect the user's country name from their browser locale.
+ * Returns e.g. "Spain" from "es-ES", or null if undetectable.
+ */
+function detectUserCountryName() {
+  try {
+    const locales = Array.from(navigator.languages || [navigator.language]);
+    for (const locale of locales) {
+      const parts = locale.split('-');
+      if (parts.length >= 2) {
+        const regionCode = parts[parts.length - 1].toUpperCase();
+        if (regionCode.length === 2) {
+          const names = new Intl.DisplayNames(['en'], { type: 'region' });
+          const name = names.of(regionCode);
+          if (name && name !== regionCode) return name;
+        }
+      }
+    }
+  } catch {}
+  return null;
+}
+
 function buildRentBuyStrip(rentBuyData) {
   if (!rentBuyData || Object.keys(rentBuyData).length === 0) return '';
 
@@ -823,22 +856,52 @@ function buildRentBuyStrip(rentBuyData) {
   if (storeNames.length === 0) return '';
 
   const visible = storeNames.slice(0, MAX_STRIP_STORES);
-  const overflow = storeNames.length - visible.length;
+  const overflowNames = storeNames.slice(MAX_STRIP_STORES);
+
+  const countryName = detectUserCountryName();
+  const label = countryName
+    ? `Also available to rent or buy in ${countryName}`
+    : 'Also available to rent or buy';
 
   const cardHtml = visible.map(name =>
     `<div class="rentbuy-strip__card" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></div>`
   ).join('');
 
-  const moreHtml = overflow > 0
-    ? `<div class="rentbuy-strip__card rentbuy-strip__card--more"><span>+${overflow} more</span></div>`
-    : '';
+  // "+N more" button — only rendered if there are overflow stores
+  const moreHtml = overflowNames.length > 0 ? `
+    <button class="rentbuy-strip__card rentbuy-strip__card--more" aria-expanded="false">
+      <span class="rentbuy-more-label">+${overflowNames.length} more</span>
+      <svg class="rentbuy-more-chevron" width="12" height="12" viewBox="0 0 20 20" fill="none">
+        <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>` : '';
+
+  // Overflow cards — chunked into rows of MAX_STRIP_STORES so each row fills cleanly
+  let overflowRowsHtml = '';
+  for (let i = 0; i < overflowNames.length; i += MAX_STRIP_STORES) {
+    const chunk = overflowNames.slice(i, i + MAX_STRIP_STORES);
+    overflowRowsHtml += `
+      <div class="rentbuy-strip__cards rentbuy-strip__cards--overflow">
+        ${chunk.map(name =>
+          `<div class="rentbuy-strip__card" title="${escapeHtml(name)}"><span>${escapeHtml(name)}</span></div>`
+        ).join('')}
+      </div>`;
+  }
+
+  const overflowSectionHtml = overflowNames.length > 0 ? `
+    <div class="rentbuy-strip__overflow">
+      <div class="rentbuy-strip__overflow-inner">
+        ${overflowRowsHtml}
+      </div>
+    </div>` : '';
 
   return `
     <div class="rentbuy-strip">
-      <p class="rentbuy-strip__label">Also available to rent or buy</p>
+      <p class="rentbuy-strip__label">${escapeHtml(label)}</p>
       <div class="rentbuy-strip__cards">
         ${cardHtml}${moreHtml}
       </div>
+      ${overflowSectionHtml}
     </div>
   `;
 }

@@ -853,6 +853,50 @@ button {
   font-size: 13px;
   color: var(--text-muted);
   font-weight: 600;
+  cursor: pointer;
+  gap: 4px;
+  background: none;
+  font-family: inherit;
+  flex-shrink: 0; /* don't let it get squeezed */
+}
+
+.rentbuy-strip__card--more:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.rentbuy-more-label {
+  white-space: nowrap;
+}
+
+.rentbuy-more-chevron {
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Overflow panel — grid animation identical to platform-row__body */
+.rentbuy-strip__overflow {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rentbuy-strip.expanded .rentbuy-strip__overflow {
+  grid-template-rows: 1fr;
+}
+
+.rentbuy-strip__overflow-inner {
+  overflow: hidden;
+}
+
+/* Each overflow row: same flex card behaviour as the main row */
+.rentbuy-strip__cards--overflow {
+  display: flex;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Chevron rotates when expanded */
+.rentbuy-strip.expanded .rentbuy-more-chevron {
+  transform: rotate(180deg);
 }
 
 /* ---- Spinners ---- */
