@@ -31,6 +31,7 @@ let currentAbortController = null;
 let debounceTimer = null;
 let allProvidersList = null;
 let currentTitle = null;
+let cachedUserCountryName = undefined; // undefined = not fetched yet, null = fetch failed
 
 // Welcome page state
 let welcomePosters = [];
@@ -634,8 +635,9 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '', run
     const idToNameMap = getProviderIdToNameMap();
     const platformData = transformToPlatformView(results, subscribedIds, idToNameMap);
     const rentBuyData  = transformRentBuyToStoreView(results);
+    const countryName  = await fetchUserCountryName();
 
-    renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime);
+    renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime, countryName);
   } catch (err) {
     console.error('Availability error:', err);
     area.innerHTML = `
@@ -681,7 +683,7 @@ function formatRuntime(minutes) {
   return `${h}h ${m}m`;
 }
 
-function renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime = null) {
+function renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime = null, countryName = null) {
   const area = $('#content-area');
   const subscribedProviders = getSubscribedProviders();
 
@@ -790,7 +792,7 @@ function renderResultsLayout(platformData, rentBuyData, title, posterPath, year,
         ${!hasAny ? `
           <p class="empty-results">Not available on any of your streaming subscriptions in any country.</p>
         ` : ''}
-        ${buildRentBuyStrip(rentBuyData)}
+        ${buildRentBuyStrip(rentBuyData, countryName)}
       </div>
 
     </div>
@@ -831,25 +833,26 @@ const MAX_STRIP_STORES = 5;
  * Detect the user's country name from their browser locale.
  * Returns e.g. "Spain" from "es-ES", or null if undetectable.
  */
-function detectUserCountryName() {
+async function fetchUserCountryName() {
+  if (cachedUserCountryName !== undefined) return cachedUserCountryName;
   try {
-    const locales = Array.from(navigator.languages || [navigator.language]);
-    for (const locale of locales) {
-      const parts = locale.split('-');
-      if (parts.length >= 2) {
-        const regionCode = parts[parts.length - 1].toUpperCase();
-        if (regionCode.length === 2) {
-          const names = new Intl.DisplayNames(['en'], { type: 'region' });
-          const name = names.of(regionCode);
-          if (name && name !== regionCode) return name;
-        }
-      }
+    const res = await fetch('https://api.country.is/', { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) throw new Error('non-ok');
+    const { country } = await res.json();
+    if (country && country.length === 2) {
+      const names = new Intl.DisplayNames(['en'], { type: 'region' });
+      const name = names.of(country);
+      cachedUserCountryName = (name && name !== country) ? name : null;
+    } else {
+      cachedUserCountryName = null;
     }
-  } catch {}
-  return null;
+  } catch {
+    cachedUserCountryName = null;
+  }
+  return cachedUserCountryName;
 }
 
-function buildRentBuyStrip(rentBuyData) {
+function buildRentBuyStrip(rentBuyData, countryName) {
   if (!rentBuyData || Object.keys(rentBuyData).length === 0) return '';
 
   const storeNames = Object.keys(rentBuyData); // already sorted by country count
@@ -858,7 +861,6 @@ function buildRentBuyStrip(rentBuyData) {
   const visible = storeNames.slice(0, MAX_STRIP_STORES);
   const overflowNames = storeNames.slice(MAX_STRIP_STORES);
 
-  const countryName = detectUserCountryName();
   const label = countryName
     ? `Also available to rent or buy in ${countryName}`
     : 'Also available to rent or buy';
