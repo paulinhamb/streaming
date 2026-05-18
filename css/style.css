@@ -629,14 +629,6 @@ button {
   border: 1.5px solid #aeaeae;
 }
 
-/* Star indicator — locally available in user's country */
-.availability-star {
-  width: 31.62px;
-  height: 30px;
-  flex-shrink: 0;
-  display: block;
-}
-
 /* Cell 2 — Logo (60px wide) */
 .pr-cell--logo {
   width: 60px;
