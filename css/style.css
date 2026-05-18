@@ -631,10 +631,9 @@ button {
 
 /* Star indicator — locally available in user's country */
 .availability-star {
-  width: 14px;
-  height: 13.283px;
+  width: 31.62px;
+  height: 30px;
   flex-shrink: 0;
-  aspect-ratio: 14 / 13.283;
   display: block;
 }
 
@@ -773,11 +772,6 @@ button {
   border-bottom: 1px solid #ffffff;
   padding: 0 6px;
   white-space: nowrap;
-}
-.country-cell--local {
-  background: rgba(255, 187, 0, 0.18);
-  color: #FFBB00;
-  font-weight: 700;
 }
 
 /* Empty state */
