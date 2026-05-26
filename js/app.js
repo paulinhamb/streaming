@@ -441,6 +441,7 @@ function setupWelcomeInteractions() {
 
   // ── Gyroscope tilt on touch devices ──────────────────────────────────────
   let onOrientation = null;
+  let gyroBtn = null; // iOS permission button (shown only when needed)
 
   if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
     let baseBeta = null, baseGamma = null;
@@ -461,18 +462,38 @@ function setupWelcomeInteractions() {
     };
 
     const startGyro = () => {
+      baseBeta = null; baseGamma = null; // reset baseline so tilt is relative to current hold
       window.addEventListener('deviceorientation', onOrientation);
     };
 
     if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
-      // iOS 13+ — request on first touch of the welcome state
-      state.addEventListener('touchstart', async function askPermission() {
-        state.removeEventListener('touchstart', askPermission);
-        try {
-          const granted = await DeviceOrientationEvent.requestPermission();
-          if (granted === 'granted') startGyro();
-        } catch (_) {}
-      }, { once: true, passive: true });
+      // iOS 13+: try immediately — works silently if already granted in a prior visit
+      DeviceOrientationEvent.requestPermission().then(result => {
+        if (result === 'granted') startGyro();
+        // Denied silently: do nothing, no button
+      }).catch(() => {
+        // Needs a user gesture — show a small intentional icon button on the poster stack
+        gyroBtn = document.createElement('button');
+        gyroBtn.className = 'gyro-btn';
+        gyroBtn.setAttribute('aria-label', 'Enable tilt effect');
+        gyroBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="7" y="2" width="10" height="18" rx="2"/>
+          <path d="M11 19h2"/>
+          <path d="M4 7q-1 3 0 6M20 7q1 3 0 6" stroke-width="1.5" stroke-dasharray="0"/>
+          <path d="M2 10q-.5 1.5 0 4M22 10q.5 1.5 0 4" stroke-width="1.2"/>
+        </svg>`;
+        gyroBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          try {
+            const granted = await DeviceOrientationEvent.requestPermission();
+            gyroBtn.remove(); gyroBtn = null;
+            if (granted === 'granted') startGyro();
+          } catch (_) {
+            gyroBtn.remove(); gyroBtn = null;
+          }
+        });
+        stack.appendChild(gyroBtn);
+      });
     } else if (window.DeviceOrientationEvent) {
       // Android / iOS 12 — no permission needed
       startGyro();
@@ -490,6 +511,7 @@ function setupWelcomeInteractions() {
     window.removeEventListener('touchend',   onDragEnd);
     state.removeEventListener('mouseleave',  onMouseLeave);
     if (onOrientation) window.removeEventListener('deviceorientation', onOrientation);
+    if (gyroBtn) { gyroBtn.remove(); gyroBtn = null; }
   };
 }
 
