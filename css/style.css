@@ -45,6 +45,8 @@
 
 html, body {
   height: 100%;
+  /* iOS Chrome/Safari: overflow-x on body alone doesn't clip — must be on html too */
+  overflow-x: hidden;
 }
 
 body {
@@ -53,7 +55,6 @@ body {
   color: var(--text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 
 a {
@@ -419,6 +420,15 @@ button {
   display: grid;
   grid-template-columns: 634px 1fr;
   min-height: calc(100vh - var(--header-height));
+  width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+}
+
+/* Prevent grid children from blowing out the layout on narrow screens */
+.results-left,
+.results-right {
+  min-width: 0;
 }
 
 /* ---- Left Column ---- */
@@ -627,6 +637,14 @@ button {
 .availability-dot--off {
   background: transparent;
   border: 1.5px solid #aeaeae;
+}
+
+/* Star indicator — locally available in user's country */
+.availability-star {
+  width: 31.62px;
+  height: 30px;
+  flex-shrink: 0;
+  display: block;
 }
 
 /* Cell 2 — Logo (60px wide) */
