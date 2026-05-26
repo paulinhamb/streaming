@@ -1278,7 +1278,7 @@ button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1287,13 +1287,12 @@ button {
   height: 50px;
   border-radius: 100px;
   border: none;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.58);
   color: #ffffff;
   cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  isolation: isolate;
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
