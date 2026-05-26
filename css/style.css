@@ -45,6 +45,8 @@
 
 html, body {
   height: 100%;
+  /* iOS Chrome/Safari: overflow-x on body alone doesn't clip — must be on html too */
+  overflow-x: hidden;
 }
 
 body {
@@ -53,7 +55,6 @@ body {
   color: var(--text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 
 a {
@@ -419,6 +420,15 @@ button {
   display: grid;
   grid-template-columns: 634px 1fr;
   min-height: calc(100vh - var(--header-height));
+  width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+}
+
+/* Prevent grid children from blowing out the layout on narrow screens */
+.results-left,
+.results-right {
+  min-width: 0;
 }
 
 /* ---- Left Column ---- */
@@ -627,6 +637,14 @@ button {
 .availability-dot--off {
   background: transparent;
   border: 1.5px solid #aeaeae;
+}
+
+/* Star indicator — locally available in user's country */
+.availability-star {
+  width: 31.62px;
+  height: 30px;
+  flex-shrink: 0;
+  display: block;
 }
 
 /* Cell 2 — Logo (60px wide) */
@@ -1209,5 +1227,47 @@ button {
 
   .country-cell {
     font-size: 11px;
+  }
+}
+
+/* ---- Mobile search expand ---- */
+@media (max-width: 900px) {
+  .header-logo-section,
+  .header-gear-section {
+    transition: width 0.2s ease, padding 0.2s ease, opacity 0.15s ease, border 0.2s ease;
+  }
+
+  /* Primary: pure CSS via :has() — works natively on iOS 16+, no JS timing issues */
+  .site-header:has(#search-input:focus) .header-logo-section,
+  .site-header.search-active .header-logo-section {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    border-right: none;
+  }
+
+  .site-header:has(#search-input:focus) .header-gear-section,
+  .site-header.search-active .header-gear-section {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  /* Dropdown goes full screen width, pinned below the header */
+  .site-header:has(#search-input:focus) .search-dropdown:not(.hidden),
+  .site-header.search-active .search-dropdown {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--header-height);
+    width: 100%;
+    max-height: calc(100svh - var(--header-height));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   }
 }
