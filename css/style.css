@@ -1287,7 +1287,7 @@ button {
   height: 50px;
   border-radius: 100px;
   border: none;
-  background: rgba(0, 0, 0, 0.58);
+  background: rgba(0, 0, 0, 0.85);
   color: #ffffff;
   cursor: pointer;
   backdrop-filter: blur(10px);
