@@ -31,6 +31,8 @@ let currentAbortController = null;
 let debounceTimer = null;
 let allProvidersList = null;
 let currentTitle = null;
+let cachedUserCountryName = undefined; // undefined = not fetched yet, null = fetch failed
+let cachedUserCountryCode = undefined; // raw 2-letter ISO code, e.g. "ES"
 
 // Welcome page state
 let welcomePosters = [];
@@ -454,6 +456,9 @@ function attachListeners() {
   const searchInput = $('#search-input');
   searchInput.addEventListener('input', onSearchInput);
   searchInput.addEventListener('keydown', onSearchKeydown);
+  searchInput.addEventListener('focus', () => {
+    $('.site-header').classList.add('search-active');
+  });
 
   // Close dropdown on outside click
   document.addEventListener('click', (e) => {
@@ -461,6 +466,7 @@ function attachListeners() {
     const searchSection = $('.header-search-section');
     if (dropdown && searchSection && !searchSection.contains(e.target)) {
       dropdown.classList.add('hidden');
+      $('.site-header').classList.remove('search-active');
     }
   });
 
@@ -556,6 +562,7 @@ function hideDropdown() {
   const d = $('#search-dropdown');
   d.classList.add('hidden');
   d.innerHTML = '';
+  $('.site-header').classList.remove('search-active');
 }
 
 // ---- Keyboard navigation ----
@@ -634,8 +641,10 @@ async function loadAvailability(id, mediaType, title, posterPath, year = '', run
     const idToNameMap = getProviderIdToNameMap();
     const platformData = transformToPlatformView(results, subscribedIds, idToNameMap);
     const rentBuyData  = transformRentBuyToStoreView(results);
+    const countryName  = await fetchUserCountryName();
+    const countryCode  = cachedUserCountryCode;
 
-    renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime);
+    renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime, countryName, countryCode);
   } catch (err) {
     console.error('Availability error:', err);
     area.innerHTML = `
@@ -681,7 +690,34 @@ function formatRuntime(minutes) {
   return `${h}h ${m}m`;
 }
 
-function renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime = null) {
+const STAR_SVG = `<svg class="availability-star" xmlns="http://www.w3.org/2000/svg" width="31.62" height="30" viewBox="0 0 34 34" fill="none">
+  <g filter="url(#sf_star_filter)">
+    <path d="M13.9326 13.0762L15.8901 10.5418C16.03 10.3554 16.196 10.2185 16.3883 10.1311C16.5805 10.0437 16.7815 10 16.9913 10C17.201 10 17.402 10.0437 17.5943 10.1311C17.7865 10.2185 17.9526 10.3554 18.0924 10.5418L20.0499 13.0762L23.0212 14.0724C23.3242 14.1656 23.563 14.3375 23.7378 14.588C23.9126 14.8385 24 15.1153 24 15.4182C24 15.5581 23.9796 15.6979 23.9388 15.8377C23.898 15.9775 23.831 16.1115 23.7378 16.2397L21.8152 18.9663L21.8851 21.8327C21.8968 22.2405 21.7628 22.5843 21.4831 22.8639C21.2035 23.1436 20.8772 23.2834 20.5044 23.2834C20.4811 23.2834 20.3529 23.2659 20.1199 23.231L16.9913 22.3571L13.8627 23.231C13.8044 23.2543 13.7403 23.2688 13.6704 23.2747C13.6005 23.2805 13.5364 23.2834 13.4782 23.2834C13.1053 23.2834 12.779 23.1436 12.4994 22.8639C12.2197 22.5843 12.0857 22.2405 12.0974 21.8327L12.1673 18.9488L10.2622 16.2397C10.169 16.1115 10.102 15.9775 10.0612 15.8377C10.0204 15.6979 10 15.5581 10 15.4182C10 15.1269 10.0845 14.856 10.2534 14.6055C10.4224 14.355 10.6583 14.1773 10.9613 14.0724L13.9326 13.0762Z" fill="#fe9a00"/>
+  </g>
+  <defs>
+    <filter id="sf_star_filter" x="0" y="0" width="34" height="33.2834" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset/><feGaussianBlur stdDeviation="5"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.733333 0 0 0 0 0 0 0 0 0.2 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset/><feGaussianBlur stdDeviation="2.5"/>
+      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0"/>
+      <feBlend mode="lighten" in2="shape" result="effect2_innerShadow"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset/><feGaussianBlur stdDeviation="0.5"/>
+      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.930394 0 0 0 0 0.738976 0 0 0 1 0"/>
+      <feBlend mode="overlay" in2="effect2_innerShadow" result="effect3_innerShadow"/>
+    </filter>
+  </defs>
+</svg>`;
+
+function renderResultsLayout(platformData, rentBuyData, title, posterPath, year, mediaType, runtime = null, countryName = null, countryCode = null) {
   const area = $('#content-area');
   const subscribedProviders = getSubscribedProviders();
 
@@ -715,10 +751,15 @@ function renderResultsLayout(platformData, rentBuyData, title, posterPath, year,
       ? `<img src="${logoSrc}" alt="">`
       : `<div class="logo-placeholder"></div>`;
 
+    const isLocal = hasCountries && countryCode && data.countries.includes(countryCode);
     const dotClass = hasCountries ? 'availability-dot--on' : 'availability-dot--off';
     const rowClass = hasCountries ? 'platform-row--available' : 'platform-row--unavailable';
 
-    // Country grid cells
+    const indicatorHtml = isLocal
+      ? STAR_SVG
+      : `<span class="availability-dot ${dotClass}"></span>`;
+
+    // Country grid cells — highlight user's country
     const countryGridHtml = hasCountries
       ? data.countries.map(code =>
           `<span class="country-cell" title="${getCountryName(code)}">${countryFlag(code)} ${code}</span>`
@@ -729,7 +770,7 @@ function renderResultsLayout(platformData, rentBuyData, title, posterPath, year,
       <div class="platform-row ${rowClass}">
         <button class="platform-row__header" ${!hasCountries ? 'disabled' : ''}>
           <span class="pr-cell pr-cell--dot">
-            <span class="availability-dot ${dotClass}"></span>
+            ${indicatorHtml}
           </span>
           <span class="pr-cell pr-cell--logo">
             ${logoHtml}
@@ -790,7 +831,7 @@ function renderResultsLayout(platformData, rentBuyData, title, posterPath, year,
         ${!hasAny ? `
           <p class="empty-results">Not available on any of your streaming subscriptions in any country.</p>
         ` : ''}
-        ${buildRentBuyStrip(rentBuyData)}
+        ${buildRentBuyStrip(rentBuyData, countryName)}
       </div>
 
     </div>
@@ -831,25 +872,29 @@ const MAX_STRIP_STORES = 5;
  * Detect the user's country name from their browser locale.
  * Returns e.g. "Spain" from "es-ES", or null if undetectable.
  */
-function detectUserCountryName() {
+async function fetchUserCountryName() {
+  if (cachedUserCountryName !== undefined) return cachedUserCountryName;
   try {
-    const locales = Array.from(navigator.languages || [navigator.language]);
-    for (const locale of locales) {
-      const parts = locale.split('-');
-      if (parts.length >= 2) {
-        const regionCode = parts[parts.length - 1].toUpperCase();
-        if (regionCode.length === 2) {
-          const names = new Intl.DisplayNames(['en'], { type: 'region' });
-          const name = names.of(regionCode);
-          if (name && name !== regionCode) return name;
-        }
-      }
+    const res = await fetch('https://api.country.is/', { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) throw new Error('non-ok');
+    const { country } = await res.json();
+    if (country && country.length === 2) {
+      cachedUserCountryCode = country.toUpperCase();
+      const names = new Intl.DisplayNames(['en'], { type: 'region' });
+      const name = names.of(country);
+      cachedUserCountryName = (name && name !== country) ? name : null;
+    } else {
+      cachedUserCountryCode = null;
+      cachedUserCountryName = null;
     }
-  } catch {}
-  return null;
+  } catch {
+    cachedUserCountryCode = null;
+    cachedUserCountryName = null;
+  }
+  return cachedUserCountryName;
 }
 
-function buildRentBuyStrip(rentBuyData) {
+function buildRentBuyStrip(rentBuyData, countryName) {
   if (!rentBuyData || Object.keys(rentBuyData).length === 0) return '';
 
   const storeNames = Object.keys(rentBuyData); // already sorted by country count
@@ -858,7 +903,6 @@ function buildRentBuyStrip(rentBuyData) {
   const visible = storeNames.slice(0, MAX_STRIP_STORES);
   const overflowNames = storeNames.slice(MAX_STRIP_STORES);
 
-  const countryName = detectUserCountryName();
   const label = countryName
     ? `Also available to rent or buy in ${countryName}`
     : 'Also available to rent or buy';

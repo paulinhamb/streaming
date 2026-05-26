@@ -1229,3 +1229,42 @@ button {
     font-size: 11px;
   }
 }
+
+/* ---- Mobile search expand ---- */
+@media (max-width: 900px) {
+  /* Smooth collapse for logo + gear when search is active */
+  .header-logo-section,
+  .header-gear-section {
+    transition: width 0.2s ease, padding 0.2s ease, opacity 0.15s ease, border 0.2s ease;
+  }
+
+  .site-header.search-active .header-logo-section {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    border-right: none;
+  }
+
+  .site-header.search-active .header-gear-section {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  /* Dropdown goes full screen width, pinned below the header */
+  .site-header.search-active .search-dropdown {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--header-height);
+    width: 100%;
+    max-height: calc(100svh - var(--header-height));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+}
