@@ -1180,7 +1180,20 @@ button {
     font-size: 13px;
   }
 
-  /* Welcome state — flex-start + auto stack margins are set in base, nothing to override here */
+  /* Welcome state — lock to visible viewport on mobile so there's never any scroll */
+  .welcome-state {
+    height: calc(100svh - var(--header-height));
+    padding-bottom: 24px;
+  }
+
+  /* Poster stack — recalculate using svh + account for subtitle (~44px) + bottom padding (24px) */
+  .poster-stack {
+    width: min(
+      460px,
+      calc((100svh - var(--header-height) - 148px) * 460 / 662),
+      calc(100vw - 48px)
+    );
+  }
 
   .hero-title {
     font-size: 48px;
