@@ -30,6 +30,7 @@ jobs:
         working-directory: scripts
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
         run: node update-events.js
 
       - name: Commit updated events.json
