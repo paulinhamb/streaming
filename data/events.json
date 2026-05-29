@@ -5,7 +5,10 @@
     {
       "id": "roland-garros",
       "name": "Roland Garros",
-      "aliases": ["French Open", "Roland Garros tennis"],
+      "aliases": [
+        "French Open",
+        "Roland Garros tennis"
+      ],
       "sport": "tennis",
       "emoji": "🎾",
       "period": "Late May – Early June",
@@ -13,34 +16,119 @@
       "official_broadcasters_url": "https://www.rolandgarros.com/en-us/broadcasters",
       "wikipedia": "French_Open",
       "broadcasts": {
-        "FR": { "channel": "France TV Sport", "free": true, "url": "https://www.france.tv/sport" },
-        "GB": { "channel": "Eurosport / Amazon Prime", "free": false },
-        "DE": { "channel": "Eurosport", "free": false },
-        "ES": { "channel": "Eurosport", "free": false },
-        "IT": { "channel": "Eurosport", "free": false },
-        "NL": { "channel": "Eurosport", "free": false },
-        "BE": { "channel": "Eurosport", "free": false },
-        "PT": { "channel": "Eurosport", "free": false },
-        "AT": { "channel": "Eurosport", "free": false },
-        "PL": { "channel": "Eurosport", "free": false },
-        "SE": { "channel": "Eurosport", "free": false },
-        "DK": { "channel": "Eurosport", "free": false },
-        "NO": { "channel": "Eurosport", "free": false },
-        "FI": { "channel": "Eurosport", "free": false },
-        "CH": { "channel": "Eurosport", "free": false },
-        "AU": { "channel": "Stan Sport", "free": false },
-        "US": { "channel": "Tennis Channel / NBC Sports", "free": false },
-        "JP": { "channel": "WOWOW / NHK", "free": false },
-        "CA": { "channel": "TSN / RDS", "free": false },
-        "BR": { "channel": "ESPN Brasil", "free": false },
-        "IN": { "channel": "Star Sports", "free": false },
-        "ZA": { "channel": "SuperSport", "free": false }
+        "FR": {
+          "channel": "France Télévisions / France 2 / France 3 / France 4 / france.tv Sport / Prime Video",
+          "free": true
+        },
+        "US": {
+          "channel": "TNT / truTV / HBO Max / Tennis Channel",
+          "free": false
+        },
+        "GB": {
+          "channel": "TNT Sports / discovery+",
+          "free": false
+        },
+        "IE": {
+          "channel": "TNT Sports / discovery+",
+          "free": false
+        },
+        "AU": {
+          "channel": "Channel 9 / 9Gem / 9Go / 9Now / Stan Sport",
+          "free": true
+        },
+        "DE": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "ES": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "NL": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "IT": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "AT": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "BE": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "PT": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "CH": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "SE": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "NO": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "DK": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "FI": {
+          "channel": "Eurosport / Max / discovery+",
+          "free": false
+        },
+        "CA": {
+          "channel": "TSN / RDS / TSN+ / RDS+",
+          "free": false
+        },
+        "BR": {
+          "channel": "ESPN",
+          "free": false
+        },
+        "CN": {
+          "channel": "CCTV",
+          "free": true
+        },
+        "JP": {
+          "channel": "WOWOW",
+          "free": false
+        },
+        "IN": {
+          "channel": "Sony",
+          "free": false
+        },
+        "KR": {
+          "channel": "Eurosport",
+          "free": false
+        },
+        "NZ": {
+          "channel": "Eurosport",
+          "free": false
+        },
+        "AD": {
+          "channel": "Prime Video",
+          "free": false
+        },
+        "MC": {
+          "channel": "Prime Video",
+          "free": false
+        }
       }
     },
     {
       "id": "wimbledon",
       "name": "Wimbledon",
-      "aliases": ["The Championships Wimbledon", "Wimbledon tennis"],
+      "aliases": [
+        "The Championships Wimbledon",
+        "Wimbledon tennis"
+      ],
       "sport": "tennis",
       "emoji": "🎾",
       "period": "Late June – Early July",
@@ -48,210 +136,690 @@
       "official_broadcasters_url": "https://www.wimbledon.com/en_GB/about_wimbledon/broadcasters.html",
       "wikipedia": "The_Championships,_Wimbledon",
       "broadcasts": {
-        "GB": { "channel": "BBC One / BBC Two", "free": true, "url": "https://www.bbc.co.uk/sport/tennis" },
-        "FR": { "channel": "Eurosport / Amazon Prime", "free": false },
-        "DE": { "channel": "Sky Germany / Eurosport", "free": false },
-        "ES": { "channel": "Eurosport", "free": false },
-        "IT": { "channel": "Eurosport", "free": false },
-        "NL": { "channel": "Eurosport", "free": false },
-        "BE": { "channel": "Eurosport", "free": false },
-        "AU": { "channel": "Nine Network / Stan Sport", "free": false },
-        "US": { "channel": "ESPN", "free": false },
-        "JP": { "channel": "WOWOW", "free": false },
-        "CA": { "channel": "TSN", "free": false },
-        "BR": { "channel": "ESPN Brasil", "free": false },
-        "IN": { "channel": "Star Sports", "free": false }
+        "GB": {
+          "channel": "BBC One / BBC Two / BBC Red Button / TNT Sports (highlights)",
+          "free": true
+        },
+        "US": {
+          "channel": "ESPN / ESPN2 / Tennis Channel",
+          "free": false
+        },
+        "DE": {
+          "channel": "Sky Sport",
+          "free": false
+        },
+        "PT": {
+          "channel": "Sport TV",
+          "free": false
+        },
+        "NL": {
+          "channel": "Eurosport 1 / Ziggo Sport",
+          "free": false
+        },
+        "BR": {
+          "channel": "ESPN / Disney+",
+          "free": false
+        },
+        "CA": {
+          "channel": "TSN / Sportsnet",
+          "free": false
+        }
       }
     },
     {
       "id": "us-open-tennis",
       "name": "US Open",
-      "aliases": ["US Open tennis", "United States Open"],
+      "aliases": [
+        "US Open tennis",
+        "United States Open"
+      ],
       "sport": "tennis",
       "emoji": "🎾",
       "period": "Late August – Early September",
       "official_url": "https://www.usopen.org",
       "wikipedia": "US_Open_(tennis)",
       "broadcasts": {
-        "US": { "channel": "ESPN", "free": false },
-        "GB": { "channel": "Amazon Prime Video", "free": false },
-        "FR": { "channel": "Amazon Prime Video / Eurosport", "free": false },
-        "DE": { "channel": "Eurosport", "free": false },
-        "ES": { "channel": "Eurosport", "free": false },
-        "IT": { "channel": "Eurosport / Sky Sport", "free": false },
-        "AU": { "channel": "Nine Network / Stan Sport", "free": false },
-        "JP": { "channel": "WOWOW / NHK", "free": false },
-        "CA": { "channel": "TSN", "free": false },
-        "BR": { "channel": "ESPN Brasil", "free": false },
-        "IN": { "channel": "Star Sports", "free": false }
+        "US": {
+          "channel": "ESPN / ESPN2 / ABC / ESPN+",
+          "free": false
+        },
+        "AU": {
+          "channel": "9Network / 9Now / Stan Sport",
+          "free": true
+        },
+        "GB": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "IT": {
+          "channel": "SuperTennis",
+          "free": true
+        }
       }
     },
     {
       "id": "australian-open",
       "name": "Australian Open",
-      "aliases": ["AO tennis", "Aus Open"],
+      "aliases": [
+        "AO tennis",
+        "Aus Open"
+      ],
       "sport": "tennis",
       "emoji": "🎾",
       "period": "Mid–Late January",
       "official_url": "https://www.ausopen.com",
       "wikipedia": "Australian_Open",
       "broadcasts": {
-        "AU": { "channel": "Channel 9 / 9Now", "free": true, "url": "https://www.9now.com.au" },
-        "GB": { "channel": "Eurosport / Amazon Prime", "free": false },
-        "FR": { "channel": "Eurosport", "free": false },
-        "DE": { "channel": "Eurosport", "free": false },
-        "ES": { "channel": "Eurosport", "free": false },
-        "IT": { "channel": "Eurosport", "free": false },
-        "NL": { "channel": "Eurosport", "free": false },
-        "US": { "channel": "ESPN", "free": false },
-        "JP": { "channel": "WOWOW / NHK", "free": false },
-        "CA": { "channel": "TSN", "free": false },
-        "BR": { "channel": "ESPN Brasil", "free": false },
-        "IN": { "channel": "Star Sports", "free": false }
+        "AU": {
+          "channel": "Nine Network / Nine GEM / Stan Sport",
+          "free": true
+        },
+        "US": {
+          "channel": "ESPN / ESPN2 / ESPN+ / Tennis Channel",
+          "free": false
+        },
+        "GB": {
+          "channel": "Eurosport / discovery+",
+          "free": false
+        },
+        "DE": {
+          "channel": "Eurosport / discovery+",
+          "free": false
+        },
+        "FR": {
+          "channel": "Eurosport / discovery+",
+          "free": false
+        },
+        "IT": {
+          "channel": "Eurosport / discovery+",
+          "free": false
+        },
+        "ES": {
+          "channel": "Eurosport / discovery+",
+          "free": false
+        },
+        "NL": {
+          "channel": "Eurosport / discovery+",
+          "free": false
+        },
+        "IN": {
+          "channel": "Sony Sports Network / SonyLIV",
+          "free": false
+        },
+        "JP": {
+          "channel": "WOWOW",
+          "free": false
+        },
+        "CN": {
+          "channel": "CCTV / Migu",
+          "free": true
+        },
+        "NZ": {
+          "channel": "Sky NZ",
+          "free": false
+        },
+        "SG": {
+          "channel": "SPOTV",
+          "free": false
+        },
+        "MY": {
+          "channel": "SPOTV",
+          "free": false
+        },
+        "TH": {
+          "channel": "SPOTV",
+          "free": false
+        }
       }
     },
     {
       "id": "champions-league",
       "name": "UEFA Champions League",
-      "aliases": ["Champions League", "UCL", "CL football"],
+      "aliases": [
+        "Champions League",
+        "UCL",
+        "CL football"
+      ],
       "sport": "football",
       "emoji": "⚽",
       "period": "September – June (Final: late May)",
       "official_url": "https://www.uefa.com/uefachampionsleague",
       "wikipedia": "UEFA_Champions_League",
       "broadcasts": {
-        "US": { "channel": "CBS Sports / Paramount+", "free": false },
-        "GB": { "channel": "TNT Sports / discovery+", "free": false },
-        "DE": { "channel": "DAZN / Amazon Prime", "free": false },
-        "ES": { "channel": "Movistar+", "free": false },
-        "IT": { "channel": "Amazon Prime / Sky Sport", "free": false },
-        "FR": { "channel": "Canal+", "free": false },
-        "NL": { "channel": "Ziggo Sport", "free": false },
-        "PT": { "channel": "SIC / TVI / Sport TV", "free": false },
-        "AU": { "channel": "Stan Sport", "free": false },
-        "BR": { "channel": "TNT Sports / MAX", "free": false },
-        "JP": { "channel": "DAZN", "free": false },
-        "CA": { "channel": "DAZN", "free": false },
-        "IN": { "channel": "Sony LIV", "free": false }
+        "AL": {
+          "channel": "Tring / Vizion Plus",
+          "free": true
+        },
+        "AM": {
+          "channel": "Fast Sports",
+          "free": false
+        },
+        "AU": {
+          "channel": "Stan Sport",
+          "free": false
+        },
+        "AT": {
+          "channel": "Sky Sport / Canal+",
+          "free": false
+        },
+        "SE": {
+          "channel": "Viaplay",
+          "free": false
+        },
+        "US": {
+          "channel": "CBS / Paramount+ / CBS Sports Network / Univision (TUDN)",
+          "free": true
+        },
+        "PT": {
+          "channel": "DAZN",
+          "free": false
+        },
+        "RO": {
+          "channel": "Digi Sport",
+          "free": false
+        },
+        "CH": {
+          "channel": "Blue Sport",
+          "free": false
+        },
+        "FI": {
+          "channel": "Nelonen",
+          "free": true
+        },
+        "IE": {
+          "channel": "RTÉ",
+          "free": true
+        }
       }
     },
     {
       "id": "europa-league",
       "name": "UEFA Europa League",
-      "aliases": ["Europa League", "UEL"],
+      "aliases": [
+        "Europa League",
+        "UEL"
+      ],
       "sport": "football",
       "emoji": "⚽",
       "period": "September – May",
       "official_url": "https://www.uefa.com/uefaeuropaleague",
       "wikipedia": "UEFA_Europa_League",
       "broadcasts": {
-        "GB": { "channel": "TNT Sports / discovery+", "free": false },
-        "DE": { "channel": "RTL / NITRO", "free": true, "url": "https://www.rtl.de" },
-        "ES": { "channel": "Movistar+", "free": false },
-        "IT": { "channel": "Sky Sport / TV8", "free": false },
-        "FR": { "channel": "Canal+", "free": false },
-        "NL": { "channel": "RTL 7", "free": true },
-        "PT": { "channel": "Sport TV", "free": false },
-        "AU": { "channel": "Stan Sport", "free": false },
-        "US": { "channel": "CBS Sports / Paramount+", "free": false },
-        "BR": { "channel": "TNT Sports", "free": false }
+        "AL": {
+          "channel": "Digit-Alb / RTSH",
+          "free": true
+        },
+        "AM": {
+          "channel": "Fast Media",
+          "free": false
+        },
+        "AT": {
+          "channel": "Canal+ / Sky Austria / Servus TV",
+          "free": true
+        },
+        "AZ": {
+          "channel": "İçtimai TV / TVNet",
+          "free": true
+        },
+        "BY": {
+          "channel": "Okko / CTV",
+          "free": true
+        },
+        "BE": {
+          "channel": "RTBF / Telenet / Be TV",
+          "free": true
+        },
+        "BA": {
+          "channel": "Arena Sport",
+          "free": false
+        },
+        "BG": {
+          "channel": "bTV / A1",
+          "free": true
+        },
+        "HR": {
+          "channel": "Arena Sport",
+          "free": false
+        },
+        "CY": {
+          "channel": "CyBC / CYTA",
+          "free": true
+        },
+        "CZ": {
+          "channel": "TV Nova / Sport 1",
+          "free": true
+        },
+        "DK": {
+          "channel": "Disney+",
+          "free": false
+        },
+        "EE": {
+          "channel": "TV3",
+          "free": true
+        },
+        "FI": {
+          "channel": "Viaplay",
+          "free": false
+        },
+        "FR": {
+          "channel": "Canal+",
+          "free": false
+        },
+        "GE": {
+          "channel": "Setanta / Silknet",
+          "free": false
+        },
+        "DE": {
+          "channel": "RTL",
+          "free": true
+        },
+        "GI": {
+          "channel": "Gibtelecom",
+          "free": false
+        },
+        "GR": {
+          "channel": "Antenna TV / Cosmote TV",
+          "free": true
+        },
+        "HU": {
+          "channel": "M4 Sport / RTL",
+          "free": true
+        },
+        "IS": {
+          "channel": "Syn / Viaplay",
+          "free": false
+        },
+        "IL": {
+          "channel": "Charlton",
+          "free": false
+        },
+        "IT": {
+          "channel": "Sky",
+          "free": false
+        },
+        "KZ": {
+          "channel": "Qaz Sport",
+          "free": true
+        },
+        "XK": {
+          "channel": "RTK / Artmotion",
+          "free": true
+        },
+        "LV": {
+          "channel": "TV3",
+          "free": true
+        },
+        "LI": {
+          "channel": "blue / RTL / Sky Austria",
+          "free": true
+        },
+        "LT": {
+          "channel": "TV3",
+          "free": true
+        },
+        "LU": {
+          "channel": "RTL / Be TV",
+          "free": true
+        },
+        "MT": {
+          "channel": "PBS / Melita",
+          "free": true
+        },
+        "MD": {
+          "channel": "Setanta / Jurnal TV",
+          "free": true
+        },
+        "ME": {
+          "channel": "Arena Sport",
+          "free": false
+        },
+        "NL": {
+          "channel": "Ziggo Sport",
+          "free": false
+        },
+        "MK": {
+          "channel": "Arena Sport",
+          "free": false
+        },
+        "NO": {
+          "channel": "Viaplay",
+          "free": false
+        },
+        "PL": {
+          "channel": "Polsat",
+          "free": true
+        },
+        "PT": {
+          "channel": "Sport TV / DAZN",
+          "free": false
+        },
+        "IE": {
+          "channel": "Premier Sports",
+          "free": false
+        },
+        "RO": {
+          "channel": "DIGI / Clever Media",
+          "free": false
+        },
+        "RU": {
+          "channel": "Okko",
+          "free": false
+        },
+        "RS": {
+          "channel": "Arena Sport",
+          "free": false
+        },
+        "SK": {
+          "channel": "JOJ / Sport1",
+          "free": true
+        },
+        "SI": {
+          "channel": "Šport TV / Sportklub",
+          "free": false
+        },
+        "ES": {
+          "channel": "Telefonica",
+          "free": false
+        },
+        "SE": {
+          "channel": "Disney+",
+          "free": false
+        },
+        "CH": {
+          "channel": "blue / SRG",
+          "free": true
+        },
+        "TR": {
+          "channel": "TRT",
+          "free": true
+        },
+        "UA": {
+          "channel": "Megogo / Football TV UA",
+          "free": false
+        },
+        "GB": {
+          "channel": "HBO Max",
+          "free": false
+        },
+        "CM": {
+          "channel": "CRTV / SuperSport / New World TV",
+          "free": true
+        },
+        "MU": {
+          "channel": "MBC / SuperSport / New World TV",
+          "free": true
+        },
+        "NG": {
+          "channel": "SuperSport",
+          "free": false
+        },
+        "ZA": {
+          "channel": "SuperSport",
+          "free": false
+        },
+        "BR": {
+          "channel": "CazéTV",
+          "free": true
+        },
+        "CA": {
+          "channel": "DAZN",
+          "free": false
+        },
+        "CR": {
+          "channel": "8 Clanes / Claro",
+          "free": false
+        },
+        "DO": {
+          "channel": "Televideo / Claro / CPSL",
+          "free": false
+        },
+        "HT": {
+          "channel": "Canal+ / CPSL",
+          "free": false
+        },
+        "HN": {
+          "channel": "8 Clanes / Claro",
+          "free": false
+        },
+        "MX": {
+          "channel": "Claro / ESPN",
+          "free": false
+        },
+        "PA": {
+          "channel": "8 Clanes / Claro",
+          "free": false
+        },
+        "SR": {
+          "channel": "ATV / ESPN / CPSL",
+          "free": true
+        },
+        "US": {
+          "channel": "Paramount+ / DAZN / TUDN / CBS Sports Network",
+          "free": false
+        },
+        "AU": {
+          "channel": "Stan Sport",
+          "free": false
+        },
+        "BN": {
+          "channel": "beIN",
+          "free": false
+        },
+        "KH": {
+          "channel": "beIN",
+          "free": false
+        },
+        "CN": {
+          "channel": "iQIYI",
+          "free": false
+        },
+        "HK": {
+          "channel": "beIN",
+          "free": false
+        },
+        "IN": {
+          "channel": "Sony",
+          "free": false
+        },
+        "ID": {
+          "channel": "beIN / SCTV",
+          "free": true
+        },
+        "JP": {
+          "channel": "WOWOW / U-NEXT",
+          "free": false
+        }
       }
     },
     {
       "id": "fifa-world-cup",
       "name": "FIFA World Cup",
-      "aliases": ["World Cup", "Football World Cup", "Soccer World Cup", "Mundial"],
+      "aliases": [
+        "World Cup",
+        "Football World Cup",
+        "Soccer World Cup",
+        "Mundial"
+      ],
       "sport": "football",
       "emoji": "⚽",
       "period": "Every 4 years (next: 2026)",
       "official_url": "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup",
       "wikipedia": "FIFA_World_Cup",
       "broadcasts": {
-        "GB": { "channel": "BBC / ITV", "free": true, "url": "https://www.bbc.co.uk/sport/football" },
-        "DE": { "channel": "ARD / ZDF", "free": true, "url": "https://www.zdf.de" },
-        "FR": { "channel": "TF1 / M6 / France TV", "free": true, "url": "https://www.tf1.fr" },
-        "ES": { "channel": "TVE / La 1", "free": true, "url": "https://www.rtve.es" },
-        "IT": { "channel": "RAI", "free": true, "url": "https://www.rai.it" },
-        "PT": { "channel": "RTP / SIC", "free": true, "url": "https://www.rtp.pt" },
-        "NL": { "channel": "NOS / NPO1", "free": true, "url": "https://www.npo.nl" },
-        "BE": { "channel": "RTBF / VRT", "free": true, "url": "https://www.rtbf.be" },
-        "AU": { "channel": "SBS", "free": true, "url": "https://www.sbs.com.au" },
-        "US": { "channel": "Fox / Telemundo", "free": true, "url": "https://www.fox.com" },
-        "BR": { "channel": "TV Globo / TV Bandeirantes / CazeTV", "free": true, "url": "https://www.youtube.com/@CazeTVOficial" },
-        "AR": { "channel": "TV Pública / TyC Sports", "free": true, "url": "https://www.tvpublica.com.ar" },
-        "MX": { "channel": "Azteca / Televisa / ViX", "free": true },
-        "JP": { "channel": "NHK / Fuji TV", "free": true, "url": "https://www.nhk.or.jp" },
-        "CA": { "channel": "CTV / TSN", "free": true, "url": "https://www.ctv.ca" },
-        "ZA": { "channel": "SABC", "free": true },
-        "IN": { "channel": "Sports18 / DD Sports", "free": false },
-        "KR": { "channel": "KBS / MBC / SBS", "free": true },
-        "PL": { "channel": "TVP", "free": true },
-        "SE": { "channel": "SVT", "free": true },
-        "DK": { "channel": "DR", "free": true },
-        "NO": { "channel": "NRK / TV2", "free": true },
-        "FI": { "channel": "Yle", "free": true },
-        "AT": { "channel": "ORF", "free": true },
-        "CH": { "channel": "SRF", "free": true }
+        "US": {
+          "channel": "Fox / Fox Sports / Telemundo / Peacock / Futbol de Primera (radio)",
+          "free": true
+        },
+        "CA": {
+          "channel": "CTV / TSN / RDS / Bell Media",
+          "free": true
+        },
+        "MX": {
+          "channel": "TelevisaUnivision / TV Azteca / ViX",
+          "free": true
+        },
+        "GB": {
+          "channel": "BBC / ITV",
+          "free": true
+        },
+        "BR": {
+          "channel": "TV Globo / CazéTV / YouTube",
+          "free": true
+        },
+        "AR": {
+          "channel": "Disney+ Premium / TyC Sports / Televisión Pública",
+          "free": true
+        },
+        "CO": {
+          "channel": "Disney+ Premium / Caracol / RCN",
+          "free": true
+        },
+        "EC": {
+          "channel": "Disney+ Premium",
+          "free": false
+        },
+        "UY": {
+          "channel": "Disney+ Premium",
+          "free": false
+        },
+        "CL": {
+          "channel": "Free-to-air (30 matches)",
+          "free": true
+        },
+        "PE": {
+          "channel": "Free-to-air (30 matches)",
+          "free": true
+        },
+        "VE": {
+          "channel": "Free-to-air (30 matches)",
+          "free": true
+        },
+        "AU": {
+          "channel": "SBS",
+          "free": true
+        }
       }
     },
     {
       "id": "uefa-euro",
       "name": "UEFA European Championship",
-      "aliases": ["Euro", "UEFA Euro", "European Championship football"],
+      "aliases": [
+        "Euro",
+        "UEFA Euro",
+        "European Championship football"
+      ],
       "sport": "football",
       "emoji": "⚽",
       "period": "Every 4 years (next: 2028)",
       "official_url": "https://www.uefa.com/uefaeuro",
       "wikipedia": "UEFA_European_Championship",
       "broadcasts": {
-        "GB": { "channel": "BBC / ITV", "free": true, "url": "https://www.bbc.co.uk/sport/football" },
-        "DE": { "channel": "ARD / ZDF", "free": true, "url": "https://www.zdf.de" },
-        "FR": { "channel": "TF1 / M6 / France TV", "free": true, "url": "https://www.tf1.fr" },
-        "ES": { "channel": "TVE / La 1", "free": true, "url": "https://www.rtve.es" },
-        "IT": { "channel": "RAI", "free": true, "url": "https://www.rai.it" },
-        "PT": { "channel": "RTP", "free": true, "url": "https://www.rtp.pt" },
-        "NL": { "channel": "NOS / NPO1", "free": true, "url": "https://www.npo.nl" },
-        "BE": { "channel": "RTBF / VRT", "free": true, "url": "https://www.rtbf.be" },
-        "PL": { "channel": "TVP", "free": true },
-        "SE": { "channel": "SVT", "free": true },
-        "DK": { "channel": "DR", "free": true },
-        "NO": { "channel": "NRK / TV2", "free": true },
-        "FI": { "channel": "Yle", "free": true },
-        "AT": { "channel": "ORF", "free": true },
-        "CH": { "channel": "SRF", "free": true },
-        "AU": { "channel": "SBS", "free": true },
-        "US": { "channel": "Fox Sports / Univision", "free": true },
-        "CA": { "channel": "TSN / RDS", "free": false },
-        "BR": { "channel": "TV Globo / SporTV", "free": false }
+        "US": {
+          "channel": "Fox Sports",
+          "free": false
+        },
+        "CA": {
+          "channel": "TSN (English) / TVA (French)",
+          "free": false
+        },
+        "DE": {
+          "channel": "DAZN / ServusTV",
+          "free": true
+        },
+        "AT": {
+          "channel": "DAZN / ServusTV",
+          "free": true
+        },
+        "CH": {
+          "channel": "DAZN",
+          "free": false
+        },
+        "GB": {
+          "channel": "talkSPORT (radio)",
+          "free": true
+        },
+        "BE": {
+          "channel": "RTBF / VTM",
+          "free": true
+        },
+        "BG": {
+          "channel": "BNT / Nova",
+          "free": true
+        },
+        "RU": {
+          "channel": "Okko",
+          "free": false
+        }
       }
     },
     {
       "id": "copa-america",
       "name": "Copa América",
-      "aliases": ["Copa America", "Copa America football"],
+      "aliases": [
+        "Copa America",
+        "Copa America football"
+      ],
       "sport": "football",
       "emoji": "⚽",
       "period": "Every 4 years (staggered with World Cup)",
       "official_url": "https://www.conmebol.com/copa-america",
       "wikipedia": "Copa_Am%C3%A9rica",
       "broadcasts": {
-        "US": { "channel": "Fox / Univision / FS1", "free": true, "url": "https://www.fox.com" },
-        "BR": { "channel": "TV Globo / SporTV", "free": true, "url": "https://www.globo.com" },
-        "AR": { "channel": "TV Pública / TyC Sports", "free": true },
-        "CO": { "channel": "Caracol TV / RCN", "free": true },
-        "CL": { "channel": "Canal 13 / TVN", "free": true },
-        "MX": { "channel": "Azteca / ViX", "free": true },
-        "PE": { "channel": "América TV", "free": true },
-        "GB": { "channel": "Sky Sports / Premier Sports", "free": false },
-        "DE": { "channel": "DAZN", "free": false },
-        "ES": { "channel": "Movistar+ / RTVE", "free": false },
-        "IT": { "channel": "DAZN / Sky Sport", "free": false }
+        "AR": {
+          "channel": "DSports",
+          "free": false
+        },
+        "BO": {
+          "channel": "Red Unitel",
+          "free": true
+        },
+        "BR": {
+          "channel": "Sportv",
+          "free": false
+        },
+        "CL": {
+          "channel": "Canal 13 / DSports",
+          "free": true
+        },
+        "CO": {
+          "channel": "Caracol TV / RCN / DSports",
+          "free": true
+        },
+        "EC": {
+          "channel": "DSports",
+          "free": false
+        },
+        "PY": {
+          "channel": "Tigo Sports",
+          "free": false
+        },
+        "PE": {
+          "channel": "DSports",
+          "free": false
+        },
+        "UY": {
+          "channel": "DSports",
+          "free": false
+        },
+        "VE": {
+          "channel": "DSports",
+          "free": false
+        },
+        "US": {
+          "channel": "VIX",
+          "free": false
+        }
       }
     },
     {
       "id": "formula-1",
       "name": "Formula 1",
-      "aliases": ["F1", "F1 season", "Formula One", "Grand Prix"],
+      "aliases": [
+        "F1",
+        "F1 season",
+        "Formula One",
+        "Grand Prix"
+      ],
       "sport": "motorsport",
       "emoji": "🏎️",
       "period": "March – November (22 races)",
@@ -259,95 +827,484 @@
       "official_broadcasters_url": "https://www.formula1.com/en/information/broadcasters.html",
       "wikipedia": "Formula_One",
       "broadcasts": {
-        "NL": { "channel": "Viaplay / Ziggo Sport", "free": false },
-        "BE": { "channel": "RTBF (some races free)", "free": true, "url": "https://www.rtbf.be" },
-        "AU": { "channel": "Fox Sports (all) / Channel 10 (some free)", "free": true, "url": "https://10play.com.au" },
-        "BR": { "channel": "Band (some free) / Bandsports", "free": true },
-        "IT": { "channel": "Sky Sport F1", "free": false },
-        "ES": { "channel": "DAZN / Movistar+", "free": false },
-        "DE": { "channel": "Sky Germany / SPORT1", "free": false },
-        "FR": { "channel": "Canal+ / TF1 (some free)", "free": false },
-        "GB": { "channel": "Sky Sports F1 (all) / Channel 4 (highlights)", "free": false },
-        "US": { "channel": "ESPN", "free": false },
-        "JP": { "channel": "Fuji TV NEXT / DAZN", "free": false },
-        "CA": { "channel": "TSN / RDS", "free": false },
-        "IN": { "channel": "Star Sports", "free": false },
-        "MX": { "channel": "Fox Sports MX", "free": false },
-        "AT": { "channel": "Servus TV (some races)", "free": true, "url": "https://www.servustv.com" }
+        "GB": {
+          "channel": "Sky Sports F1 / Channel 4 (highlights + British GP live)",
+          "free": true
+        },
+        "IE": {
+          "channel": "Sky Sports F1",
+          "free": false
+        },
+        "US": {
+          "channel": "Apple TV",
+          "free": false
+        },
+        "AU": {
+          "channel": "Fox Sports (Foxtel/Kayo) / Network 10 (Australian GP)",
+          "free": true
+        },
+        "IN": {
+          "channel": "FanCode / F1 TV Pro",
+          "free": false
+        },
+        "AT": {
+          "channel": "ORF / ServusTV / Sky Sport",
+          "free": true
+        },
+        "BE": {
+          "channel": "RTBF Auvio",
+          "free": true
+        },
+        "LU": {
+          "channel": "RTL Play",
+          "free": true
+        },
+        "NL": {
+          "channel": "Viaplay / NOS (Dutch GP)",
+          "free": true
+        },
+        "IT": {
+          "channel": "Sky Sport",
+          "free": false
+        },
+        "DE": {
+          "channel": "Sky Sport",
+          "free": false
+        },
+        "CH": {
+          "channel": "Sky Sport",
+          "free": false
+        },
+        "ES": {
+          "channel": "DAZN",
+          "free": false
+        },
+        "BN": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "KH": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "HK": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "ID": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "LA": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "MY": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "PH": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "SG": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "TH": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "TL": {
+          "channel": "beIN Sports",
+          "free": false
+        },
+        "CN": {
+          "channel": "Tencent / Guangdong TV / Shanghai TV",
+          "free": true
+        }
       }
     },
     {
       "id": "summer-olympics",
       "name": "Summer Olympics",
-      "aliases": ["Olympic Games", "Olympics", "Summer Games", "JJOO"],
+      "aliases": [
+        "Olympic Games",
+        "Olympics",
+        "Summer Games",
+        "JJOO"
+      ],
       "sport": "multi-sport",
       "emoji": "🏅",
       "period": "Every 4 years (next: Los Angeles 2028)",
       "official_url": "https://www.olympics.com",
       "wikipedia": "Summer_Olympic_Games",
       "broadcasts": {
-        "GB": { "channel": "BBC", "free": true, "url": "https://www.bbc.co.uk/sport/olympics" },
-        "DE": { "channel": "ARD / ZDF / Eurosport", "free": true, "url": "https://www.zdf.de" },
-        "FR": { "channel": "France TV", "free": true, "url": "https://www.france.tv" },
-        "ES": { "channel": "TVE / RTVE", "free": true, "url": "https://www.rtve.es" },
-        "IT": { "channel": "RAI", "free": true, "url": "https://www.rai.it" },
-        "PT": { "channel": "RTP", "free": true, "url": "https://www.rtp.pt" },
-        "NL": { "channel": "NOS / NPO", "free": true, "url": "https://www.npo.nl" },
-        "BE": { "channel": "RTBF / VRT", "free": true, "url": "https://www.rtbf.be" },
-        "AU": { "channel": "Channel 7 / 7plus", "free": true, "url": "https://7plus.com.au" },
-        "US": { "channel": "NBC / Peacock", "free": true, "url": "https://www.nbc.com" },
-        "CA": { "channel": "CBC / Radio-Canada", "free": true, "url": "https://www.cbc.ca" },
-        "BR": { "channel": "TV Globo / SporTV", "free": true, "url": "https://www.globo.com" },
-        "JP": { "channel": "NHK / Fuji TV", "free": true, "url": "https://www.nhk.or.jp" },
-        "KR": { "channel": "KBS / MBC / SBS", "free": true },
-        "CN": { "channel": "CCTV", "free": true },
-        "IN": { "channel": "DD Sports / Sports18", "free": true },
-        "MX": { "channel": "Azteca / Televisa", "free": true },
-        "AR": { "channel": "TV Pública", "free": true },
-        "ZA": { "channel": "SABC", "free": true },
-        "PL": { "channel": "TVP", "free": true },
-        "SE": { "channel": "SVT", "free": true },
-        "DK": { "channel": "DR", "free": true },
-        "NO": { "channel": "NRK", "free": true },
-        "FI": { "channel": "Yle", "free": true },
-        "AT": { "channel": "ORF", "free": true },
-        "CH": { "channel": "SRF / RTS", "free": true }
+        "US": {
+          "channel": "NBC / Peacock / USA Network / CNBC",
+          "free": false
+        },
+        "IT": {
+          "channel": "RAI",
+          "free": true
+        },
+        "BR": {
+          "channel": "CazéTV",
+          "free": true
+        },
+        "BN": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "ID": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "MY": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "MM": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "PH": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "SG": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "HK": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "TL": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "LA": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "TM": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        },
+        "KH": {
+          "channel": "Age of Sport (YouTube)",
+          "free": true
+        }
       }
     },
     {
       "id": "winter-olympics",
       "name": "Winter Olympics",
-      "aliases": ["Winter Games", "Winter Olympic Games"],
+      "aliases": [
+        "Winter Games",
+        "Winter Olympic Games"
+      ],
       "sport": "multi-sport",
       "emoji": "🏔️",
       "period": "Every 4 years (next: 2026 Milan-Cortina)",
       "official_url": "https://www.olympics.com",
       "wikipedia": "Winter_Olympic_Games",
       "broadcasts": {
-        "GB": { "channel": "BBC / Eurosport", "free": true, "url": "https://www.bbc.co.uk/sport/winter-olympics" },
-        "DE": { "channel": "ARD / ZDF", "free": true, "url": "https://www.zdf.de" },
-        "FR": { "channel": "France TV / Eurosport", "free": true, "url": "https://www.france.tv" },
-        "ES": { "channel": "TVE", "free": true },
-        "IT": { "channel": "RAI", "free": true, "url": "https://www.rai.it" },
-        "NL": { "channel": "NOS / NPO", "free": true },
-        "SE": { "channel": "SVT", "free": true },
-        "NO": { "channel": "NRK", "free": true },
-        "FI": { "channel": "Yle", "free": true },
-        "DK": { "channel": "DR", "free": true },
-        "AT": { "channel": "ORF / Servus TV", "free": true },
-        "CH": { "channel": "SRF", "free": true },
-        "AU": { "channel": "Seven Network", "free": true },
-        "US": { "channel": "NBC / Peacock", "free": true },
-        "CA": { "channel": "CBC", "free": true },
-        "JP": { "channel": "NHK", "free": true },
-        "KR": { "channel": "KBS / MBC / SBS", "free": true },
-        "CN": { "channel": "CCTV", "free": true }
+        "US": {
+          "channel": "NBC / Peacock / USA Network / CNBC",
+          "free": false
+        },
+        "CA": {
+          "channel": "CBC/Radio-Canada / TSN / RDS",
+          "free": true
+        },
+        "MX": {
+          "channel": "TelevisaUnivision / Claro Sports",
+          "free": true
+        },
+        "BR": {
+          "channel": "Grupo Globo / CazéTV",
+          "free": true
+        },
+        "CL": {
+          "channel": "Chilevisión",
+          "free": true
+        },
+        "PY": {
+          "channel": "ABC TV",
+          "free": true
+        },
+        "IT": {
+          "channel": "RAI / Warner Bros. Discovery (Eurosport/Discovery+)",
+          "free": true
+        },
+        "GB": {
+          "channel": "BBC / Eurosport / Discovery+",
+          "free": true
+        },
+        "FR": {
+          "channel": "France Télévisions / Eurosport / Discovery+",
+          "free": true
+        },
+        "DE": {
+          "channel": "ARD / ZDF / Eurosport / Discovery+",
+          "free": true
+        },
+        "ES": {
+          "channel": "RTVE / Eurosport / Discovery+",
+          "free": true
+        },
+        "AT": {
+          "channel": "ORF / Eurosport / Discovery+",
+          "free": true
+        },
+        "BE": {
+          "channel": "RTBF / VRT / Eurosport / Discovery+",
+          "free": true
+        },
+        "NL": {
+          "channel": "NOS / Eurosport / Discovery+",
+          "free": true
+        },
+        "CH": {
+          "channel": "SRG SSR / Eurosport / Discovery+",
+          "free": true
+        },
+        "LI": {
+          "channel": "SRG SSR",
+          "free": true
+        },
+        "SE": {
+          "channel": "SVT / TV4 / Eurosport / Discovery+",
+          "free": true
+        },
+        "NO": {
+          "channel": "NRK / Eurosport / Discovery+",
+          "free": true
+        },
+        "DK": {
+          "channel": "DR / TV 2 / Eurosport / Discovery+",
+          "free": true
+        },
+        "FI": {
+          "channel": "YLE / Eurosport / Discovery+",
+          "free": true
+        },
+        "PL": {
+          "channel": "TVP / Eurosport / Discovery+",
+          "free": true
+        },
+        "CZ": {
+          "channel": "ČT / Eurosport / Discovery+",
+          "free": true
+        },
+        "SK": {
+          "channel": "STVR / Eurosport / Discovery+",
+          "free": true
+        },
+        "GR": {
+          "channel": "ERT / Eurosport / Discovery+",
+          "free": true
+        },
+        "IE": {
+          "channel": "RTÉ / Eurosport / Discovery+",
+          "free": true
+        },
+        "PT": {
+          "channel": "RTP / Eurosport / Discovery+",
+          "free": true
+        },
+        "RO": {
+          "channel": "TVR / Eurosport / Discovery+",
+          "free": true
+        },
+        "HR": {
+          "channel": "HRT / Eurosport / Discovery+",
+          "free": true
+        },
+        "RS": {
+          "channel": "RTS / Eurosport / Discovery+",
+          "free": true
+        },
+        "BG": {
+          "channel": "BNT / Eurosport / Discovery+",
+          "free": true
+        },
+        "EE": {
+          "channel": "ERR / Eurosport / Discovery+",
+          "free": true
+        },
+        "LV": {
+          "channel": "LTV / Eurosport / Discovery+",
+          "free": true
+        },
+        "LT": {
+          "channel": "LRT / Eurosport / Discovery+",
+          "free": true
+        },
+        "SI": {
+          "channel": "RTV SLO / Eurosport / Discovery+",
+          "free": true
+        },
+        "HU": {
+          "channel": "MTVA / Eurosport / Discovery+",
+          "free": true
+        },
+        "UA": {
+          "channel": "Suspilne / Eurosport / Discovery+",
+          "free": true
+        },
+        "MD": {
+          "channel": "TRM",
+          "free": true
+        },
+        "MK": {
+          "channel": "MRT",
+          "free": true
+        },
+        "GE": {
+          "channel": "GPB",
+          "free": true
+        },
+        "AM": {
+          "channel": "AMPTV",
+          "free": true
+        },
+        "AZ": {
+          "channel": "İTV",
+          "free": true
+        },
+        "IS": {
+          "channel": "RÚV",
+          "free": true
+        },
+        "AL": {
+          "channel": "RTSH",
+          "free": true
+        },
+        "AD": {
+          "channel": "RTVA",
+          "free": true
+        },
+        "SM": {
+          "channel": "RAI",
+          "free": true
+        },
+        "ME": {
+          "channel": "RTCG",
+          "free": true
+        },
+        "XK": {
+          "channel": "RTK",
+          "free": true
+        },
+        "TR": {
+          "channel": "TRT",
+          "free": true
+        },
+        "AU": {
+          "channel": "Nine Network",
+          "free": true
+        },
+        "NZ": {
+          "channel": "Sky",
+          "free": false
+        },
+        "CN": {
+          "channel": "China Media Group",
+          "free": true
+        },
+        "TW": {
+          "channel": "ELTA",
+          "free": true
+        },
+        "JP": {
+          "channel": "Japan Consortium",
+          "free": true
+        },
+        "KR": {
+          "channel": "JTBC / NAVER",
+          "free": true
+        },
+        "KP": {
+          "channel": "JTBC",
+          "free": true
+        },
+        "SG": {
+          "channel": "Mediacorp",
+          "free": true
+        },
+        "PH": {
+          "channel": "One Sports / Age of Sports (YouTube)",
+          "free": true
+        },
+        "TH": {
+          "channel": "TrueVisions",
+          "free": false
+        },
+        "VN": {
+          "channel": "VTVcab / VTV",
+          "free": true
+        },
+        "MM": {
+          "channel": "M Sport / BebeeTV / Age of Sports (YouTube)",
+          "free": true
+        },
+        "MN": {
+          "channel": "NTV / MNB / TenGer TV / Suld TV / C1 / Edu TV",
+          "free": true
+        },
+        "IL": {
+          "channel": "Sports Channel",
+          "free": false
+        },
+        "AF": {
+          "channel": "ATN",
+          "free": true
+        },
+        "BN": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "ID": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "MY": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "HK": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "TL": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "LA": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "TM": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        },
+        "KH": {
+          "channel": "Age of Sports (YouTube)",
+          "free": true
+        }
       }
     },
     {
       "id": "tour-de-france",
       "name": "Tour de France",
-      "aliases": ["TDF", "Le Tour", "Tour de France cycling"],
+      "aliases": [
+        "TDF",
+        "Le Tour",
+        "Tour de France cycling"
+      ],
       "sport": "cycling",
       "emoji": "🚴",
       "period": "July (3 weeks)",
@@ -355,87 +1312,348 @@
       "official_broadcasters_url": "https://www.letour.fr/en/broadcasters",
       "wikipedia": "Tour_de_France",
       "broadcasts": {
-        "FR": { "channel": "France TV", "free": true, "url": "https://www.france.tv/sport" },
-        "GB": { "channel": "ITV4 / ITVX", "free": true, "url": "https://www.itv.com/sport" },
-        "NL": { "channel": "NPO1 / NOS", "free": true, "url": "https://www.npo.nl" },
-        "BE": { "channel": "RTBF / VRT", "free": true, "url": "https://www.rtbf.be" },
-        "AU": { "channel": "SBS / SBS On Demand", "free": true, "url": "https://www.sbs.com.au" },
-        "DK": { "channel": "DR / TV2", "free": true },
-        "NO": { "channel": "TV2 Norway", "free": false },
-        "DE": { "channel": "Eurosport / ARD (some stages)", "free": false },
-        "ES": { "channel": "Eurosport / RTVE", "free": false },
-        "IT": { "channel": "Eurosport / RAI (some stages)", "free": false },
-        "US": { "channel": "Peacock / NBC Sports", "free": false },
-        "CA": { "channel": "Flobikes / Fubo", "free": false },
-        "JP": { "channel": "J SPORTS", "free": false }
+        "FR": {
+          "channel": "France Télévisions / Diverto",
+          "free": true
+        },
+        "DE": {
+          "channel": "ARD / Eurosport",
+          "free": true
+        },
+        "AT": {
+          "channel": "ServusTV",
+          "free": true
+        },
+        "BE": {
+          "channel": "RTBF / VRT (Sporza)",
+          "free": true
+        },
+        "CZ": {
+          "channel": "Czech TV",
+          "free": true
+        },
+        "DK": {
+          "channel": "TV2 Denmark",
+          "free": true
+        },
+        "NO": {
+          "channel": "TV2 Norway",
+          "free": false
+        },
+        "ES": {
+          "channel": "RTVE",
+          "free": true
+        },
+        "IE": {
+          "channel": "TG4",
+          "free": true
+        },
+        "IT": {
+          "channel": "RAI Sports",
+          "free": true
+        },
+        "LU": {
+          "channel": "RTL",
+          "free": true
+        },
+        "NL": {
+          "channel": "NOS",
+          "free": true
+        },
+        "PT": {
+          "channel": "RTP",
+          "free": true
+        },
+        "SK": {
+          "channel": "STVR",
+          "free": true
+        },
+        "SI": {
+          "channel": "RTV Slovenija",
+          "free": true
+        },
+        "CH": {
+          "channel": "SRG-SSR",
+          "free": true
+        },
+        "GB": {
+          "channel": "TNT Sports / HBO Max",
+          "free": false
+        },
+        "RU": {
+          "channel": "OKKO",
+          "free": false
+        },
+        "ZA": {
+          "channel": "SuperSport",
+          "free": false
+        },
+        "CN": {
+          "channel": "Zhibo TV / CCTV",
+          "free": true
+        },
+        "JP": {
+          "channel": "J Sports",
+          "free": false
+        },
+        "MY": {
+          "channel": "Astro SuperSport",
+          "free": false
+        },
+        "AU": {
+          "channel": "SBS",
+          "free": true
+        },
+        "NZ": {
+          "channel": "Sky Sport",
+          "free": false
+        },
+        "US": {
+          "channel": "NBC Sports / Peacock",
+          "free": false
+        },
+        "CA": {
+          "channel": "FloBikes",
+          "free": false
+        },
+        "CO": {
+          "channel": "Caracol TV / Canal RCN",
+          "free": true
+        }
       }
     },
     {
       "id": "rugby-world-cup",
       "name": "Rugby World Cup",
-      "aliases": ["RWC", "Rugby World Cup"],
+      "aliases": [
+        "RWC",
+        "Rugby World Cup"
+      ],
       "sport": "rugby",
       "emoji": "🏉",
       "period": "Every 4 years (next: 2027 Australia)",
       "official_url": "https://www.rugbyworldcup.com",
       "wikipedia": "Rugby_World_Cup",
       "broadcasts": {
-        "GB": { "channel": "ITV / Channel 4", "free": true, "url": "https://www.itv.com" },
-        "FR": { "channel": "France TV / TF1", "free": true, "url": "https://www.france.tv" },
-        "AU": { "channel": "Channel 9 / Nine", "free": true, "url": "https://www.9now.com.au" },
-        "NZ": { "channel": "Sky NZ / TVNZ", "free": false },
-        "ZA": { "channel": "SuperSport", "free": false },
-        "JP": { "channel": "NTV / WOWOW", "free": true },
-        "AR": { "channel": "ESPN / TV Pública (some)", "free": false },
-        "IE": { "channel": "RTE / Virgin Media", "free": true },
-        "IT": { "channel": "RAI / Sky Sport", "free": false },
-        "US": { "channel": "NBC / Peacock", "free": false }
+        "US": {
+          "channel": "Paramount+",
+          "free": false
+        },
+        "FR": {
+          "channel": "TF1",
+          "free": true
+        }
       }
     },
     {
       "id": "nba-finals",
       "name": "NBA Finals",
-      "aliases": ["NBA Finals basketball", "NBA championship"],
+      "aliases": [
+        "NBA Finals basketball",
+        "NBA championship"
+      ],
       "sport": "basketball",
       "emoji": "🏀",
       "period": "June",
       "official_url": "https://www.nba.com",
       "wikipedia": "NBA_Finals",
       "broadcasts": {
-        "US": { "channel": "ABC", "free": true, "url": "https://abc.com" },
-        "GB": { "channel": "Sky Sports", "free": false },
-        "DE": { "channel": "MagentaSport / Dyn", "free": false },
-        "FR": { "channel": "beIN Sports", "free": false },
-        "ES": { "channel": "Movistar+", "free": false },
-        "IT": { "channel": "Sky Sport", "free": false },
-        "AU": { "channel": "ESPN Australia", "free": false },
-        "CA": { "channel": "TSN / Sportsnet", "free": false },
-        "BR": { "channel": "ESPN Brasil", "free": false },
-        "JP": { "channel": "NBA Rakuten", "free": false },
-        "PH": { "channel": "One Sports", "free": true }
+        "US": {
+          "channel": "ABC / ESPN",
+          "free": false
+        },
+        "FR": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "BE": {
+          "channel": "DAZN",
+          "free": false
+        },
+        "MX": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "BR": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "IT": {
+          "channel": "Sky / Amazon Prime Video",
+          "free": false
+        },
+        "ES": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "DE": {
+          "channel": "Sky / Amazon Prime Video",
+          "free": false
+        },
+        "GB": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "IE": {
+          "channel": "Amazon Prime Video",
+          "free": false
+        },
+        "AT": {
+          "channel": "Sky / Amazon Prime Video",
+          "free": false
+        },
+        "CH": {
+          "channel": "Sky / Amazon Prime Video",
+          "free": false
+        },
+        "LI": {
+          "channel": "Sky",
+          "free": false
+        },
+        "SM": {
+          "channel": "Sky",
+          "free": false
+        },
+        "NG": {
+          "channel": "SportyTV / ESPN Africa",
+          "free": true
+        },
+        "GH": {
+          "channel": "SportyTV / ESPN Africa",
+          "free": true
+        },
+        "KE": {
+          "channel": "SportyTV / ESPN Africa",
+          "free": true
+        },
+        "ZA": {
+          "channel": "SportyTV / ESPN Africa / Disney+",
+          "free": true
+        },
+        "LT": {
+          "channel": "Setanta Sports",
+          "free": false
+        },
+        "LV": {
+          "channel": "Setanta Sports",
+          "free": false
+        },
+        "EE": {
+          "channel": "Setanta Sports",
+          "free": false
+        },
+        "BG": {
+          "channel": "Diema Sport",
+          "free": false
+        },
+        "RS": {
+          "channel": "Sport Klub / Amazon Prime Video",
+          "free": false
+        },
+        "HR": {
+          "channel": "Sport Klub / Amazon Prime Video",
+          "free": false
+        },
+        "CZ": {
+          "channel": "Nova Sport",
+          "free": false
+        },
+        "SK": {
+          "channel": "Nova Sport",
+          "free": false
+        }
       }
     },
     {
       "id": "super-bowl",
       "name": "Super Bowl",
-      "aliases": ["Super Bowl NFL", "NFL championship", "American football final"],
+      "aliases": [
+        "Super Bowl NFL",
+        "NFL championship",
+        "American football final"
+      ],
       "sport": "american-football",
       "emoji": "🏈",
       "period": "February",
       "official_url": "https://www.nfl.com/super-bowl",
       "wikipedia": "Super_Bowl",
       "broadcasts": {
-        "US": { "channel": "Fox / CBS / NBC (rotate)", "free": true, "url": "https://www.nfl.com" },
-        "GB": { "channel": "ITV / Channel 4", "free": true, "url": "https://www.itv.com" },
-        "DE": { "channel": "ProSieben / ran.de", "free": true, "url": "https://www.ran.de" },
-        "AU": { "channel": "ESPN Australia", "free": false },
-        "CA": { "channel": "CTV / TSN", "free": true },
-        "FR": { "channel": "L'Equipe TV / BeIN Sports", "free": false },
-        "ES": { "channel": "DAZN / Movistar+", "free": false },
-        "IT": { "channel": "DAZN / Sky Sport", "free": false },
-        "MX": { "channel": "Azteca / Canal 5", "free": true },
-        "BR": { "channel": "ESPN Brasil / Band", "free": false },
-        "JP": { "channel": "NHK / NHKBS / Fuji TV NEXT", "free": true }
+        "US": {
+          "channel": "NBC / Peacock / Telemundo",
+          "free": true
+        },
+        "MX": {
+          "channel": "TV Azteca Deportes",
+          "free": true
+        },
+        "AR": {
+          "channel": "ESPN / Fox Sports",
+          "free": false
+        },
+        "JP": {
+          "channel": "Nippon TV",
+          "free": true
+        },
+        "SA": {
+          "channel": "Shahid",
+          "free": false
+        },
+        "LB": {
+          "channel": "Shahid",
+          "free": false
+        },
+        "YE": {
+          "channel": "Shahid",
+          "free": false
+        },
+        "IQ": {
+          "channel": "Shahid",
+          "free": false
+        },
+        "PH": {
+          "channel": "Premier Sports",
+          "free": false
+        },
+        "AT": {
+          "channel": "Mola",
+          "free": false
+        },
+        "BE": {
+          "channel": "Mola",
+          "free": false
+        },
+        "DE": {
+          "channel": "Mola",
+          "free": false
+        },
+        "IT": {
+          "channel": "Mola",
+          "free": false
+        },
+        "LI": {
+          "channel": "Mola",
+          "free": false
+        },
+        "LU": {
+          "channel": "Mola",
+          "free": false
+        },
+        "PL": {
+          "channel": "Mola",
+          "free": false
+        },
+        "PT": {
+          "channel": "Mola",
+          "free": false
+        },
+        "CH": {
+          "channel": "Mola",
+          "free": false
+        },
+        "CN": {
+          "channel": "Tencent Video",
+          "free": false
+        }
       }
     }
   ]
