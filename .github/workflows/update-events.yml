@@ -1,0 +1,45 @@
+name: Update Events Broadcast Rights
+
+on:
+  # Runs quarterly: Jan 1, Apr 1, Jul 1, Oct 1 at 08:00 UTC
+  schedule:
+    - cron: '0 8 1 1,4,7,10 *'
+  # Also allow manual trigger from the GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to commit back to the repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Run update script
+        working-directory: scripts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node update-events.js
+
+      - name: Commit updated events.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/events.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update broadcast rights data [$(date +%Y-%m-%d)]"
+            git push
+          fi

@@ -1,0 +1,13 @@
+{
+  "name": "streamfinder-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Server-side scripts for StreamFinder (not bundled into the client app)",
+  "scripts": {
+    "update-events": "node update-events.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.0"
+  }
+}

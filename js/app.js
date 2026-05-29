@@ -26,6 +26,13 @@ import {
   transformRentBuyToStoreView,
 } from './tmdb.js';
 
+import {
+  loadEventsData,
+  searchEvents,
+  getEvent,
+  renderEventPage,
+} from './events.js';
+
 // ---- State ----
 let currentAbortController = null;
 let debounceTimer = null;
@@ -49,6 +56,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 async function init() {
   attachListeners();
   renderWelcomeState();
+  loadEventsData(); // load events data in background (no await — non-blocking)
 
   // If a hardcoded key exists but localStorage is empty, persist it once
   // so it survives future loads regardless of module caching
@@ -564,9 +572,23 @@ async function performSearch(query) {
   currentAbortController = new AbortController();
   try {
     showDropdownLoading();
-    const results = await searchMulti(query, currentAbortController.signal);
-    if (results.length === 0) showDropdownEmpty(query);
-    else renderDropdown(results);
+    // Search TMDB and local events in parallel
+    const [tmdbResults, eventResults] = await Promise.all([
+      searchMulti(query, currentAbortController.signal),
+      Promise.resolve(searchEvents(query).map(e => ({
+        id: e.id,
+        type: 'event',
+        title: e.name,
+        year: e.period || '',
+        posterPath: null,
+        sport: e.sport,
+        emoji: e.emoji,
+      }))),
+    ]);
+    // Events first (exact intent), then TMDB results
+    const combined = [...eventResults, ...tmdbResults];
+    if (combined.length === 0) showDropdownEmpty(query);
+    else renderDropdown(combined);
   } catch (err) {
     if (err.name === 'AbortError') return;
     console.error('Search error:', err);
@@ -576,21 +598,27 @@ async function performSearch(query) {
 
 function renderDropdown(results) {
   const dropdown = $('#search-dropdown');
-  dropdown.innerHTML = results.map((r, i) => `
+  dropdown.innerHTML = results.map((r, i) => {
+    const isEvent = r.type === 'event';
+    const badgeLabel = isEvent ? 'Event' : (r.type === 'movie' ? 'Movie' : 'TV');
+    const leftCol = isEvent
+      ? `<span class="dropdown-sport-emoji">${r.emoji || '🏆'}</span>`
+      : `<img class="dropdown-poster"
+              src="${getImageUrl(r.posterPath, 'w92') || ''}"
+              alt=""
+              onerror="this.style.display='none'">`;
+    return `
     <button class="dropdown-item" data-index="${i}" data-id="${r.id}" data-type="${r.type}">
-      <img class="dropdown-poster"
-           src="${getImageUrl(r.posterPath, 'w92') || ''}"
-           alt=""
-           onerror="this.style.display='none'">
+      ${leftCol}
       <div class="dropdown-info">
         <span class="dropdown-title">${escapeHtml(r.title)}</span>
         <span class="dropdown-meta">
-          <span class="badge badge-${r.type}">${r.type === 'movie' ? 'Movie' : 'TV'}</span>
-          ${r.year ? `<span class="dropdown-year">${r.year}</span>` : ''}
+          <span class="badge badge-${r.type}">${badgeLabel}</span>
+          ${r.year ? `<span class="dropdown-year">${escapeHtml(r.year)}</span>` : ''}
         </span>
       </div>
-    </button>
-  `).join('');
+    </button>`;
+  }).join('');
 
   dropdown.classList.remove('hidden');
 
@@ -670,6 +698,12 @@ async function selectResult(result) {
   deactivateSearch();
   currentTitle = result;
   $('#search-input').value = result.title;
+  if (result.type === 'event') {
+    window.location.hash = `event/${result.id}`;
+    const event = getEvent(result.id);
+    if (event) renderEventPage(event);
+    return;
+  }
   window.location.hash = `${result.type}/${result.id}`;
   await loadAvailability(result.id, result.type, result.title, result.posterPath, result.year);
 }
@@ -1021,6 +1055,19 @@ function buildRentBuyStrip(rentBuyData, countryName) {
 async function handleHashRoute() {
   const hash = window.location.hash.slice(1);
   if (!hash) return;
+
+  // Event route: #event/roland-garros
+  const eventMatch = hash.match(/^event\/(.+)$/);
+  if (eventMatch) {
+    // Events data may still be loading — wait briefly then try
+    await loadEventsData();
+    const event = getEvent(eventMatch[1]);
+    if (event) {
+      $('#search-input').value = event.name;
+      renderEventPage(event);
+    }
+    return;
+  }
 
   const match = hash.match(/^(movie|tv)\/(\d+)$/);
   if (!match) return;

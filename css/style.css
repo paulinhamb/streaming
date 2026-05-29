@@ -1322,3 +1322,245 @@ button {
   from { opacity: 0; transform: translate(-50%, -50%) scale(0.75); }
   to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
+
+/* ── Live Events ──────────────────────────────────────────── */
+
+/* Search dropdown: sport emoji placeholder */
+.dropdown-sport-emoji {
+  width: 44px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  background: var(--pill-bg);
+  border-radius: var(--radius-sm);
+}
+
+/* badge-event pill */
+.badge-event {
+  background: #000;
+  color: #fff;
+  border-radius: var(--radius-pill);
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Two-column layout (mirrors .results-layout) */
+.event-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  min-height: calc(100vh - var(--header-height));
+  width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+}
+
+/* ── Left column ── */
+.event-left {
+  min-width: 0;
+  padding: 40px 32px 40px 40px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.event-sport-icon {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.event-name {
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.event-period {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.event-data-note {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.event-official-link {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-top: auto;
+}
+.event-official-link:hover { color: var(--text); }
+
+/* ── Right column ── */
+.event-right {
+  min-width: 0;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.event-results-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.event-free-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+  letter-spacing: 0.02em;
+}
+
+/* ── Broadcast rows ── */
+.broadcast-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+
+.broadcast-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr 52px 24px;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+  transition: background 0.1s;
+}
+.broadcast-row:hover { background: rgba(0,0,0,0.025); }
+
+.broadcast-row--free {
+  border-left: 3px solid #16a34a;
+  padding-left: 10px;
+}
+.broadcast-row--paid {
+  border-left: 3px solid transparent;
+  padding-left: 10px;
+  opacity: 0.6;
+}
+
+.broadcast-flag { font-size: 20px; line-height: 1; }
+
+.broadcast-country {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.broadcast-channel {
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.free-badge {
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.paid-badge {
+  background: var(--pill-bg);
+  color: var(--text-muted);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.broadcast-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.broadcast-link:hover { opacity: 1; color: var(--text); }
+.broadcast-link-placeholder { display: block; }
+
+/* ── VPN tip ── */
+.event-vpn-tip {
+  margin-top: 24px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: #15803d;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.event-vpn-tip--none {
+  background: var(--pill-bg);
+  border-color: var(--border-light);
+  color: var(--text-muted);
+}
+.event-vpn-tip-icon { font-size: 16px; flex-shrink: 0; }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  .event-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .event-left {
+    padding: 28px 20px 20px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .event-sport-icon {
+    font-size: 48px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .event-name { font-size: 28px; flex: 1; min-width: 0; }
+
+  .event-period, .event-data-note, .event-official-link {
+    width: 100%;
+  }
+
+  .event-right { padding: 20px; }
+
+  .broadcast-row {
+    grid-template-columns: 24px 1fr 40px 20px;
+    gap: 8px;
+  }
+
+  /* Hide channel name on small screens — country + badge is enough */
+  .broadcast-channel { display: none; }
+}
