@@ -177,7 +177,7 @@
         "BE": { "channel": "RTBF / VRT", "free": true, "url": "https://www.rtbf.be" },
         "AU": { "channel": "SBS", "free": true, "url": "https://www.sbs.com.au" },
         "US": { "channel": "Fox / Telemundo", "free": true, "url": "https://www.fox.com" },
-        "BR": { "channel": "TV Globo / TV Bandeirantes / CazeTV", "free": true, "url": "https://www.youtube.com/@CazeTVOficial", "locked": true },
+        "BR": { "channel": "TV Globo / TV Bandeirantes / CazeTV", "free": true, "url": "https://www.youtube.com/@CazeTVOficial" },
         "AR": { "channel": "TV Pública / TyC Sports", "free": true, "url": "https://www.tvpublica.com.ar" },
         "MX": { "channel": "Azteca / Televisa / ViX", "free": true },
         "JP": { "channel": "NHK / Fuji TV", "free": true, "url": "https://www.nhk.or.jp" },
