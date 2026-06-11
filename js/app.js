@@ -1165,7 +1165,7 @@ async function handleHashRoute() {
 let recsViewMode = 'local';     // 'trakt' | 'local' | 'compare'
 let recsLocalPool = null;       // cached candidate pool (re-ranked client-side)
 let recsTraktList = null;       // cached Trakt list
-let recsAdvancePage = false;    // true for one render after ↻ — show the NEXT unseen batch
+let recsLocalView = null;       // the local list currently displayed (computed once per action)
 let recsShownIds = new Set();   // local titles already shown this session (for paging)
 let recsJustLooped = false;     // set when a refresh wrapped back to the start
 const RECS_LIMIT = 40;
@@ -1234,9 +1234,9 @@ function wireRecsControls() {
   $('#recs-refresh')?.addEventListener('click', () => {
     // Pool missing → build it; otherwise page to the next unseen batch instantly.
     if (!(recsLocalPool && recsLocalPool.length > 0)) { loadAndRenderRecs(false); return; }
-    recsAdvancePage = true;
-    renderRecsContent();          // recsListFor() reads recsAdvancePage synchronously
-    recsAdvancePage = false;
+    recsJustLooped = false;
+    computeLocalView({ advance: true });   // advance paging ONCE
+    renderRecsContent();                    // pure render of the new view
     if (recsJustLooped) { recsJustLooped = false; showRecsToast("You've seen them all — starting over ↻"); }
   });
   $('#recs-weights-reset')?.addEventListener('click', () => {
@@ -1260,7 +1260,6 @@ function wireRecsControls() {
 }
 
 async function loadAndRenderRecs(force = false) {
-  recsAdvancePage = false;            // normal loads show the top batch
   if (force) recsShownIds.clear();    // fresh pool → reset paging
   const content = $('#recs-content');
   if (content) content.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Building recommendations…</p></div>';
@@ -1273,33 +1272,42 @@ async function loadAndRenderRecs(force = false) {
       recsLocalPool = await loadLocalPool({ country, force });
     }
   } catch (e) { console.error('Recs load error:', e); }
+  computeLocalView({ advance: false });   // top batch by score
   renderRecsContent();
 }
 
+// PURE read — returns the precomputed list for a mode. No side effects, so it's
+// safe to call from any render/scoreboard path as many times as needed.
 function recsListFor(mode) {
   if (mode === 'trakt') return recsTraktList;
-  if (!recsLocalPool) return null;
+  return recsLocalView;
+}
 
-  // Full deterministic ranking of the whole pool; we page through it.
-  const ranked = rankLocal(recsLocalPool, getWeights());
+// Decide which slice of the ranked pool to show. Called exactly ONCE per user
+// action (load, slider change, or ↻ refresh) — never from a render path. This
+// is the only place recsShownIds / recsLocalView are mutated.
+function computeLocalView({ advance = false } = {}) {
+  if (!recsLocalPool || !recsLocalPool.length) { recsLocalView = null; return; }
+  const ranked = rankLocal(recsLocalPool, getWeights());   // full deterministic ranking
 
-  if (!recsAdvancePage) {
-    // Normal load / slider drag → top batch by score.
+  if (!advance) {
+    // Fresh load or slider change → top batch by score; restart paging here.
     const batch = ranked.slice(0, RECS_LIMIT);
-    batch.forEach(it => recsShownIds.add(it.tmdb_id));
-    return batch;
+    recsShownIds = new Set(batch.map(it => it.tmdb_id));
+    recsLocalView = batch;
+    return;
   }
 
-  // ↻ Refresh → the next batch of titles not yet seen this session.
+  // ↻ Refresh → next batch of titles not yet seen this session.
   let unseen = ranked.filter(it => !recsShownIds.has(it.tmdb_id));
-  if (unseen.length < RECS_LIMIT) {     // seen the whole pool → start over
+  if (unseen.length < RECS_LIMIT) {     // whole pool reviewed → start over
     recsShownIds.clear();
     recsJustLooped = true;
     unseen = ranked;
   }
   const batch = unseen.slice(0, RECS_LIMIT);
   batch.forEach(it => recsShownIds.add(it.tmdb_id));
-  return batch;
+  recsLocalView = batch;
 }
 
 function renderRecsContent() {
@@ -1320,7 +1328,7 @@ function renderRecsContent() {
 }
 
 function rerankLocalGrids() {
-  recsAdvancePage = false; // slider adjustments show the clean top batch
+  computeLocalView({ advance: false }); // slider → recompute clean top batch
   const localGrid = $('#grid-local') || (recsViewMode === 'local' ? $('#grid-main') : null);
   if (localGrid) renderGrid('local', localGrid);
 }
