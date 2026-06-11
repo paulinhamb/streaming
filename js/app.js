@@ -14,7 +14,8 @@ import {
   countryFlag,
   DEFAULT_PROVIDERS,
   resetProviders,
-} from './config.js?v=2';
+  clearRecsCache,
+} from './config.js?v=3';
 
 import {
   searchMulti,
@@ -24,7 +25,7 @@ import {
   getImageUrl,
   transformToPlatformView,
   transformRentBuyToStoreView,
-} from './tmdb.js';
+} from './tmdb.js?v=2';
 
 import {
   loadEventsData,
@@ -32,6 +33,17 @@ import {
   getEvent,
   renderEventPage,
 } from './events.js';
+
+import {
+  importHistoryCSV, hasHistory, getHistoryStats,
+  importTraktRecs, hasTraktRecs, getTraktRecsMeta,
+  getWeights, setWeights, resetWeights, DEFAULT_WEIGHTS,
+  recordVote, getVote,
+} from './history-store.js?v=2';
+
+import {
+  loadLocalPool, rankLocal, loadTrakt, ensureCard, isWatchable, FACTORS,
+} from './recommendations.js?v=2';
 
 // ---- State ----
 let currentAbortController = null;
@@ -83,6 +95,7 @@ async function init() {
 function renderWelcomeState() {
   // Tear down any running parallax / drag listeners from a previous welcome render
   if (welcomeCleanup) { welcomeCleanup(); welcomeCleanup = null; }
+  $('#recs-nav-btn')?.classList.remove('header-nav-link--active');
   welcomePosters = [];
   welcomePosterIndex = 0;
   nextPosterIndex = 0;
@@ -484,7 +497,7 @@ function setupWelcomeInteractions() {
         gyroBtn = document.createElement('button');
         gyroBtn.className = 'gyro-btn';
         gyroBtn.setAttribute('aria-label', 'Enable tilt effect');
-        gyroBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M419-80q-28 0-52.5-12T325-126L107-403l19-20q20-21 48-25t52 11l74 45v-328q0-17 11.5-28.5T340-760q17 0 29 11.5t12 28.5v472l-97-60 104 133q6 7 14 11t17 4h221q33 0 56.5-23.5T720-240v-160q0-17-11.5-28.5T680-440H461v-80h219q50 0 85 35t35 85v160q0 66-47 113T640-80H419ZM167-620q-13-22-20-47.5t-7-52.5q0-83 58.5-141.5T340-920q83 0 141.5 58.5T540-720q0 27-7 52.5T513-620l-69-40q8-14 12-28.5t4-31.5q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 17 4 31.5t12 28.5l-69 40Zm335 280Z"/></svg><span>Make it move</span>`;
+        gyroBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M419-80q-28 0-52.5-12T325-126L107-403l19-20q20-21 48-25t52 11l74 45v-328q0-17 11.5-28.5T340-760q17 0 29 11.5t12 28.5v472l-97-60 104 133q6 7 14 11t17 4h221q33 0 56.5-23.5T720-240v-160q0-17-11.5-28.5T680-440H461v-80h219q50 0 85 35t35 85v160q0 66-47 113T640-80H419ZM167-620q-13-22-20-47.5t-7-52.5q0-83 58.5-141.5T340-920q83 0 141.5 58.5T540-720q0 27-7 52.5T513-620l-69-40q8-14 12-28.5t4-31.5q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 17 4 31.5t12 28.5l-69 40Zm335 280Z"/></svg><span>Find your next watch</span>`;
         gyroBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
           try {
@@ -551,6 +564,28 @@ function attachListeners() {
   $('#settings-close').addEventListener('click', closeSettings);
   $('#settings-save').addEventListener('click', saveSettings);
   $('#settings-reset').addEventListener('click', resetToDefaults);
+
+  // Recommendations: history + Trakt-recs imports
+  $('#history-import-btn')?.addEventListener('click', onImportHistory);
+  $('#trakt-recs-import-btn')?.addEventListener('click', onImportTraktRecs);
+
+  // Recommendation card interactions (delegated — cards are re-rendered)
+  document.addEventListener('click', (e) => {
+    const vote = e.target.closest('.rec-vote');
+    if (vote) {
+      const card = vote.closest('.rec-card');
+      const id = Number(card.dataset.id), mode = card.dataset.mode, v = Number(vote.dataset.vote);
+      const next = getVote(id, mode) === v ? 0 : v;
+      recordVote(id, mode, next);
+      card.querySelectorAll('.rec-vote').forEach(b => b.classList.remove('active'));
+      if (next !== 0) vote.classList.add('active');
+      renderScoreboard();
+      return;
+    }
+    const bt = e.target.closest('.rec-breakdown-toggle');
+    if (bt) { bt.closest('.rec-info').querySelector('.rec-breakdown')?.classList.toggle('hidden'); return; }
+    if (e.target.id === 'recs-open-settings') showSettings();
+  });
 
   window.addEventListener('hashchange', handleHashRoute);
 
@@ -1056,6 +1091,9 @@ async function handleHashRoute() {
   const hash = window.location.hash.slice(1);
   if (!hash) return;
 
+  // Recommendations route: #foryou
+  if (hash === 'foryou') { renderRecommendationsPage(); return; }
+
   // Event route: #event/roland-garros
   const eventMatch = hash.match(/^event\/(.+)$/);
   if (eventMatch) {
@@ -1094,12 +1132,272 @@ async function handleHashRoute() {
   }
 }
 
+// ============================================================
+// Recommendations (dual engine: Trakt control + Local test)
+// ============================================================
+
+let recsViewMode = 'local';     // 'trakt' | 'local' | 'compare'
+let recsLocalPool = null;       // cached candidate pool (re-ranked client-side)
+let recsTraktList = null;       // cached Trakt list
+const RECS_LIMIT = 40;
+
+async function renderRecommendationsPage() {
+  if (welcomeCleanup) { welcomeCleanup(); welcomeCleanup = null; }
+  const area = $('#content-area');
+  $('#recs-nav-btn')?.classList.add('header-nav-link--active');
+
+  if (!hasApiKey()) {
+    area.innerHTML = recsNotice('Add your TMDB API key in Settings to load recommendations.', true);
+    return;
+  }
+  if (!hasHistory()) {
+    area.innerHTML = recsNotice('No watch history imported yet. Open Settings → Recommendations and import your matched.csv.', true);
+    return;
+  }
+
+  area.innerHTML = renderRecsShell();
+  wireRecsControls();
+  await fetchUserCountryName(); // populates cachedUserCountryCode
+  await loadAndRenderRecs();
+}
+
+function recsNotice(msg, openSettings) {
+  return `<div class="recs-empty">
+    <p>${escapeHtml(msg)}</p>
+    ${openSettings ? '<button class="primary-btn" id="recs-open-settings">Open Settings</button>' : ''}
+  </div>`;
+}
+
+function renderRecsShell() {
+  const w = getWeights();
+  return `
+  <div class="recs-page">
+    <div class="recs-bar">
+      <span class="recs-title">#FOR YOU</span>
+      <div class="recs-modes">
+        <button class="recs-mode ${recsViewMode === 'trakt' ? 'active' : ''}" data-mode="trakt">Trakt</button>
+        <button class="recs-mode ${recsViewMode === 'local' ? 'active' : ''}" data-mode="local">Ours</button>
+        <button class="recs-mode ${recsViewMode === 'compare' ? 'active' : ''}" data-mode="compare">Compare</button>
+      </div>
+      <button id="recs-refresh" class="recs-refresh" title="Rebuild from scratch">↻</button>
+    </div>
+    <div id="recs-weights" class="recs-weights ${recsViewMode === 'trakt' ? 'hidden' : ''}">
+      ${FACTORS.map(f => `
+        <label class="recs-weight">
+          <span class="recs-weight-name">${f}</span>
+          <input type="range" min="0" max="2" step="0.1" value="${w[f]}" data-factor="${f}">
+          <span class="recs-weight-val">${w[f].toFixed(1)}</span>
+        </label>`).join('')}
+      <button id="recs-weights-reset" class="recs-weights-reset">reset</button>
+    </div>
+    <div id="recs-scoreboard" class="recs-scoreboard"></div>
+    <div id="recs-content" class="recs-content"></div>
+  </div>`;
+}
+
+function wireRecsControls() {
+  $$('.recs-mode').forEach(btn => btn.addEventListener('click', () => {
+    recsViewMode = btn.dataset.mode;
+    $$('.recs-mode').forEach(b => b.classList.toggle('active', b === btn));
+    $('#recs-weights').classList.toggle('hidden', recsViewMode === 'trakt');
+    loadAndRenderRecs();
+  }));
+  $('#recs-refresh')?.addEventListener('click', () => loadAndRenderRecs(true));
+  $('#recs-weights-reset')?.addEventListener('click', () => {
+    resetWeights();
+    const w = getWeights();
+    $$('#recs-weights input[data-factor]').forEach(inp => {
+      inp.value = w[inp.dataset.factor];
+      inp.parentElement.querySelector('.recs-weight-val').textContent = w[inp.dataset.factor].toFixed(1);
+    });
+    rerankLocalGrids();
+  });
+  $$('#recs-weights input[data-factor]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const w = getWeights();
+      w[inp.dataset.factor] = parseFloat(inp.value);
+      setWeights(w);
+      inp.parentElement.querySelector('.recs-weight-val').textContent = parseFloat(inp.value).toFixed(1);
+      rerankLocalGrids();
+    });
+  });
+}
+
+async function loadAndRenderRecs(force = false) {
+  const content = $('#recs-content');
+  if (content) content.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Building recommendations…</p></div>';
+  const country = cachedUserCountryCode;
+  try {
+    if (recsViewMode === 'trakt' || recsViewMode === 'compare') {
+      recsTraktList = hasTraktRecs() ? await loadTrakt() : null;
+    }
+    if (recsViewMode === 'local' || recsViewMode === 'compare') {
+      recsLocalPool = await loadLocalPool({ country, force });
+    }
+  } catch (e) { console.error('Recs load error:', e); }
+  renderRecsContent();
+}
+
+function recsListFor(mode) {
+  if (mode === 'trakt') return recsTraktList;
+  return recsLocalPool ? rankLocal(recsLocalPool, getWeights(), RECS_LIMIT) : null;
+}
+
+function renderRecsContent() {
+  const content = $('#recs-content');
+  if (!content) return;
+  if (recsViewMode === 'compare') {
+    content.innerHTML = `
+      <div class="recs-compare">
+        <div class="recs-col"><div class="recs-col-head">Trakt <span>control</span></div><div class="recs-grid" id="grid-trakt"></div></div>
+        <div class="recs-col"><div class="recs-col-head">Ours <span>test</span></div><div class="recs-grid" id="grid-local"></div></div>
+      </div>`;
+    renderGrid('trakt', $('#grid-trakt'));
+    renderGrid('local', $('#grid-local'));
+  } else {
+    content.innerHTML = '<div class="recs-grid" id="grid-main"></div>';
+    renderGrid(recsViewMode, $('#grid-main'));
+  }
+}
+
+function rerankLocalGrids() {
+  const localGrid = $('#grid-local') || (recsViewMode === 'local' ? $('#grid-main') : null);
+  if (localGrid) renderGrid('local', localGrid);
+}
+
+async function renderGrid(mode, el) {
+  if (!el) return;
+  const list = recsListFor(mode);
+  if (mode === 'trakt' && !list) { el.innerHTML = traktConnectPrompt(); return; }
+  if (!list || !list.length) { el.innerHTML = '<p class="recs-empty-small">No recommendations yet.</p>'; return; }
+
+  const subIds = getSubscribedProviderIds();
+  const country = cachedUserCountryCode;
+  el.innerHTML = list.map(item => recCardHTML(item, mode, subIds, country)).join('');
+
+  // Progressively enrich cards missing poster/providers (mainly Trakt), then refresh scoreboard
+  const jobs = list
+    .filter(item => !item.poster || !item.providers)
+    .map(item => ensureCard(item).then(() => updateCard(el, item, mode, subIds, country)).catch(() => {}));
+  Promise.allSettled(jobs).then(renderScoreboard);
+  renderScoreboard();
+}
+
+function recCardHTML(item, mode, subIds, country) {
+  const id = item.tmdb_id;
+  const posterUrl = item.poster ? getImageUrl(item.poster, 'w342') : '';
+  const star = item.providers && isWatchable(item, subIds, country) ? STAR_SVG : '';
+  return `<div class="rec-card" data-id="${id}" data-type="${item.type}" data-mode="${mode}">
+    <a class="rec-poster" href="#${item.type}/${id}">
+      <img class="rec-poster-img" alt="" ${posterUrl ? `src="${posterUrl}"` : ''} data-poster onerror="this.style.opacity=0">
+      <span class="rec-availability" data-availability>${star}</span>
+    </a>
+    <div class="rec-info">
+      <div class="rec-title-row">
+        <span class="rec-title">${escapeHtml(item.title || '')}</span>
+        ${item.year ? `<span class="rec-year">${item.year}</span>` : ''}
+      </div>
+      <div class="rec-reason">${escapeHtml(item.reason || '')}</div>
+      ${mode === 'local' ? recBreakdownHTML(item) : ''}
+      <div class="rec-actions">
+        <button class="rec-vote up ${getVote(id, mode) === 1 ? 'active' : ''}" data-vote="1" aria-label="Like">👍</button>
+        <button class="rec-vote down ${getVote(id, mode) === -1 ? 'active' : ''}" data-vote="-1" aria-label="Dislike">👎</button>
+        ${mode === 'local' ? '<button class="rec-breakdown-toggle">why?</button>' : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function recBreakdownHTML(item) {
+  const w = getWeights();
+  return `<div class="rec-breakdown hidden">${FACTORS.map(f => {
+    const val = item.factors?.[f] || 0;
+    const contrib = val * (w[f] || 0);
+    return `<div class="rec-factor">
+      <span class="rec-factor-name">${f}</span>
+      <div class="rec-bar"><div class="rec-bar-fill" style="width:${Math.min(100, contrib / 2 * 100)}%"></div></div>
+      <span class="rec-factor-val">${val.toFixed(2)}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function updateCard(container, item, mode, subIds, country) {
+  const card = container.querySelector(`.rec-card[data-id="${item.tmdb_id}"][data-mode="${mode}"]`);
+  if (!card) return;
+  const img = card.querySelector('[data-poster]');
+  if (img && item.poster && !img.src) img.src = getImageUrl(item.poster, 'w342');
+  const avail = card.querySelector('[data-availability]');
+  if (avail) avail.innerHTML = isWatchable(item, subIds, country) ? STAR_SVG : '';
+}
+
+function renderScoreboard() {
+  const el = $('#recs-scoreboard');
+  if (!el) return;
+  const subIds = getSubscribedProviderIds();
+  const country = cachedUserCountryCode;
+  const tList = recsTraktList || [];
+  const lList = recsListFor('local') || [];
+  const liked = (list, mode) => list.filter(i => getVote(i.tmdb_id, mode) === 1).length;
+  const watch = list => list.length ? Math.round(100 * list.filter(i => isWatchable(i, subIds, country)).length / list.length) : 0;
+  const overlap = () => {
+    if (!tList.length || !lList.length) return 0;
+    const b = new Set(lList.map(i => i.tmdb_id));
+    let n = 0; tList.forEach(i => { if (b.has(i.tmdb_id)) n++; });
+    return Math.round(100 * n / Math.min(tList.length, lList.length));
+  };
+  const parts = [];
+  if (tList.length) parts.push(`Trakt liked ${liked(tList, 'trakt')}/${tList.length} · watchable ${watch(tList)}%`);
+  if (lList.length) parts.push(`Ours liked ${liked(lList, 'local')}/${lList.length} · watchable ${watch(lList)}%`);
+  if (tList.length && lList.length) parts.push(`overlap ${overlap()}%`);
+  el.innerHTML = parts.map(p => `<span class="recs-stat">${p}</span>`).join('');
+}
+
+function traktConnectPrompt() {
+  return '<p class="recs-empty-small">No Trakt recs yet. Generate them with <code>node scripts/trakt-sync.js</code>, then import <code>trakt-recs.json</code> in Settings → Recommendations.</p>';
+}
+
 // ---- Settings ----
 
 function showSettings() {
   $('#api-key-input').value = hasApiKey() ? '••••••••' : '';
   renderSubscribedList();
+  renderRecsSettings();
   $('#settings-modal').showModal();
+}
+
+function renderRecsSettings() {
+  const stats = hasHistory() ? getHistoryStats() : null;
+  const hs = $('#history-status');
+  if (hs) hs.textContent = stats ? `${stats.count} titles imported · ${stats.platforms.join(', ')}` : '';
+  const meta = getTraktRecsMeta();
+  const ts = $('#trakt-recs-status');
+  if (ts) ts.textContent = meta ? `${meta.count} Trakt recs imported${meta.updated ? ' · ' + meta.updated.slice(0, 10) : ''}` : '';
+}
+
+function readFileInto(input, status, importFn, okLabel) {
+  const file = input?.files?.[0];
+  if (!file) { if (status) { status.textContent = 'Choose a file first.'; status.className = 'settings-status error'; } return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const res = importFn(reader.result);
+      if (status) { status.textContent = okLabel(res); status.className = 'settings-status success'; }
+    } catch {
+      if (status) { status.textContent = 'Could not parse that file.'; status.className = 'settings-status error'; }
+    }
+  };
+  reader.readAsText(file);
+}
+
+function onImportHistory() {
+  readFileInto($('#history-file'), $('#history-status'),
+    text => { const r = importHistoryCSV(text); clearRecsCache('local'); return r; },
+    r => `${r.count} titles imported · ${r.platforms.join(', ')}`);
+}
+
+function onImportTraktRecs() {
+  readFileInto($('#trakt-recs-file'), $('#trakt-recs-status'),
+    importTraktRecs, r => `${r.count} Trakt recs imported.`);
 }
 
 function closeSettings() {

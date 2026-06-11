@@ -1,0 +1,9 @@
+# Personal viewing-history data — never commit
+history/
+
+# Trakt secrets / tokens — never commit
+scripts/trakt-creds.json
+scripts/.trakt-token.json
+
+# OS junk
+.DS_Store

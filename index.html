@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreamFinder — Find Where to Stream</title>
-  <link rel="stylesheet" href="css/style.css?v=33">
+  <link rel="stylesheet" href="css/style.css?v=34">
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,800&display=swap">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 </head>
@@ -35,6 +35,11 @@
           >
           <div id="search-dropdown" class="search-dropdown hidden"></div>
         </div>
+      </div>
+
+      <!-- Nav section: For You -->
+      <div class="header-nav-section">
+        <a id="recs-nav-btn" href="#foryou" class="header-nav-link">For You</a>
       </div>
 
       <!-- Gear section: fixed 80px -->
@@ -78,6 +83,26 @@
         </div>
 
         <div class="settings-section">
+          <h3>Recommendations</h3>
+
+          <p class="settings-help">Import your matched watch history (the <code>matched.csv</code> from the scraper). Stored only in this browser.</p>
+          <div class="recs-settings-row">
+            <input type="file" id="history-file" accept=".csv" class="recs-file-input">
+            <button id="history-import-btn" class="secondary-btn">Import history</button>
+          </div>
+          <p id="history-status" class="settings-status"></p>
+
+          <div class="recs-trakt-block">
+            <p class="settings-help">Trakt recs (the "control") are generated locally — run <code>node scripts/trakt-sync.js</code>, then import the resulting <code>trakt-recs.json</code> here.</p>
+            <div class="recs-settings-row">
+              <input type="file" id="trakt-recs-file" accept=".json" class="recs-file-input">
+              <button id="trakt-recs-import-btn" class="secondary-btn">Import Trakt recs</button>
+            </div>
+            <p id="trakt-recs-status" class="settings-status"></p>
+          </div>
+        </div>
+
+        <div class="settings-section">
           <h3>Add Platform</h3>
           <input type="text" id="platform-search" class="settings-input" placeholder="Search for a streaming service...">
           <div id="platform-search-results" class="platform-search-results"></div>
@@ -91,6 +116,6 @@
 
   </div>
 
-  <script type="module" src="js/app.js?v=29"></script>
+  <script type="module" src="js/app.js?v=31"></script>
 </body>
 </html>

@@ -1,0 +1,182 @@
+// ============================================================
+// history-store.js — Imported watch history + recs feedback/weights
+// All client-side (localStorage). Personal data never leaves the browser.
+// ============================================================
+
+const HISTORY_KEY    = 'streamfinder_history';
+const FEEDBACK_KEY   = 'streamfinder_recs_feedback';
+const WEIGHTS_KEY    = 'streamfinder_recs_weights';
+const TRAKT_RECS_KEY = 'streamfinder_trakt_recs';
+
+// Lists that mean "already watched" vs "saved for later"
+const WATCHED_LISTS   = new Set(['watched', 'continue_watching']);
+const WATCHLIST_LISTS = new Set(['my_list', 'watchlist']);
+
+export const DEFAULT_WEIGHTS = {
+  affinity:     1.0,
+  genreMatch:   0.6,
+  recency:      0.4,
+  subscription: 0.8,
+  popularity:   0.2,
+};
+
+// ── CSV parsing (quote-aware, mirrors scripts/match-history.js) ──
+function parseCSVLine(line) {
+  const out = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (inQ) {
+      if (c === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else inQ = false; }
+      else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { out.push(cur); cur = ''; }
+      else cur += c;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+// Import a matched.csv (header: type,title,tmdb_id,tmdb_title,tmdb_year,exact,sources,lists,first_watched,last_watched)
+export function importHistoryCSV(text) {
+  const lines = text.replace(/\r/g, '').trim().split('\n');
+  const header = parseCSVLine(lines[0]).map(h => h.trim());
+  const idx = name => header.indexOf(name);
+  const records = [];
+  const platforms = new Set();
+
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const c = parseCSVLine(lines[i]);
+    const tmdb_id = Number(c[idx('tmdb_id')]);
+    if (!tmdb_id) continue;
+    const sources = (c[idx('sources')] || '').split(';').filter(Boolean);
+    const lists   = (c[idx('lists')]   || '').split(';').filter(Boolean);
+    sources.forEach(s => platforms.add(s));
+    records.push({
+      tmdb_id,
+      type: c[idx('type')] === 'movie' ? 'movie' : 'show',
+      title: (c[idx('tmdb_title')] || c[idx('title')] || '').trim(),
+      year: (c[idx('tmdb_year')] || '').trim(),
+      lists,
+      sources,
+      watched_at: (c[idx('last_watched')] || '').trim(),
+    });
+  }
+
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(records));
+  return { count: records.length, platforms: [...platforms] };
+}
+
+// ── History accessors ───────────────────────────────────────────
+export function getHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+export function hasHistory() { return getHistory().length > 0; }
+export function clearHistory() { localStorage.removeItem(HISTORY_KEY); }
+
+export function getHistoryStats() {
+  const h = getHistory();
+  const platforms = new Set();
+  h.forEach(r => r.sources.forEach(s => platforms.add(s)));
+  return { count: h.length, platforms: [...platforms] };
+}
+
+// TMDB IDs the user has already watched — for exclusion from recs
+export function getWatchedTmdbIds() {
+  const s = new Set();
+  for (const r of getHistory()) {
+    if (r.lists.some(l => WATCHED_LISTS.has(l))) s.add(r.tmdb_id);
+  }
+  return s;
+}
+export function getWatchlistTmdbIds() {
+  const s = new Set();
+  for (const r of getHistory()) {
+    if (r.lists.some(l => WATCHLIST_LISTS.has(l))) s.add(r.tmdb_id);
+  }
+  return s;
+}
+
+// Watched titles used as seeds for the local recommender (with recency).
+// recency = 0..1 (1 = most recent watch), derived from watched_at dates.
+export function getSeedTitles() {
+  const watched = getHistory().filter(r => r.lists.some(l => WATCHED_LISTS.has(l)));
+  const dated = watched.filter(r => r.watched_at).map(r => +new Date(r.watched_at));
+  const min = dated.length ? Math.min(...dated) : 0;
+  const max = dated.length ? Math.max(...dated) : 1;
+  const span = Math.max(1, max - min);
+  return watched.map(r => {
+    const t = r.watched_at ? +new Date(r.watched_at) : min;
+    return { tmdb_id: r.tmdb_id, type: r.type, title: r.title, recency: (t - min) / span };
+  });
+}
+
+// Build a Trakt /sync payload from the imported history:
+// watched → history, saved-only → watchlist.
+export function buildTraktPayload() {
+  const out = { history: { movies: [], shows: [] }, watchlist: { movies: [], shows: [] } };
+  for (const r of getHistory()) {
+    const ids = { tmdb: r.tmdb_id };
+    const bucket = r.type === 'movie' ? 'movies' : 'shows';
+    const watched = r.lists.some(l => WATCHED_LISTS.has(l));
+    if (watched) {
+      const item = { ids };
+      if (r.watched_at && r.type === 'movie') item.watched_at = r.watched_at + 'T20:00:00.000Z';
+      out.history[bucket].push(item);
+    } else {
+      out.watchlist[bucket].push({ ids });
+    }
+  }
+  return out;
+}
+
+// ── Trakt recs (generated by scripts/trakt-sync.js, imported as JSON) ──
+export function importTraktRecs(text) {
+  const data = JSON.parse(text);
+  const recs = Array.isArray(data) ? data : (data.recs || []);
+  const updated = (data && data.updated) || new Date().toISOString();
+  localStorage.setItem(TRAKT_RECS_KEY, JSON.stringify({ updated, recs }));
+  return { count: recs.length, updated };
+}
+export function getTraktRecs() {
+  try { return JSON.parse(localStorage.getItem(TRAKT_RECS_KEY))?.recs || []; }
+  catch { return []; }
+}
+export function hasTraktRecs() { return getTraktRecs().length > 0; }
+export function getTraktRecsMeta() {
+  try { const o = JSON.parse(localStorage.getItem(TRAKT_RECS_KEY)); return o ? { count: (o.recs || []).length, updated: o.updated } : null; }
+  catch { return null; }
+}
+
+// ── Feedback (👍/👎) ─────────────────────────────────────────────
+// shape: { [tmdbId]: { trakt: 1|-1, local: 1|-1 } }
+export function getVotes() {
+  try { return JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || {}; }
+  catch { return {}; }
+}
+export function recordVote(tmdbId, provider, vote) {
+  const all = getVotes();
+  all[tmdbId] = all[tmdbId] || {};
+  if (vote === 0) delete all[tmdbId][provider];
+  else all[tmdbId][provider] = vote;
+  if (!Object.keys(all[tmdbId]).length) delete all[tmdbId];
+  localStorage.setItem(FEEDBACK_KEY, JSON.stringify(all));
+}
+export function getVote(tmdbId, provider) {
+  return getVotes()[tmdbId]?.[provider] || 0;
+}
+
+// ── Local-provider weights ──────────────────────────────────────
+export function getWeights() {
+  try { return { ...DEFAULT_WEIGHTS, ...(JSON.parse(localStorage.getItem(WEIGHTS_KEY)) || {}) }; }
+  catch { return { ...DEFAULT_WEIGHTS }; }
+}
+export function setWeights(w) {
+  localStorage.setItem(WEIGHTS_KEY, JSON.stringify(w));
+}
+export function resetWeights() {
+  localStorage.removeItem(WEIGHTS_KEY);
+}

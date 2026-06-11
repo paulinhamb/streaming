@@ -8,7 +8,7 @@ import {
   getApiKey,
   getCachedProviderList,
   setCachedProviderList,
-} from './config.js?v=2';
+} from './config.js?v=3';
 
 // --- Helpers ---
 
@@ -77,6 +77,33 @@ async function getWatchProviders(id, mediaType) {
     apiUrl(`/${mediaType}/${id}/watch/providers`)
   );
   return data.results || {};
+}
+
+/**
+ * Get TMDB's "recommendations" for a title (behaviour-based).
+ * Returns the raw results array (each item: id, title/name, poster_path,
+ * genre_ids, popularity, release_date/first_air_date, ...).
+ */
+async function getTitleRecommendations(id, mediaType, signal) {
+  const data = await fetchJson(apiUrl(`/${mediaType}/${id}/recommendations`), signal);
+  return data.results || [];
+}
+
+/**
+ * Get TMDB's "similar" titles (keyword/genre-based) — used as a fallback
+ * when /recommendations is sparse.
+ */
+async function getSimilarTitles(id, mediaType, signal) {
+  const data = await fetchJson(apiUrl(`/${mediaType}/${id}/similar`), signal);
+  return data.results || [];
+}
+
+/**
+ * Get a title's detail (poster, title, dates, genres) — used to enrich
+ * recommendation items that arrive without a poster (e.g. from Trakt).
+ */
+async function getTitleDetail(id, mediaType, signal) {
+  return fetchJson(apiUrl(`/${mediaType}/${id}`), signal);
 }
 
 /**
@@ -281,6 +308,9 @@ function transformRentBuyToStoreView(results) {
 export {
   searchMulti,
   getWatchProviders,
+  getTitleRecommendations,
+  getSimilarTitles,
+  getTitleDetail,
   fetchAllProviders,
   validateApiKey,
   getImageUrl,

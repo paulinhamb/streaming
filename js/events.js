@@ -2,7 +2,7 @@
 // events.js — Live Events feature for StreamFinder
 // ============================================================
 
-import { getCountryName, countryFlag } from './config.js?v=2';
+import { getCountryName, countryFlag } from './config.js?v=3';
 
 // ---- Data ----
 

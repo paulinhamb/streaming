@@ -100,6 +100,49 @@ function setCachedProviderList(data) {
   );
 }
 
+// --- Trakt OAuth token storage ---
+const TRAKT_KEYS = {
+  access:  'streamfinder_trakt_access_token',
+  refresh: 'streamfinder_trakt_refresh_token',
+  expiry:  'streamfinder_trakt_expiry',     // ms timestamp
+  user:    'streamfinder_trakt_username',
+};
+
+function setTraktTokens({ access_token, refresh_token, expires_in, created_at, username }) {
+  if (access_token)  localStorage.setItem(TRAKT_KEYS.access, access_token);
+  if (refresh_token) localStorage.setItem(TRAKT_KEYS.refresh, refresh_token);
+  if (expires_in) {
+    const base = created_at ? created_at * 1000 : Date.now();
+    localStorage.setItem(TRAKT_KEYS.expiry, String(base + expires_in * 1000));
+  }
+  if (username !== undefined) localStorage.setItem(TRAKT_KEYS.user, username || '');
+}
+function getTraktAccessToken()  { return localStorage.getItem(TRAKT_KEYS.access); }
+function getTraktRefreshToken() { return localStorage.getItem(TRAKT_KEYS.refresh); }
+function getTraktExpiry()       { return Number(localStorage.getItem(TRAKT_KEYS.expiry)) || 0; }
+function getTraktUsername()     { return localStorage.getItem(TRAKT_KEYS.user) || ''; }
+function isTraktConnected()     { return !!getTraktAccessToken(); }
+function clearTraktTokens()     { Object.values(TRAKT_KEYS).forEach(k => localStorage.removeItem(k)); }
+
+// --- Recommendations cache (per source, 6hr TTL) ---
+const RECS_TTL = 6 * 60 * 60 * 1000;
+function getRecsCache(source) {
+  const raw = localStorage.getItem(`streamfinder_recs_cache_${source}`);
+  if (!raw) return null;
+  try {
+    const { data, timestamp } = JSON.parse(raw);
+    if (Date.now() - timestamp < RECS_TTL) return data;
+  } catch {}
+  return null;
+}
+function setRecsCache(source, data) {
+  localStorage.setItem(`streamfinder_recs_cache_${source}`,
+    JSON.stringify({ data, timestamp: Date.now() }));
+}
+function clearRecsCache(source) {
+  localStorage.removeItem(`streamfinder_recs_cache_${source}`);
+}
+
 // --- Country name helper ---
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
@@ -136,4 +179,14 @@ export {
   setCachedProviderList,
   getCountryName,
   countryFlag,
+  setTraktTokens,
+  getTraktAccessToken,
+  getTraktRefreshToken,
+  getTraktExpiry,
+  getTraktUsername,
+  isTraktConnected,
+  clearTraktTokens,
+  getRecsCache,
+  setRecsCache,
+  clearRecsCache,
 };
