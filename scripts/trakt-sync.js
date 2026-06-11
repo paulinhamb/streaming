@@ -76,6 +76,9 @@ async function deviceAuth() {
     method: 'POST', headers: headers(), body: JSON.stringify({ client_id: CLIENT_ID }),
   })).json();
 
+  // Write code to a file too (stdout is buffered when run in background)
+  try { writeFileSync(join(__dirname, '.trakt-device.json'), JSON.stringify({ url: dc.verification_url, code: dc.user_code })); } catch {}
+
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`🔑  Go to:  ${dc.verification_url}`);
   console.log(`    Enter code:  ${dc.user_code}`);

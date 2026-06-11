@@ -1,5 +1,11 @@
-# Personal viewing-history data — never commit
-history/
+# Personal viewing-history data — raw platform exports, never commit
+history/apple.csv
+history/max.csv
+history/prime.csv
+history/netflix.csv
+history/trakt-import.json
+history/unmatched.csv
+# matched.csv and trakt-recs.json ARE committed (auto-loaded for cross-device sync)
 
 # Trakt secrets / tokens — never commit
 scripts/trakt-creds.json

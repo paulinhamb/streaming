@@ -65,6 +65,29 @@ const $$ = (sel) => document.querySelectorAll(sel);
 
 // ---- Initialization ----
 
+// Auto-load personal data from committed repo files (cross-device sync).
+// Runs silently in background — only fetches if localStorage is empty.
+async function autoLoadPersonalData() {
+  const jobs = [];
+  if (!hasHistory()) {
+    jobs.push(
+      fetch('./history/matched.csv')
+        .then(r => r.ok ? r.text() : null)
+        .then(t => { if (t) { importHistoryCSV(t); clearRecsCache('local'); } })
+        .catch(() => {})
+    );
+  }
+  if (!hasTraktRecs()) {
+    jobs.push(
+      fetch('./history/trakt-recs.json')
+        .then(r => r.ok ? r.text() : null)
+        .then(t => { if (t) importTraktRecs(t); })
+        .catch(() => {})
+    );
+  }
+  await Promise.all(jobs);
+}
+
 async function init() {
   attachListeners();
   renderWelcomeState();
@@ -81,6 +104,9 @@ async function init() {
     showSettings();
     return;
   }
+
+  // Silently seed localStorage from repo files (works on any device, no import step)
+  autoLoadPersonalData();
 
   // Prefetch provider list in background
   try {

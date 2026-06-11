@@ -1,0 +1,326 @@
+type,title,tmdb_id,tmdb_title,tmdb_year,exact,sources,lists,first_watched,last_watched
+movie,MARTY SUPREME,1317288,Marty Supreme,2025,yes,prime,watched,2026-05-19,2026-05-19
+show,STEEL BALL RUN JoJo's Bizarre Adventure: 1st STAGE,45790,JoJo's Bizarre Adventure,2012,no,netflix,watched,2026-03-19,2026-03-19
+show,Bridgerton,91239,Bridgerton,2020,yes,netflix,watched,2026-03-15,2026-03-15
+show,Reality Check: Inside America's Next...,312423,Reality Check: Inside America's Next Top Model,2026,no,netflix,watched,2026-03-15,2026-03-15
+show,All Her Fault,246386,All Her Fault,2025,yes,prime,watched,2026-03-06,2026-03-06
+show,Steal,254071,Steal,2026,yes,prime,watched,2026-03-06,2026-03-06
+show,Hey Duggee,74280,Hey Duggee,2014,yes,prime,watched,2025-12-11,2025-12-11
+show,Physical: Asia,293613,Physical: Asia,2025,yes,netflix,watched,2025-11-20,2025-11-20
+movie,Unknown Number: The High School Catfish,1517772,Unknown Number: The High School Catfish,2025,yes,netflix,watched,2025-11-13,2025-11-13
+show,Wayward,255859,Wayward,2025,yes,netflix,watched,2025-10-30,2025-10-30
+show,Too Much,241361,Too Much,2025,yes,netflix,watched,2025-10-18,2025-10-18
+show,Queer Eye,76922,Queer Eye,2018,yes,netflix,watched,2025-10-16,2025-10-16
+show,Black Mirror,42009,Black Mirror,2011,yes,netflix,watched,2025-10-12,2025-10-12
+show,Final Draft,257929,Final Draft,2022,yes,netflix,watched,2025-10-06,2025-10-06
+show,The Summer I Turned Pretty,194766,The Summer I Turned Pretty,2022,yes,prime,watched,2025-09-28,2025-09-28
+show,The Girlfriend,253376,The Girlfriend,2025,yes,prime,watched,2025-09-27,2025-09-27
+show,The Hunting Wives,244447,The Hunting Wives,2025,yes,netflix,watched,2025-09-12,2025-09-12
+show,The Four Seasons,243316,The Four Seasons,2025,yes,netflix,watched,2025-09-05,2025-09-05
+show,Fit for TV: The Reality of the Biggest...,296549,Fit for TV: The Reality of the Biggest Loser,2025,no,netflix,watched,2025-09-04,2025-09-04
+movie,The Thursday Murder Club,744653,The Thursday Murder Club,2025,yes,netflix,watched,2025-09-04,2025-09-04
+show,Squid Game,93405,Squid Game,2021,yes,netflix,watched,2025-07-11,2025-07-11
+movie,Trainwreck: Poop Cruise,1484253,Trainwreck: Poop Cruise,2025,yes,netflix,watched,2025-07-10,2025-07-10
+movie,Mrs. Chatterjee vs Norway,986594,Mrs. Chatterjee Vs Norway,2023,yes,netflix,watched,2025-07-05,2025-07-05
+show,The Ultimatum: Marry or Move On,169588,The Ultimatum: Marry or Move On,2022,yes,netflix,watched,2025-07-03,2025-07-03
+show,The Ultimatum: Queer Love,224710,The Ultimatum: Queer Love,2023,yes,netflix,watched,2025-07-03,2025-07-03
+show,Too Hot to Handle: Spain,292225,Too Hot to Handle: Spain,2025,yes,netflix,watched,2025-07-03,2025-07-03
+show,Workin' Moms,69555,Workin' Moms,2017,yes,netflix,watched,2025-06-27,2025-06-27
+show,Carlos Alcaraz: My Way,280885,Carlos Alcaraz: My Way,2025,yes,netflix,watched,2025-06-16,2025-06-16
+show,You,78191,You,2018,yes,netflix,watched,2025-06-16,2025-06-16
+show,Sirens,246992,Sirens,2025,yes,netflix,watched,2025-06-14,2025-06-14
+show,Million Dollar Secret,285205,Million Dollar Secret,2025,yes,netflix,watched,2025-05-16,2025-05-16
+show,The Real Housewives of Beverly Hills,32390,The Real Housewives of Beverly Hills,2010,yes,netflix,watched,2025-05-16,2025-05-16
+show,Apple Cider Vinegar,241501,Apple Cider Vinegar,2025,yes,netflix,watched,2025-05-14,2025-05-14
+show,Bad Influence: The Dark Side of...,286338,Bad Influence: The Dark Side of Kidfluencing,2025,no,netflix,watched,2025-05-07,2025-05-07
+show,Contra Reloj (ES),28287,Contra reloj,2001,yes,prime,watched,2025-05-04,2025-05-04
+show,Lorena,85712,Lorena,2019,yes,prime,watched,2025-05-03,2025-05-03
+show,The Crown,65494,The Crown,2016,yes,netflix,watched,2025-04-29,2025-04-29
+show,Running Point,244623,Running Point,2025,yes,netflix,watched,2025-04-15,2025-04-15
+show,Dulceida al desnudo 2+1,213840,Dulceida: a new beginning,2022,no,prime,watched,2025-04-12,2025-04-12
+show,Yellowstone,73586,Yellowstone,2018,yes,netflix;prime,watched;watchlist,2025-04-12,2025-04-12
+show,Alpha Males,215092,Alpha Males,2022,yes,netflix,watched,2025-03-28,2025-03-28
+show,Senna,211039,Senna,2024,yes,netflix,watched,2025-02-11,2025-02-11
+movie,Bridget Jones's Baby,95610,Bridget Jones's Baby,2016,yes,netflix,watched,2025-02-08,2025-02-08
+movie,Kinda Pregnant,1212142,Kinda Pregnant,2025,yes,netflix,watched,2025-02-08,2025-02-08
+movie,Whiplash,244786,Whiplash,2014,yes,netflix,watched,2025-02-02,2025-02-02
+show,Waco: American Apocalypse,220229,Waco: American Apocalypse,2023,yes,netflix,watched,2025-01-16,2025-01-16
+movie,Challengers,937287,Challengers,2024,yes,prime,watched,2025-01-09,2025-01-09
+show,Black Doves,225385,Black Doves,2024,yes,netflix,watched,2025-01-05,2025-01-05
+movie,The Six Triple Eight,1061699,The Six Triple Eight,2024,yes,netflix,watched,2025-01-05,2025-01-05
+show,Ted Bundy: Falling For a Killer,97428,Ted Bundy: Falling for a Killer,2020,yes,prime,watched,2024-12-23,2024-12-23
+show,Shiny Happy People: Duggar Family Secrets,226751,Shiny Happy People,2023,no,prime,watched,2024-12-20,2024-12-20
+show,Emily in Paris,82596,Emily in Paris,2020,yes,netflix,watched,2024-12-17,2024-12-17
+movie,Biggest Heist Ever,1391409,Biggest Heist Ever,2024,yes,netflix,watched,2024-12-13,2024-12-13
+show,Cold Case: Who Killed JonBenét Ramsey,274820,Cold Case: Who Killed JonBenét Ramsey,2024,yes,netflix,watched,2024-12-13,2024-12-13
+show,No Good Deed,241112,No Good Deed,2024,yes,netflix,watched,2024-12-13,2024-12-13
+show,Six Feet Under,1274,Six Feet Under,2001,yes,netflix,watched,2024-12-10,2024-12-10
+movie,What Jennifer Did,1261924,What Jennifer Did,2024,yes,netflix,watched,2024-12-05,2024-12-05
+movie,Buy Now: The Shopping Conspiracy,1376704,Buy Now! The Shopping Conspiracy,2024,yes,netflix,watched,2024-11-25,2024-11-25
+show,Crims,117180,Crims,2020,yes,netflix,watched,2024-11-24,2024-11-24
+show,American Murder: Laci Peterson,261034,American Murder: Laci Peterson,2024,yes,netflix,watched,2024-11-21,2024-11-21
+show,The Office (U.S.),2316,The Office,2005,yes,netflix;prime,watched,2024-03-15,2024-11-20
+movie,My Old Ass,947891,My Old Ass,2024,yes,prime,watched,2024-11-16,2024-11-16
+movie,Martha,1330409,Martha,2024,yes,netflix,watched,2024-11-15,2024-11-15
+movie,The Boss Baby,295693,The Boss Baby,2017,yes,prime,watched,2024-11-08,2024-11-08
+movie,It's All Over: The Kiss That Changed...,1365578,It's All Over: The Kiss That Changed Spanish Football,2024,no,netflix,watched,2024-11-01,2024-11-01
+show,SPRINT,37072,Sprint!,2005,yes,netflix,watched,2024-11-01,2024-11-01
+show,Monsters: The Lyle and Erik Menendez Story,225634,Monsters: The Lyle and Erik Menendez Story,2024,yes,netflix,watched,2024-10-27,2024-10-27
+show,Sex and the City,105,Sex and the City,1998,yes,netflix,watched,2024-10-27,2024-10-27
+movie,His Three Daughters,1154762,His Three Daughters,2024,yes,netflix,watched,2024-10-26,2024-10-26
+show,Worst Ex Ever,259259,Worst Ex Ever,2024,yes,netflix,watched,2024-10-24,2024-10-24
+show,Dirty Pop: The Boy Band Scam,257209,Dirty Pop: The Boy Band Scam,2024,yes,netflix,watched,2024-10-21,2024-10-21
+movie,1917,530915,1917,2019,yes,prime,watched,2024-10-19,2024-10-19
+movie,1944,321303,1944,2015,yes,prime,watched,2024-10-19,2024-10-19
+show,The Resident,74016,The Resident,2018,yes,netflix,watched,2024-10-19,2024-10-19
+show,Culinary Class Wars,245684,Culinary Class Wars,2024,yes,netflix,watched,2024-10-18,2024-10-18
+movie,The Menendez Brothers,1360610,The Menendez Brothers,2024,yes,netflix,watched,2024-10-18,2024-10-18
+movie,Crisis,580532,Crisis,2021,yes,netflix,watched,2024-10-16,2024-10-16
+show,KAOS,102621,KAOS,2024,yes,netflix,watched,2024-10-16,2024-10-16
+show,The Gentlemen,236235,The Gentlemen,2024,yes,netflix,watched,2024-10-16,2024-10-16
+movie,Will & Harper,1214506,Will & Harper,2024,yes,netflix,watched,2024-10-16,2024-10-16
+movie,Generation Wealth,493014,Generation Wealth,2018,yes,prime,watched,2024-10-15,2024-10-15
+show,Heartstopper,124834,Heartstopper,2022,yes,netflix,watched,2024-10-15,2024-10-15
+show,The Perfect Couple,220564,The Perfect Couple,2024,yes,netflix,watched,2024-10-15,2024-10-15
+show,Babies,278283,Babies,2026,yes,netflix,watched,2024-10-02,2024-10-02
+show,The Man with 1000 Kids,257207,The Man with 1000 Kids,2024,yes,netflix,watched,2024-10-02,2024-10-02
+show,Nobody Wants This,250923,Nobody Wants This,2024,yes,netflix,watched,2024-10-01,2024-10-01
+movie,Amy (La chica detrás del nombre),331781,Amy,2015,no,prime,watched,2024-09-28,2024-09-28
+show,DEPP V HEARD,227381,Depp V Heard,2023,yes,netflix,watched,2024-07-10,2024-07-10
+show,One Day,240667,One Day,2024,yes,netflix,watched,2024-07-10,2024-07-10
+show,Dancing for the Devil: The 7M TikTok Cult,253384,Dancing for the Devil: The 7M TikTok Cult,2024,yes,netflix,watched,2024-06-29,2024-06-29
+show,The Final Table,84216,The Final Table,2018,yes,netflix,watched,2024-05-26,2024-05-26
+movie,Illusions for Sale: The Rise and Fall...,1279717,Illusions for Sale: The Rise and Fall of Generation Zoe,2024,no,netflix,watched,2024-05-25,2024-05-25
+movie,The Holdovers,840430,The Holdovers,2023,yes,prime,watched,2024-05-25,2024-05-25
+show,3 Body Problem,108545,3 Body Problem,2024,yes,netflix,watched,2024-05-24,2024-05-24
+show,Death on the Canaries,238581,Una vida menos en Canarias,2024,no,netflix,watched,2024-05-24,2024-05-24
+show,Bodkin,241257,Bodkin,2024,yes,netflix,watched,2024-05-20,2024-05-20
+show,"Ashley Madison: Sex, Lies & Scandal",253249,"Ashley Madison: Sex, Lies & Scandal",2024,yes,netflix,watched,2024-05-19,2024-05-19
+movie,Hack Your Health: The Secrets of Your Gut,1266701,Hack Your Health: The Secrets of Your Gut,2024,yes,netflix,watched,2024-05-19,2024-05-19
+movie,The Roast of Tom Brady,1278360,The Roast of Tom Brady,2024,yes,netflix,watched,2024-05-12,2024-05-12
+movie,A Good Person,800787,A Good Person,2023,yes,prime,watched,2024-05-09,2024-05-09
+movie,The Idea of You,843527,The Idea of You,2024,yes,prime,watched,2024-05-08,2024-05-08
+show,Wellmania,195841,Wellmania,2023,yes,netflix,watched,2024-05-03,2024-05-03
+show,Baby Reindeer,241259,Baby Reindeer,2024,yes,netflix,watched,2024-05-01,2024-05-01
+show,The Circle,97083,The Circle,2020,yes,netflix,watched,2024-04-25,2024-04-25
+movie,The Tearsmith,1127166,The Tearsmith,2024,yes,netflix,watched,2024-04-25,2024-04-25
+show,Unlocked: A Jail Experiment,248984,Unlocked: A Jail Experiment,2024,yes,netflix,watched,2024-04-25,2024-04-25
+show,Inventing Anna,95665,Inventing Anna,2022,yes,netflix,watched,2024-04-23,2024-04-23
+show,Griselda,137893,Griselda,2024,yes,netflix,watched,2024-04-21,2024-04-21
+show,Physical: 100,210905,Physical: 100,2023,yes,netflix,watched,2024-04-21,2024-04-21
+show,How to Become a Cult Leader,230043,How to Become a Cult Leader,2023,yes,netflix,watched,2024-04-14,2024-04-14
+show,Girls5eva,100350,Girls5eva,2021,yes,netflix,watched,2024-04-10,2024-04-10
+movie,American Fiction,1056360,American Fiction,2023,yes,prime,watched,2024-03-24,2024-03-24
+show,Mr. & Mrs. Smith,118642,Mr. & Mrs. Smith,2024,yes,prime,watched,2024-03-24,2024-03-24
+movie,Road House,359410,Road House,2024,yes,prime,watched,2024-03-24,2024-03-24
+show,Turning Point: The Bomb and the Cold War,245926,Turning Point: The Bomb and the Cold War,2024,yes,netflix,watched,2024-03-15,2024-03-15
+show,Little Nicholas: Life of a Scoundrel,245015,Little Nicholas: Life of a Scoundrel,2024,yes,netflix,watched,2024-03-11,2024-03-11
+movie,Murder Mystery 2,638974,Murder Mystery 2,2023,yes,netflix,watched,2024-03-11,2024-03-11
+movie,Pain Hustlers,862968,Pain Hustlers,2023,yes,netflix,watched,2024-03-11,2024-03-11
+movie,Spaceman,636706,Spaceman,2024,yes,netflix,watched,2024-03-09,2024-03-09
+movie,You Are Not Alone: Fighting the Wolf Pack,1238400,You Are Not Alone: Fighting the Wolf Pack,2024,yes,netflix,watched,2024-03-08,2024-03-08
+movie,La La Land,313369,La La Land,2016,yes,prime,watched,2024-03-03,2024-03-03
+movie,Spanish Affair,236737,Spanish Affair,2014,yes,prime,watched,2024-03-03,2024-03-03
+movie,The Netflix Slam,1245423,The Netflix Slam,2024,yes,netflix,watched,2024-03-03,2024-03-03
+movie,Society of the Snow,906126,Society of the Snow,2023,yes,netflix,watched,2024-03-01,2024-03-01
+show,Crisis in Six Scenes,67443,Crisis in Six Scenes,2016,yes,prime,watched,2024-02-27,2024-02-27
+movie,Babylon,615777,Babylon,2022,yes,prime,watched,2024-02-25,2024-02-25
+movie,Miss Americana,653567,Miss Americana,2020,yes,netflix,watched,2024-02-25,2024-02-25
+show,Sex Education,81356,Sex Education,2019,yes,netflix,watched,2024-02-23,2024-02-23
+show,American Nightmare,242845,American Nightmare,2024,yes,netflix,watched,2024-02-10,2024-02-10
+show,Alexander: The Making of a God,242392,Alexander: The Making of a God,2024,yes,netflix,watched,2024-02-04,2024-02-04
+movie,NYAD,895549,NYAD,2023,yes,netflix,watched,2024-02-04,2024-02-04
+movie,Maestro,523607,Maestro,2023,yes,netflix,watched,2024-01-27,2024-01-27
+show,Berlin and the Jewels of Paris,146176,Berlin,2023,no,netflix,watched,2024-01-07,2024-01-07
+show,The Chosen,85077,The Chosen,2019,yes,netflix,watched,2024-01-07,2024-01-07
+movie,Foo Fighters: Back and Forth,61488,Foo Fighters: Back and Forth,2011,yes,prime,watched,2024-01-04,2024-01-04
+movie,Saltburn,930564,Saltburn,2023,yes,prime,watched,2024-01-01,2024-01-01
+show,Dead Ringers,4449,Dead Ringers,2002,yes,prime,watched;watchlist,2023-12-15,2023-12-15
+movie,Bottoms,814776,Bottoms,2023,yes,prime,watched,2023-11-28,2023-11-28
+show,Gil Family: At home with the Gils,201477,Gil Family,2022,no,prime,watched,2023-11-05,2023-11-05
+movie,The Boy Who Killed My Parents,800305,The Boy Who Killed My Parents,2021,yes,prime,watched,2023-11-05,2023-11-05
+movie,The Girl Who Killed Her Parents - The Confession,1135408,The Girl Who Killed Her Parents: The Confession,2023,yes,prime,watched,2023-11-05,2023-11-05
+movie,The Girl Who Killed Her Parents,608804,The Girl Who Killed Her Parents,2021,yes,prime,watched;watchlist,2023-11-04,2023-11-04
+show,New Bandits,137883,Cangaço Novo,2023,no,prime,watched;watchlist,2023-09-17,2023-09-17
+movie,Mean Girls,10625,Mean Girls,2004,yes,max;prime,my_list;watched,2023-08-12,2023-08-12
+movie,Air,964980,Air,2023,yes,prime,watched,2023-07-21,2023-07-21
+show,The Marvelous Mrs. Maisel,70796,The Marvelous Mrs. Maisel,2017,yes,prime,watched,2023-06-11,2023-06-11
+show,Daisy Jones & the Six,95555,Daisy Jones & the Six,2023,yes,prime,watched,2023-05-26,2023-05-26
+movie,Queenpins,628914,Queenpins,2021,yes,prime,watched,2023-03-13,2023-03-13
+movie,No Time to Die,370172,No Time to Die,2021,yes,prime,watched,2023-02-25,2023-02-25
+movie,Top Gun: Maverick,361743,Top Gun: Maverick,2022,yes,prime,watched,2023-02-25,2023-02-25
+movie,Santoalla,404831,Santoalla,2016,yes,prime,watched,2022-12-24,2022-12-24
+show,The Recruit,210916,The Recruit,2022,yes,netflix,watched,2022-12-21,2022-12-21
+show,This is Us,67136,This Is Us,2016,yes,prime,watched;watchlist,2022-09-16,2022-09-16
+show,The Boys,76479,The Boys,2019,yes,prime,watched;watchlist,2022-07-19,2022-07-19
+movie,Sound Of Metal,502033,Sound of Metal,2020,yes,prime,watched;watchlist,2022-05-19,2022-05-19
+movie,Murder Mystery,514999,Murder Mystery,2019,yes,netflix,watched,2022-03-14,2022-03-14
+show,PIECES OF HER,99002,PIECES OF HER,2022,yes,netflix,watched,2022-03-14,2022-03-14
+movie,The Adam Project,696806,The Adam Project,2022,yes,netflix,watched,2022-03-14,2022-03-14
+show,Modern Love,91602,Modern Love,2019,yes,prime,watched;watchlist,2022-01-31,2022-01-31
+movie,Spider-Man: Far from Home,429617,Spider-Man: Far From Home,2019,yes,prime,watched,2022-01-20,2022-01-20
+movie,El amor y otras cosas imposibles,52505,The Other Woman,2010,no,prime,watched,2021-11-11,2021-11-11
+show,Soulmates,100771,Soulmates,2020,yes,prime,watched,2021-10-27,2021-10-27
+movie,Midsommar,530385,Midsommar,2019,yes,prime,watched,2021-05-30,2021-05-30
+movie,Coming 2 America,484718,Coming 2 America,2021,yes,prime,watched,2021-04-28,2021-04-28
+movie,Coming to America,9602,Coming to America,1988,yes,prime,watched,2021-04-11,2021-04-11
+movie,Dark Waters,552178,Dark Waters,2019,yes,prime,watched,2021-03-20,2021-03-20
+movie,YES DAY,638597,YES DAY,2021,yes,netflix,watched,2021-03-16,2021-03-16
+show,Vikings,44217,Vikings,2013,yes,netflix,watched,2021-03-15,2021-03-15
+movie,The Boy Who Harnessed the Wind,491480,The Boy Who Harnessed the Wind,2019,yes,netflix,watched,2021-01-05,2021-01-05
+movie,The Midnight Sky,614911,The Midnight Sky,2020,yes,netflix,watched,2021-01-01,2021-01-01
+movie,Bombshell,525661,Bombshell,2019,yes,prime,watched,2020-12-13,2020-12-13
+movie,Borat Subsequent Moviefilm,740985,Borat Subsequent Moviefilm: Delivery of Prodigious Bribe to American Regime for Make Benefit Once Glorious Nation of Kazakhstan,2020,no,prime,watched,2020-11-15,2020-11-15
+movie,BlacKkKlansman,487558,BlacKkKlansman,2018,yes,prime,watched,2020-09-09,2020-09-09
+movie,Knives Out,546554,Knives Out,2019,yes,prime,watched;watchlist,2020-08-09,2020-08-09
+show,Upload,86248,Upload,2020,yes,prime,watched,2020-07-27,2020-07-27
+movie,Kaiser,819657,Emperor,2019,no,prime,watched,2020-07-26,2020-07-26
+movie,Lion,334543,Lion,2016,yes,prime,watched,2020-06-28,2020-06-28
+show,Little Fires Everywhere,90257,Little Fires Everywhere,2020,yes,prime,watched,2020-06-08,2020-06-08
+movie,Booksmart,505600,Booksmart,2019,yes,prime,watched,2020-04-24,2020-04-24
+show,Mozart in the Jungle,61744,Mozart in the Jungle,2014,yes,prime,watched,2020-04-14,2020-04-14
+show,The Romanoffs,73607,The Romanoffs,2018,yes,prime,watched,2020-04-07,2020-04-07
+movie,Shrek,808,Shrek,2001,yes,prime,watched,2020-03-29,2020-03-29
+movie,Chiara Ferragni Unposted,618253,Chiara Ferragni: Unposted,2019,yes,prime,watched,2020-01-11,2020-01-11
+show,The Good Fight,69158,The Good Fight,2017,yes,prime,watched,2019-11-18,2019-11-18
+movie,Pitch Perfect 3,353616,Pitch Perfect 3,2017,yes,prime,watched,2019-11-01,2019-11-01
+show,Fleabag,67070,Fleabag,2016,yes,prime,watched,2019-09-28,2019-09-28
+show,El Corazón de Sergio Ramos,92878,Sergio Ramos,2019,no,prime,watched,2019-09-21,2019-09-21
+movie,2001: A Space Odyssey,62,2001: A Space Odyssey,1968,yes,max,my_list,,
+movie,300,1271,300,2007,yes,max,my_list,,
+movie,A Clockwork Orange,185,A Clockwork Orange,1971,yes,max,my_list,,
+show,A Knight of the Seven Kingdoms,224372,A Knight of the Seven Kingdoms,2026,yes,max,continue_watching,,
+movie,A Quiet Place,447332,A Quiet Place,2018,yes,max,my_list,,
+movie,A Real Pain,1013850,A Real Pain,2024,yes,max,my_list,,
+movie,Aftersun,965150,Aftersun,2022,yes,prime,watchlist,,
+movie,Am I Ok?,641934,Am I OK?,2024,yes,max,my_list,,
+movie,Ammonite,568467,Ammonite,2020,yes,prime,watchlist,,
+movie,Another Round,580175,Another Round,2020,yes,max,my_list,,
+movie,Barbie,346698,Barbie,2023,yes,max,my_list,,
+movie,Beau Is Afraid,798286,Beau Is Afraid,2023,yes,prime,watchlist,,
+movie,Beetlejuice Beetlejuice,917496,Beetlejuice Beetlejuice,2024,yes,max,my_list,,
+show,Big Little Lies,66292,Big Little Lies,2017,yes,max,my_list,,
+show,Broadchurch,1427,Broadchurch,2013,yes,prime,watchlist,,
+movie,Casablanca,289,Casablanca,1943,yes,max,my_list,,
+movie,Catch Me If You Can,640,Catch Me If You Can,2002,yes,max,my_list,,
+movie,Charlie and the Chocolate Factory,118,Charlie and the Chocolate Factory,2005,yes,max,my_list,,
+show,Chernobyl,87108,Chernobyl,2019,yes,max,my_list,,
+movie,Cinderella,150689,Cinderella,2015,yes,prime,watchlist,,
+movie,"Crazy, Stupid, Love.",50646,"Crazy, Stupid, Love.",2011,yes,max,my_list,,
+movie,Dune,438631,Dune,2021,yes,max,my_list,,
+movie,Dune: Part Two,693134,Dune: Part Two,2024,yes,max,my_list,,
+movie,Eiffel,655082,Eiffel,2021,yes,prime,watchlist,,
+movie,El Bulli: Cooking in progress,82688,El Bulli: Cooking in Progress,2011,yes,prime,watchlist,,
+movie,Erin Brockovich,462,Erin Brockovich,2000,yes,max,my_list,,
+show,Euphoria,85552,Euphoria,2019,yes,max,continue_watching,,
+movie,Fantastic Beasts and Where To Find Them,259316,Fantastic Beasts and Where to Find Them,2016,yes,max,my_list,,
+movie,Fantastic Mr. Fox,10315,Fantastic Mr. Fox,2009,yes,prime,watchlist,,
+movie,Frank Miller's Sin City,187,Sin City,2005,no,max,my_list,,
+movie,Furiosa: A Mad Max Saga,786892,Furiosa: A Mad Max Saga,2024,yes,max,my_list,,
+show,Gentleman Jack,86163,Gentleman Jack,2019,yes,max,my_list,,
+movie,Ghosting,817247,Ghosting,2019,yes,apple,continue_watching,,
+movie,Gone With the Wind,770,Gone with the Wind,1939,yes,max,my_list,,
+show,Hacks,124101,Hacks,2021,yes,max,continue_watching,,
+movie,Harry Potter and the Deathly Hallows Part 1,12444,Harry Potter and the Deathly Hallows: Part 1,2010,yes,max,my_list,,
+movie,Harry Potter and the Deathly Hallows Part 2,12445,Harry Potter and the Deathly Hallows: Part 2,2011,yes,max,my_list,,
+movie,Harry Potter and the Goblet of Fire,674,Harry Potter and the Goblet of Fire,2005,yes,max,my_list,,
+movie,Harry Potter and the Half-Blood Prince,767,Harry Potter and the Half-Blood Prince,2009,yes,max,my_list,,
+movie,Harry Potter and the Order of the Phoenix,675,Harry Potter and the Order of the Phoenix,2007,yes,max,my_list,,
+movie,Harry Potter and the Philosopher's Stone,671,Harry Potter and the Philosopher's Stone,2001,yes,max,my_list,,
+movie,Harry Potter and the Prisoner of Azkaban,673,Harry Potter and the Prisoner of Azkaban,2004,yes,max,my_list,,
+show,Historial delictivo,204490,Criminal Record,2024,no,apple,continue_watching,,
+movie,How to Lose a Guy in 10 Days,9919,How to Lose a Guy in 10 Days,2003,yes,max,my_list,,
+show,How to With John Wilson,110971,How To with John Wilson,2020,yes,max,my_list,,
+show,I May Destroy You,102619,I May Destroy You,2020,yes,max,my_list,,
+movie,Inception,27205,Inception,2010,yes,max,my_list,,
+movie,Interstellar,157336,Interstellar,2014,yes,max,my_list,,
+movie,Jerry Maguire,9390,Jerry Maguire,1996,yes,max,my_list,,
+movie,Joker: Folie à Deux,889737,Joker: Folie à Deux,2024,yes,max,my_list,,
+show,Las gotas de Dios,306121,The Drops of God,2026,no,apple,continue_watching,,
+movie,Los héroes de Telemark,16850,The Heroes of Telemark,1965,no,prime,watchlist,,
+show,Love & Death,124800,Love & Death,2023,yes,max,my_list,,
+movie,Mar Adentro,1913,The Sea Inside,2004,no,max,my_list,,
+show,Mare of Easttown,115004,Mare of Easttown,2021,yes,max,my_list,,
+show,Margo tiene problemas de dinero,245318,Margo's Got Money Troubles,2026,no,apple,continue_watching,,
+movie,Mars Attacks!,75,Mars Attacks!,1996,yes,max,my_list,,
+show,Mildred Pierce,39468,Mildred Pierce,2011,yes,max,my_list,,
+movie,Million Dollar Baby,70,Million Dollar Baby,2004,yes,max,my_list,,
+movie,Minority Report,180,Minority Report,2002,yes,max,my_list,,
+show,Mr. Mercedes,70485,Mr. Mercedes,2017,yes,prime,watchlist,,
+show,Naked and Afraid,58832,Naked and Afraid,2013,yes,max,continue_watching,,
+show,Nine Perfect Strangers,88989,Nine Perfect Strangers,2021,yes,prime,watchlist,,
+movie,No Country for Old Men,6977,No Country for Old Men,2007,yes,max,my_list,,
+movie,Nunca es demasiado tarde,121479,Nunca es demasiado tarde,1956,yes,prime,watchlist,,
+movie,Ocean's Eight,402900,Ocean's Eight,2018,yes,max,my_list,,
+movie,Ocean's Eleven,161,Ocean's Eleven,2001,yes,max,my_list,,
+movie,Ocean's Twelve,163,Ocean's Twelve,2004,yes,max,my_list,,
+show,Olive Kitteridge,61585,Olive Kitteridge,2014,yes,max,my_list,,
+movie,One Battle After Another,1054867,One Battle After Another,2025,yes,max,my_list,,
+movie,Orgazmo,8675,Orgazmo,1998,yes,prime,watchlist,,
+movie,Outcome,1049471,Outcome,2026,yes,apple,continue_watching,,
+show,Palm Royale,157367,Palm Royale,2024,yes,apple,continue_watching,,
+show,Para toda la humanidad,87917,For All Mankind,2019,no,apple,continue_watching,,
+show,Patria,85964,Patria,2020,yes,max,my_list,,
+movie,Priscilla,1020006,Priscilla,2023,yes,max,my_list,,
+movie,Pulp Fiction,680,Pulp Fiction,1994,yes,max,my_list,,
+show,Ravalear,282696,Ravalear: Not for Sale,2026,no,max,continue_watching,,
+movie,Respect,592863,Respect,2021,yes,prime,watchlist,,
+movie,Rocketman,504608,Rocketman,2019,yes,max,my_list,,
+show,Rooster,254953,Rooster,2026,yes,max,continue_watching,,
+movie,Scary Movie,4247,Scary Movie,2000,yes,max,my_list,,
+show,Scenes From a Marriage,112077,Scenes from a Marriage,2021,yes,max,my_list,,
+movie,Se7en,807,Se7en,1995,yes,max,my_list,,
+movie,Sex and the City,4564,Sex and the City,2008,yes,max,my_list,,
+show,Sharp Objects,70453,Sharp Objects,2018,yes,max,my_list,,
+movie,Sinners,1233413,Sinners,2025,yes,max,my_list,,
+movie,Spider-Man: Across the Spider-Verse,569094,Spider-Man: Across the Spider-Verse,2023,yes,max,my_list,,
+movie,Spider-Man: Into the Spider-Verse,324857,Spider-Man: Into the Spider-Verse,2018,yes,max,my_list,,
+show,Succession,76331,Succession,2018,yes,max,my_list,,
+movie,Suspiria,11906,Suspiria,1977,yes,prime,watchlist,,
+show,Taken Together: Who Killed Lyric and Elizabeth?,259739,Taken Together: Who Killed Lyric and Elizabeth?,2024,yes,max,my_list,,
+show,Task,228305,Task,2025,yes,max,my_list,,
+movie,Temple Grandin,33602,Temple Grandin,2010,yes,max,my_list,,
+movie,The Batman,414906,The Batman,2022,yes,max,my_list,,
+movie,The Bone Collector,9481,The Bone Collector,1999,yes,max,my_list,,
+show,The Chair Company,271267,The Chair Company,2025,yes,max,my_list,,
+movie,The Dark Knight,155,The Dark Knight,2008,yes,max,my_list,,
+movie,The Dark Knight Rises,49026,The Dark Knight Rises,2012,yes,max,my_list,,
+movie,The Florida Project,394117,The Florida Project,2017,yes,max;prime,my_list;watchlist,,
+show,The Gilded Age,81723,The Gilded Age,2022,yes,max,my_list,,
+movie,The Goonies,9340,The Goonies,1985,yes,max,my_list,,
+movie,The Great Gatsby,64682,The Great Gatsby,2013,yes,max,my_list,,
+show,The Handmaid's Tale,69478,The Handmaid's Tale,2017,yes,max,my_list,,
+movie,The Hangover,18785,The Hangover,2009,yes,max,my_list,,
+movie,The Hangover Part II,45243,The Hangover Part II,2011,yes,max,my_list,,
+movie,The Hustle,449562,The Hustle,2019,yes,prime,watchlist,,
+movie,The Intern,257211,The Intern,2015,yes,max,my_list,,
+movie,The Kids Are Alright,800823,The Kids Are Alright: Destination Asturias,2021,no,max,my_list,,
+show,The Last of Us,100088,The Last of Us,2023,yes,max,my_list,,
+movie,The Lobster,254320,The Lobster,2015,yes,max,my_list,,
+movie,The Lord of the Rings: The Fellowship of the Ring,120,The Lord of the Rings: The Fellowship of the Ring,2001,yes,max,my_list,,
+movie,The Lord of the Rings: The Return of the King,122,The Lord of the Rings: The Return of the King,2003,yes,max,my_list,,
+movie,The Lord of the Rings: The Two Towers,121,The Lord of the Rings: The Two Towers,2002,yes,max,my_list,,
+movie,The Mask,854,The Mask,1994,yes,max,my_list,,
+movie,The Matrix,603,The Matrix,1999,yes,max,my_list,,
+movie,The Matrix Reloaded,604,The Matrix Reloaded,2003,yes,max,my_list,,
+movie,The Matrix Revolutions,605,The Matrix Revolutions,2003,yes,max,my_list,,
+movie,The Matrix: Resurrections,624860,The Matrix Resurrections,2021,yes,max,my_list,,
+show,The Mentalist,5920,The Mentalist,2008,yes,max,my_list,,
+show,The Night Of,66276,The Night Of,2016,yes,max,my_list,,
+movie,The Notebook,11036,The Notebook,2004,yes,max,my_list,,
+show,The Pitt,250307,The Pitt,2025,yes,max,continue_watching,,
+movie,The Secret in Their Eyes,25376,The Secret in Their Eyes,2009,yes,max,my_list,,
+show,The Sex Lives of College Girls,134373,The Sex Lives of College Girls,2021,yes,max,my_list,,
+show,The Staircase,122196,The Staircase,2022,yes,max,my_list,,
+movie,The Talented Mr. Ripley,1213,The Talented Mr. Ripley,1999,yes,max,my_list,,
+movie,The Taste of Things,964960,The Taste of Things,2023,yes,max,my_list,,
+movie,The Terminal,594,The Terminal,2004,yes,max,my_list,,
+show,The Undoing,83851,The Undoing,2020,yes,max,my_list,,
+show,The White Lotus,111803,The White Lotus,2021,yes,max,my_list,,
+movie,The Wizard of Oz,630,The Wizard of Oz,1939,yes,max,my_list,,
+show,Tokyo Vice,90296,Tokyo Vice,2022,yes,max,my_list,,
+movie,Triangle of Sadness,497828,Triangle of Sadness,2022,yes,max,my_list,,
+movie,Troop Zero,525946,Troop Zero,2019,yes,prime,watchlist,,
+show,True Detective,46648,True Detective,2014,yes,max,my_list,,
+show,White House Plumbers,96237,White House Plumbers,2023,yes,max,my_list,,
+movie,Zoolander,9398,Zoolander,2001,yes,max,my_list,,
