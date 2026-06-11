@@ -43,7 +43,7 @@ import {
 
 import {
   loadLocalPool, rankLocal, loadTrakt, ensureCard, isWatchable, FACTORS,
-} from './recommendations.js?v=3';
+} from './recommendations.js?v=4';
 
 // ---- State ----
 let currentAbortController = null;
@@ -1229,7 +1229,16 @@ function wireRecsControls() {
     $('#recs-weights').classList.toggle('hidden', recsViewMode === 'trakt');
     loadAndRenderRecs();
   }));
-  $('#recs-refresh')?.addEventListener('click', () => { recsRandomize = true; loadAndRenderRecs(true); });
+  $('#recs-refresh')?.addEventListener('click', () => {
+    recsRandomize = true;
+    // If the pool is already built, just reshuffle instantly (no TMDB re-fetch needed).
+    // Only rebuild from scratch if pool is missing.
+    if (recsLocalPool && recsLocalPool.length > 0) {
+      renderRecsContent();
+    } else {
+      loadAndRenderRecs(false);
+    }
+  });
   $('#recs-weights-reset')?.addEventListener('click', () => {
     resetWeights();
     const w = getWeights();
