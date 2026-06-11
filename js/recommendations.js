@@ -110,12 +110,17 @@ export async function loadLocalPool({ country, force = false, signal } = {}) {
 }
 
 // Pure re-rank of a cached pool by current weights — instant on slider drag.
-export function rankLocal(pool, weights, limit = 40) {
+// randomize=true adds score jitter so each refresh surfaces a different subset.
+export function rankLocal(pool, weights, limit = 40, randomize = false) {
   const score = c => FACTORS.reduce((s, f) => s + (weights[f] || 0) * (c.factors[f] || 0), 0);
-  return pool
-    .map(c => ({ ...c, score: score(c), reason: factorReason(c.factors, weights) }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
+  const mapped = pool.map(c => {
+    const s = score(c);
+    return { ...c, score: s, _sort: randomize ? s + (Math.random() - 0.5) * 0.5 : s, reason: factorReason(c.factors, weights) };
+  });
+  return mapped
+    .sort((a, b) => b._sort - a._sort)
+    .slice(0, limit)
+    .map(({ _sort, ...c }) => c);
 }
 
 function factorReason(factors, weights) {

@@ -43,7 +43,7 @@ import {
 
 import {
   loadLocalPool, rankLocal, loadTrakt, ensureCard, isWatchable, FACTORS,
-} from './recommendations.js?v=2';
+} from './recommendations.js?v=3';
 
 // ---- State ----
 let currentAbortController = null;
@@ -1165,6 +1165,7 @@ async function handleHashRoute() {
 let recsViewMode = 'local';     // 'trakt' | 'local' | 'compare'
 let recsLocalPool = null;       // cached candidate pool (re-ranked client-side)
 let recsTraktList = null;       // cached Trakt list
+let recsRandomize = false;      // true after user clicks ↻ to surface a different subset
 const RECS_LIMIT = 40;
 
 async function renderRecommendationsPage() {
@@ -1228,7 +1229,7 @@ function wireRecsControls() {
     $('#recs-weights').classList.toggle('hidden', recsViewMode === 'trakt');
     loadAndRenderRecs();
   }));
-  $('#recs-refresh')?.addEventListener('click', () => loadAndRenderRecs(true));
+  $('#recs-refresh')?.addEventListener('click', () => { recsRandomize = true; loadAndRenderRecs(true); });
   $('#recs-weights-reset')?.addEventListener('click', () => {
     resetWeights();
     const w = getWeights();
@@ -1266,7 +1267,7 @@ async function loadAndRenderRecs(force = false) {
 
 function recsListFor(mode) {
   if (mode === 'trakt') return recsTraktList;
-  return recsLocalPool ? rankLocal(recsLocalPool, getWeights(), RECS_LIMIT) : null;
+  return recsLocalPool ? rankLocal(recsLocalPool, getWeights(), RECS_LIMIT, recsRandomize) : null;
 }
 
 function renderRecsContent() {
@@ -1287,6 +1288,7 @@ function renderRecsContent() {
 }
 
 function rerankLocalGrids() {
+  recsRandomize = false; // slider adjustments show clean deterministic ranking
   const localGrid = $('#grid-local') || (recsViewMode === 'local' ? $('#grid-main') : null);
   if (localGrid) renderGrid('local', localGrid);
 }
