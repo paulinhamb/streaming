@@ -109,32 +109,15 @@ export async function loadLocalPool({ country, force = false, signal } = {}) {
   return top;
 }
 
-// Pure re-rank of a cached pool by current weights — instant on slider drag.
-// randomize=true uses weighted random sampling so each refresh surfaces a
-// genuinely different subset (probability proportional to score, so good
-// candidates still dominate but lower-ranked ones get a real shot).
-export function rankLocal(pool, weights, limit = 40, randomize = false) {
+// Pure deterministic re-rank of a cached pool by current weights.
+// Returns the FULL ranked list (highest score first); the caller slices
+// or pages through it. Instant on slider drag.
+export function rankLocal(pool, weights, limit = Infinity) {
   const score = c => FACTORS.reduce((s, f) => s + (weights[f] || 0) * (c.factors[f] || 0), 0);
-  const mapped = pool.map(c => ({ ...c, score: score(c), reason: factorReason(c.factors, weights) }));
-
-  if (!randomize) {
-    return mapped.sort((a, b) => b.score - a.score).slice(0, limit);
-  }
-
-  // Weighted random sampling without replacement.
-  // Each item's selection probability ∝ score + small base so every item has a chance.
-  const remaining = [...mapped];
-  const selected = [];
-  while (selected.length < limit && remaining.length > 0) {
-    const total = remaining.reduce((s, x) => s + Math.max(0, x.score) + 0.1, 0);
-    let r = Math.random() * total;
-    for (let i = 0; i < remaining.length; i++) {
-      r -= Math.max(0, remaining[i].score) + 0.1;
-      if (r <= 0) { selected.push(...remaining.splice(i, 1)); break; }
-    }
-    if (r > 0) selected.push(...remaining.splice(0, 1)); // safety: floating-point remainder
-  }
-  return selected.sort((a, b) => b.score - a.score); // display in score order
+  return pool
+    .map(c => ({ ...c, score: score(c), reason: factorReason(c.factors, weights) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
 function factorReason(factors, weights) {

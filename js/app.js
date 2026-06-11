@@ -43,7 +43,7 @@ import {
 
 import {
   loadLocalPool, rankLocal, loadTrakt, ensureCard, isWatchable, FACTORS,
-} from './recommendations.js?v=4';
+} from './recommendations.js?v=5';
 
 // ---- State ----
 let currentAbortController = null;
@@ -1165,7 +1165,9 @@ async function handleHashRoute() {
 let recsViewMode = 'local';     // 'trakt' | 'local' | 'compare'
 let recsLocalPool = null;       // cached candidate pool (re-ranked client-side)
 let recsTraktList = null;       // cached Trakt list
-let recsRandomize = false;      // true after user clicks ↻ to surface a different subset
+let recsAdvancePage = false;    // true for one render after ↻ — show the NEXT unseen batch
+let recsShownIds = new Set();   // local titles already shown this session (for paging)
+let recsJustLooped = false;     // set when a refresh wrapped back to the start
 const RECS_LIMIT = 40;
 
 async function renderRecommendationsPage() {
@@ -1230,14 +1232,12 @@ function wireRecsControls() {
     loadAndRenderRecs();
   }));
   $('#recs-refresh')?.addEventListener('click', () => {
-    recsRandomize = true;
-    // If the pool is already built, just reshuffle instantly (no TMDB re-fetch needed).
-    // Only rebuild from scratch if pool is missing.
-    if (recsLocalPool && recsLocalPool.length > 0) {
-      renderRecsContent();
-    } else {
-      loadAndRenderRecs(false);
-    }
+    // Pool missing → build it; otherwise page to the next unseen batch instantly.
+    if (!(recsLocalPool && recsLocalPool.length > 0)) { loadAndRenderRecs(false); return; }
+    recsAdvancePage = true;
+    renderRecsContent();          // recsListFor() reads recsAdvancePage synchronously
+    recsAdvancePage = false;
+    if (recsJustLooped) { recsJustLooped = false; showRecsToast("You've seen them all — starting over ↻"); }
   });
   $('#recs-weights-reset')?.addEventListener('click', () => {
     resetWeights();
@@ -1260,6 +1260,8 @@ function wireRecsControls() {
 }
 
 async function loadAndRenderRecs(force = false) {
+  recsAdvancePage = false;            // normal loads show the top batch
+  if (force) recsShownIds.clear();    // fresh pool → reset paging
   const content = $('#recs-content');
   if (content) content.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Building recommendations…</p></div>';
   const country = cachedUserCountryCode;
@@ -1276,7 +1278,28 @@ async function loadAndRenderRecs(force = false) {
 
 function recsListFor(mode) {
   if (mode === 'trakt') return recsTraktList;
-  return recsLocalPool ? rankLocal(recsLocalPool, getWeights(), RECS_LIMIT, recsRandomize) : null;
+  if (!recsLocalPool) return null;
+
+  // Full deterministic ranking of the whole pool; we page through it.
+  const ranked = rankLocal(recsLocalPool, getWeights());
+
+  if (!recsAdvancePage) {
+    // Normal load / slider drag → top batch by score.
+    const batch = ranked.slice(0, RECS_LIMIT);
+    batch.forEach(it => recsShownIds.add(it.tmdb_id));
+    return batch;
+  }
+
+  // ↻ Refresh → the next batch of titles not yet seen this session.
+  let unseen = ranked.filter(it => !recsShownIds.has(it.tmdb_id));
+  if (unseen.length < RECS_LIMIT) {     // seen the whole pool → start over
+    recsShownIds.clear();
+    recsJustLooped = true;
+    unseen = ranked;
+  }
+  const batch = unseen.slice(0, RECS_LIMIT);
+  batch.forEach(it => recsShownIds.add(it.tmdb_id));
+  return batch;
 }
 
 function renderRecsContent() {
@@ -1297,9 +1320,21 @@ function renderRecsContent() {
 }
 
 function rerankLocalGrids() {
-  recsRandomize = false; // slider adjustments show clean deterministic ranking
+  recsAdvancePage = false; // slider adjustments show the clean top batch
   const localGrid = $('#grid-local') || (recsViewMode === 'local' ? $('#grid-main') : null);
   if (localGrid) renderGrid('local', localGrid);
+}
+
+// Minimal self-contained toast (no CSS dependency).
+function showRecsToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;left:50%;bottom:32px;transform:translateX(-50%);' +
+    'background:#1c1c1e;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;' +
+    'z-index:9999;box-shadow:0 6px 24px rgba(0,0,0,.35);opacity:0;transition:opacity .25s;pointer-events:none;';
+  document.body.appendChild(t);
+  requestAnimationFrame(() => { t.style.opacity = '1'; });
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2200);
 }
 
 async function renderGrid(mode, el) {
